@@ -29,8 +29,8 @@ jobs:
       - name: 生成静态文件
         run: |
           npm install hexo-cli -g
-          hexo clean
-          hexo generate
+          npx hexo clean
+          npx hexo generate
 
       - name: 部署到 GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
