@@ -15,7 +15,7 @@ jobs:
       - name: 设置 Node.js 环境
         uses: actions/setup-node@v4
         with:
-          node-version: "23.6.1"  # 根据你的 Hexo 配置调整 Node.js 版本
+          node-version: "18"  # 根据你的 Hexo 配置调整 Node.js 版本
 
       - name: 缓存依赖
         uses: actions/cache@v4
@@ -29,8 +29,8 @@ jobs:
       - name: 生成静态文件
         run: |
           npm install hexo-cli -g
-          npx hexo clean
-          npx hexo generate
+          hexo clean
+          hexo generate
 
       - name: 部署到 GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
