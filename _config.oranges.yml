@@ -80,33 +80,33 @@ comments:
 # 主题页面导航栏
 navbar:
   -
-    name: Home
+    name: 主页
     enable: true
     path: /
     key: home
   -
-    name: Archives
+    name: 归档
     enable: true
     path: /archives/
     key: archives
   -
-    name: Categories
+    name: 分类
     enable: false
     path: /categories/
     key: categories
   -
-    name: Tags
+    name: 标签
     enable: true
     path: /tags/
     key: tags
   -
-    name: Friends
+    name: 友链
     enable: true
     path: /friends/
     key: friends
   -
-    name: About
-    enable: true
+    name: 关于
+    enable: false
     path: /about/
     key: about
 
@@ -124,12 +124,12 @@ friends:
   # site: 地址
   # meta: 描述
   -
-    nickname: Zcheng
-    site: https://zcheng.site/
+    nickname: Bill White
+    site: https://webpro.ltd/
     meta:
   -
-    nickname: Hexo
-    site: https://hexo.io/
+    nickname: JekYUlll
+    site: https://horeb.top/
     meta:
 
 # 页脚信息
@@ -145,11 +145,11 @@ footer:
     -
       name: github
       icon: github
-      path: https://github.com/zchengsite/hexo-theme-oranges
-    # -
-    #   name: email
-    #   icon: envelope
-    #   path: 
+      path: https://github.com/1099298297
+    -
+      name: bilibili
+      icon: bilibili
+      path: https://space.bilibili.com/15710963
     # -
     #   name: facebook
     #   icon: facebooksquare
