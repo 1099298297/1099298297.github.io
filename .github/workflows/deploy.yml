@@ -32,11 +32,11 @@ jobs:
 
       - name: 生成静态文件2
         run: |
-          npx hexo clean
+          hexo clean
           
       - name: 生成静态文件3
         run: |
-          npx hexo generate
+          hexo generate
 
       - name: 部署到 GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
