@@ -13,6 +13,11 @@
   
   <title>
     
+      最大字段和 模拟退火算法的题解 
+      
+      
+      |
+    
      Hexo
   </title>
 
@@ -144,16 +149,75 @@
   <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
   <div class="container post-details" id="post-details">
     <div class="post-content">
-      <div class="post-title"></div>
+      <div class="post-title">最大字段和 模拟退火算法的题解</div>
       <div class="post-attach">
         <span class="post-pubtime">
           <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
-          2025-01-25 10:18:08
+          2025-01-25 10:20:47
         </span>
         
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/%E6%A8%A1%E6%8B%9F%E9%80%80%E7%81%AB%E7%AE%97%E6%B3%95/" title="模拟退火算法">
+                    #模拟退火算法
+                  </a>
+                </span>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/%E7%AE%97%E6%B3%95/" title="算法">
+                    #算法
+                  </a>
+                </span>
+                
+              </span>
+          
       </div>
       <div class="markdown-body">
-        <p>惆怅长岑长<br>klja</p>
+        <h4 id="最大字段和-使用模拟退火算法的题解"><a href="#最大字段和-使用模拟退火算法的题解" class="headerlink" title="最大字段和 使用模拟退火算法的题解"></a>最大字段和 使用模拟退火算法的题解</h4><h4 id="原题解来自洛谷"><a href="#原题解来自洛谷" class="headerlink" title="原题解来自洛谷"></a>原题解来自洛谷</h4><p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1115">最大字段和 题目</a><br><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/article/5wknluwe">原题解</a></p>
+<hr>
+<h5 id="一、模拟退火算法原理"><a href="#一、模拟退火算法原理" class="headerlink" title="一、模拟退火算法原理"></a>一、模拟退火算法原理</h5><h5 id="概览："><a href="#概览：" class="headerlink" title="概览："></a>概览：</h5><p>模拟退火算法是一种基于概率的启发式搜索算法，<strong>可以有效的避免局部最优解</strong>。该算法模拟了金属的退火过程，将金属加热到高温，再缓慢冷却，以此来找最优解，避免局部最优解。</p>
+<hr>
+<h5 id="如何-以及-为何模拟金属退火过程？"><a href="#如何-以及-为何模拟金属退火过程？" class="headerlink" title="如何 以及 为何模拟金属退火过程？"></a>如何 以及 为何模拟金属退火过程？</h5><p>物理退火过程分为三个阶段</p>
+<ol>
+<li>加热： 材料被加热到高温状态，原子处于高度活跃状态，能量较高</li>
+<li>冷却： 材料冷却，原子逐渐稳定，能量降低</li>
+<li>平衡： 温度足够低的时候，材料到达能量最低的稳定状态</li>
+</ol>
+<p><strong>启发：</strong></p>
+<ul>
+<li>试想如果让我们用肉眼算出一个迷宫的走法，我们会一步步计算概率还是随机选取一个方向走走看。</li>
+<li>试想如果走走看之后，发现无法抵达，我们是选择从头开始选取路线，还是回到上一步之前的某个随机的位置重新走一遍。</li>
+</ul>
+<p><u>在求解时，我们可以像肉眼走迷宫一样随机多次的选择初始路线，然后慢慢基于当前路线随机改动。</u><br>在这个过程中最重要的一点是<strong>肉眼走迷宫时其实并非完全的随机改动路线</strong>，而是我们结合了迷宫大小、当前路线等等的因素，在脑内生成的一个<strong>感官上较为合理的路线</strong>(<del>我不可能直接选一个看起来走不通的路</del>)<br>模拟退火算法正是解决了怎么“选取”一个<strong>较为合理</strong>的解,这里的合理并非是指距离迷宫终点最近，而是有可能在最短路上，哪怕他看起来距离迷宫终点更远了。</p>
+<p><strong>模拟退火算法求解迷宫问题的阶段：</strong></p>
+<ol>
+<li>初始阶段：<strong>算法随机选择一个初始解</strong>(可以是完全的随机)</li>
+<li>扰动阶段：<strong>对初始解添加一个随机扰动，生成一个新解</strong>，如果新解更优就接受新解，如果新解更劣，就<u>条件接受劣解</u>。<br>扰动阶段分为两个阶段：<br>2.1. 高温阶段：<strong>较高概率接受劣解</strong>，以便算法可以更广阔的探索迷宫<br>2.2. 低温阶段：已经广阔的探索了迷宫，此时<strong>较低的概率接受劣解</strong>，以便得到一个当前路线的最优解</li>
+</ol>
+<p>注意算法需要多次运行，也就是多次退火，因为要多次的选取初始解。</p>
+<p><strong>那么条件接受劣解是什么条件呢？</strong></p>
+<p>算法会根据Metropolis准则来决定是否接受这个劣解。具体来说，接受劣解的概率由以下公式决定：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">P(接受新解)=e^&#123;-ΔE/T&#125;</span><br></pre></td></tr></table></figure>
+<p>其中：<br>ΔE&#x3D;f(新解)−f(旧解) 是新解与当前解的目标函数值之差<br>T 是当前温度<br>当新解更优时ΔE&lt;0, P&gt;1, 则100%接受新解<br>当新解更劣时ΔE&gt;0, p&lt;1, 就以P条件接受新解<br>T温度一直降低，若为劣解，则P一直减小，所以接受劣解的概率以这个公式降低</p>
+<p>所以只要确定目标函数后，就可以简单的应用模拟退火算法。目标函数是计算当前解优劣的函数，需要自己设计。</p>
+<hr>
+<h4 id="下面将用样例来具体的说明如何取目标函数和应用模拟退火算法"><a href="#下面将用样例来具体的说明如何取目标函数和应用模拟退火算法" class="headerlink" title="下面将用样例来具体的说明如何取目标函数和应用模拟退火算法"></a>下面将用样例来具体的说明如何取目标函数和应用模拟退火算法</h4><hr>
+<h5 id="二、模拟退火算法解决最大子段和问题"><a href="#二、模拟退火算法解决最大子段和问题" class="headerlink" title="二、模拟退火算法解决最大子段和问题"></a>二、模拟退火算法解决最大子段和问题</h5><p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1115">最大字段和 题目</a></p>
+<p>首先对于模拟退火算法，设置退火操作次数fire、初始温度T、终止温度eps、降温系数A。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">const double T = 2e4,A=0.98,eps=1e-5;</span><br><span class="line">const int fire = 15000;</span><br></pre></td></tr></table></figure>
+<p>退火过程伪代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 多次退火</span><br><span class="line">for(int i = 1 ; i&lt;= fire; i++)&#123;</span><br><span class="line">        //生成初始解</span><br><span class="line">        //定义中间温度</span><br><span class="line">        double t = T</span><br><span class="line">        //如果t大于最低温度</span><br><span class="line">        while(t&gt;eps)&#123;</span><br><span class="line">            //添加随机扰动，生成新解</span><br><span class="line">            //计算新解与旧解目标函数的差值 delta</span><br><span class="line">            if(delta &lt;= 0) </span><br><span class="line">                //劣解，以概率接受新解</span><br><span class="line">            else </span><br><span class="line">                //优解，接受新解</span><br><span class="line">            t=T*A // 降温</span><br><span class="line">        &#125;</span><br><span class="line">       </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面介绍该题目如何生成新解、设计目标函数、概率接受新解</p>
+<p>根据题意有4个操作</p>
+<ol>
+<li>左移子段左端点</li>
+<li>右移子段左端点</li>
+<li>左移子段右端点</li>
+<li>右移子段右端点</li>
+</ol>
+<p>所以： 随机选取一个操作，再随机选取移动的距离dis, dis的范围最好和T成正比，这样温度下降时搜索范围也减小，便于选取到最优值。<br>然后判断新子段是否合法,合法继续<br>再判断新解是否要接受(delta &#x3D; 新子段和 - 旧子段和)，为了快速计算子段和需要用前缀和优化。<br>接受新解的概率就是上述的公式<br>具体代码请移步<br><a target="_blank" rel="noopener" href="https://github.com/1099298297/Introduction-to-Algorithms/blob/main/4_1_find_maximum_subarray_simulated_annealing.cpp">最大字段和</a></p>
 
       </div>
       
@@ -164,9 +228,26 @@
           <div class="post-attach">
             <span class="post-pubtime">
               <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
-              2025-01-25 10:18:08
+              2025-01-25 10:20:47
             </span>
             
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/%E6%A8%A1%E6%8B%9F%E9%80%80%E7%81%AB%E7%AE%97%E6%B3%95/" title="模拟退火算法">
+                        #模拟退火算法
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/%E7%AE%97%E6%B3%95/" title="算法">
+                        #算法
+                      </a>
+                    </span>
+                    
+                  </span>
+              
           </div>
           <div class="post-foot-prev">
             
@@ -175,6 +256,23 @@
       
     </div>
     
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">Contents</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%80%E5%A4%A7%E5%AD%97%E6%AE%B5%E5%92%8C-%E4%BD%BF%E7%94%A8%E6%A8%A1%E6%8B%9F%E9%80%80%E7%81%AB%E7%AE%97%E6%B3%95%E7%9A%84%E9%A2%98%E8%A7%A3"><span class="toc-text">最大字段和 使用模拟退火算法的题解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E9%A2%98%E8%A7%A3%E6%9D%A5%E8%87%AA%E6%B4%9B%E8%B0%B7"><span class="toc-text">原题解来自洛谷</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A8%A1%E6%8B%9F%E9%80%80%E7%81%AB%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-text">一、模拟退火算法原理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A6%82%E8%A7%88%EF%BC%9A"><span class="toc-text">概览：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%A6%82%E4%BD%95-%E4%BB%A5%E5%8F%8A-%E4%B8%BA%E4%BD%95%E6%A8%A1%E6%8B%9F%E9%87%91%E5%B1%9E%E9%80%80%E7%81%AB%E8%BF%87%E7%A8%8B%EF%BC%9F"><span class="toc-text">如何 以及 为何模拟金属退火过程？</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8B%E9%9D%A2%E5%B0%86%E7%94%A8%E6%A0%B7%E4%BE%8B%E6%9D%A5%E5%85%B7%E4%BD%93%E7%9A%84%E8%AF%B4%E6%98%8E%E5%A6%82%E4%BD%95%E5%8F%96%E7%9B%AE%E6%A0%87%E5%87%BD%E6%95%B0%E5%92%8C%E5%BA%94%E7%94%A8%E6%A8%A1%E6%8B%9F%E9%80%80%E7%81%AB%E7%AE%97%E6%B3%95"><span class="toc-text">下面将用样例来具体的说明如何取目标函数和应用模拟退火算法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A8%A1%E6%8B%9F%E9%80%80%E7%81%AB%E7%AE%97%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9C%80%E5%A4%A7%E5%AD%90%E6%AE%B5%E5%92%8C%E9%97%AE%E9%A2%98"><span class="toc-text">二、模拟退火算法解决最大子段和问题</span></a></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
 
     
       <div class="comments-container">
@@ -461,7 +559,7 @@
       </a>
       <div class="share-content hidden">
         
-          <a class="share-item" href="https://twitter.com/intent/tweet?text=' +  + '&url=' + http%3A%2F%2Fwww.railgun.ltd%2F2025%2F01%2F25%2F%25E6%259C%2580%25E5%25A4%25A7%25E5%25AD%2590%25E6%25AE%25B5%25E5%2592%258C%2520%25E6%25A8%25A1%25E6%258B%259F%25E9%2580%2580%25E7%2581%25AB%25E7%25AE%2597%25E6%25B3%2595%2F + '" target="_blank" title="Twitter">
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + %E6%9C%80%E5%A4%A7%E5%AD%97%E6%AE%B5%E5%92%8C%20%E6%A8%A1%E6%8B%9F%E9%80%80%E7%81%AB%E7%AE%97%E6%B3%95%E7%9A%84%E9%A2%98%E8%A7%A3 + '&url=' + http%3A%2F%2Fwww.railgun.ltd%2F2025%2F01%2F25%2F%25E6%259C%2580%25E5%25A4%25A7%25E5%25AD%2590%25E6%25AE%25B5%25E5%2592%258C%2520%25E6%25A8%25A1%25E6%258B%259F%25E9%2580%2580%25E7%2581%25AB%25E7%25AE%2597%25E6%25B3%2595%2F + '" target="_blank" title="Twitter">
             <i class="iconfont icon-twitter"></i>
           </a>
         
