@@ -208,6 +208,13 @@
   </div>
 
   <script type="text/javascript">
+    //跳转到record
+    const currentDomain = window.location.hostname;
+    console.log(currentDomain);
+    if (currentDomain === 'record.railgun.ltd') {
+        window.location.href = 'https://1099298297.github.io/record.html';
+    }
+
     var inputArea = document.querySelector("#search-input")
     var searchOverlayArea = document.querySelector(".search-overlay")
 
