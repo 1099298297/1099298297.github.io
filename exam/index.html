@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专业心理健康综合评估测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .header h1 {
+            color: #4285f4;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .question-container {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        .question-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #495057;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background-color: #f1f1f1;
+            border-color: #ccc;
+        }
+
+        .option.selected {
+            background-color: #4285f420;
+            border-color: #4285f4;
+            color: #4285f4;
+            font-weight: bold;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            background-color: #4285f4;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3367d6;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .result-container {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .result-container.active {
+            display: block;
+        }
+
+        .result-title {
+            font-size: 32px;
+            color: #e83e8c;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .result-desc {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: #495057;
+            line-height: 1.8;
+        }
+
+        .care-tips {
+            text-align: left;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .care-tips h3 {
+            color: #e83e8c;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .care-tips ul {
+            padding-left: 20px;
+            gap: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #4285f4;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .restart-btn {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>专业心理健康综合评估测试</h1>
+            <p>本测试由心理学专家团队研发，通过15道核心题目综合评估你的心理状态、情绪调节能力及压力应对水平，结果仅供参考。</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <!-- 测试题目容器 -->
+        <div id="questions">
+            <!-- 第1题 -->
+            <div class="question-container active" data-question="1">
+                <div class="question-title">1. 你最近两周的情绪状态更接近以下哪种？</div>
+                <div class="options">
+                    <div class="option" data-answer="1">A. 情绪低落，提不起兴趣</div>
+                    <div class="option" data-answer="2">B. 情绪波动大，易喜易怒</div>
+                    <div class="option" data-answer="3">C. 基本平稳，偶尔有小情绪</div>
+                    <div class="option" data-answer="4">D. 积极乐观，情绪状态良好</div>
+                </div>
+            </div>
+
+            <!-- 第2题 -->
+            <div class="question-container" data-question="2">
+                <div class="question-title">2. 面对工作/学习压力时，你的应对方式是？</div>
+                <div class="options">
+                    <div class="option" data-answer="1">A. 感到无力，选择逃避</div>
+                    <div class="option" data-answer="2">B. 焦虑不安，难以专注</div>
+                    <div class="option" data-answer="3">C. 尝试调整，逐步解决</div>
+                    <div class="option" data-answer="4">D. 冷静分析，高效处理</div>
+                </div>
+            </div>
+
+            <!-- 第3题 -->
+            <div class="question-container" data-question="3">
+                <div class="question-title">3. 你每天的睡眠时长和质量如何？</div>
+                <div class="options">
+                    <div class="option" data-answer="1">A. 少于6小时，频繁失眠/早醒</div>
+                    <div class="option" data-answer="2">B. 6-7小时，睡眠浅易醒</div>
+                    <div class="option" data-answer="3">C. 7-8小时，偶尔熬夜</div>
+                    <div class="option" data-answer="4">D. 8小时左右，深度睡眠充足</div>
+                </div>
+            </div>
+
+            <!-- 第4题 -->
+            <div class="question-container" data-question="4">
+                <div class="question-title">4. 你与家人/朋友的沟通频率和质量是？</div>
+                <div class="options">
+                    <div class="option" data-answer="1">A. 很少沟通，感到孤独</div>
+                    <div class="option" data-answer="2">B. 偶尔沟通，多为日常琐事</div>
+                    <div class="option" data-answer="3">C. 定期沟通，能分享心情</div>
+                    <div class="option" data-answer="4">D. 频繁沟通，情感联结紧密</div>
+                </div>
+            </div>
+
+            <!-- 第5题 -->
+            <div class="question-container" data-question="5">
+                <div class="question-title">5. 你对自己当前的生活满意度如何？</div>
+                <div class="options">
+                    <div class="option" data-answer="1">A. 非常不满意，感到迷茫</div>
+                    <div class="option" data-answer="2">B. 不太满意，有较多遗憾</div>
+                    <div class="option" data-answer="3">C. 基本满意，仍有小遗憾</div>
+                    <div class="option" data-answer="4">D. 非常满意，对未来充满期待</div>
+                </div>
+            </div>
+
+            <!-- 第6题 -->
+            <div class="question-container" data-question="6">
+                <div class="question-title">6. 你是否经常出现注意力不集中的情况？</div>
+                <div class="options">
+                    <div class="option" data-answer="1">A. 频繁出现，无法专注做事</div>
+                    <div class="option" data-answer="2">B. 经常出现，影响效率</div>
+                    <div class="option" data-answer="3">C. 偶尔出现，很快能调整</div>
+                    <div class="option" data-answer="4">D. 几乎没有，专注力很好</div>
+                </div>
+            </div>
+
+            <!-- 第7题 -->
+            <div class="question-container" data-question="7">
+                <div class="question-title">7. 你进行自我放松的频率是？</div>
+                <div class="options">
+                    <div class="option" data-answer="1">A. 几乎没有，没时间放松</div>
+                    <div class="option" data-answer="2">B. 偶尔放松，效果不佳</div>
+                    <div class="option" data-answer="3">C. 定期放松，能缓解压力</div>
+                    <div class="option" data-answer="4">D. 经常放松，保持身心愉悦</div>
+                </div>
+            </div>
+
+            <!-- 第8题 -->
+            <div class="question-container" data-question="8">
+                <div class="question-title">8. 当遇到挫折时，你的第一反应是？</div>
+                <div class="options">
+                    <div class="option" data-answer="1">A. 自我否定，感到挫败</div>
+                    <div class="option" data-answer="2">B. 抱怨外界，情绪失控</div>
+                    <div class="option" data-answer="3">C. 冷静接受，尝试解决</div>
+                    <div class="option" data-answer="4">D. 视为成长，积极面对</div>
+                </div>
+            </div>
+
+            <!-- 第9题 -->
+            <div class="question-container" data-question="9">
+                <div class="question-title">9. 你对未来的规划和预期是？</div>
+                <div class="options">
+                    <div class="option" data-answer="1">A. 毫无规划，感到焦虑</div>
+                    <div class="option" data-answer="2">B. 有大致想法，但缺乏信心</div>
+                    <div class="option" data-answer="3">C. 有明确规划，稳步推进</div>
+                    <div class="option" data-answer="4">D. 规划清晰，充满信心</div>
+                </div>
+            </div>
+
+            <!-- 第10题 -->
+            <div class="question-container" data-question="10">
+                <div class="question-title">10. 你是否经常感到身体疲惫（非体力劳动导致）？</div>
+                <div class="options">
+                    <div class="option" data-answer="1">A. 频繁感到，休息也无法缓解</div>
+                    <div class="option" data-answer="2">B. 经常感到，需要长时间休息</div>
+                    <div class="option" data-answer="3">C. 偶尔感到，休息后能恢复</div>
+                    <div class="option" data-answer="4">D. 几乎没有，精力充沛</div>
+                </div>
+            </div>
+
+            <!-- 第11题 -->
+            <div class="question-container" data-question="11">
+                <div class="question-title">11. 你处理负面情绪的方式是？</div>
+                <div class="options">
+                    <div class="option" data-answer="1">A. 压抑情绪，独自承受</div>
+                    <div class="option" data-answer="2">B. 情绪爆发，影响他人</div>
+                    <div class="option" data-answer="3">C. 适当倾诉，自我调节</div>
+                    <div class="option" data-answer="4">D. 主动疏导，快速平复</div>
+                </div>
+            </div>
+
+            <!-- 第12题 -->
+            <div class="question-container" data-question="12">
+                <div class="question-title">12. 你对自身价值的认知更接近？</div>
+                <div class="options">
+                    <div class="option" data-answer="1">A. 自我价值感低，缺乏自信</div>
+                    <div class="option" data-answer="2">B. 价值感不稳定，易受评价影响</div>
+                    <div class="option" data-answer="3">C. 有基本自信，能客观看待自己</div>
+                    <div class="option" data-answer="4">D. 高度自信，认可自身价值</div>
+                </div>
+            </div>
+
+            <!-- 第13题 -->
+            <div class="question-container" data-question="13">
+                <div class="question-title">13. 你参与兴趣爱好活动的频率是？</div>
+                <div class="options">
+                    <div class="option" data-answer="1">A. 几乎不参与，提不起兴趣</div>
+                    <div class="option" data-answer="2">B. 偶尔参与，感到索然无味</div>
+                    <div class="option" data-answer="3">C. 定期参与，能获得愉悦感</div>
+                    <div class="option" data-answer="4">D. 经常参与，享受其中</div>
+                </div>
+            </div>
+
+            <!-- 第14题 -->
+            <div class="question-container" data-question="14">
+                <div class="question-title">14. 你对他人的信任感如何？</div>
+                <div class="options">
+                    <div class="option" data-answer="1">A. 极度缺乏信任，防备心强</div>
+                    <div class="option" data-answer="2">B. 信任度低，难以敞开心扉</div>
+                    <div class="option" data-answer="3">C. 有基本信任，保持适度边界</div>
+                    <div class="option" data-answer="4">D. 信任他人，能建立深度联结</div>
+                </div>
+            </div>
+
+            <!-- 第15题 -->
+            <div class="question-container" data-question="15">
+                <div class="question-title">15. 你对生活中的小确幸（美好小事）的感知能力？</div>
+                <div class="options">
+                    <div class="option" data-answer="1">A. 几乎感知不到，觉得生活无趣</div>
+                    <div class="option" data-answer="2">B. 偶尔感知到，但很快忘记</div>
+                    <div class="option" data-answer="3">C. 能感知到，会短暂感到开心</div>
+                    <div class="option" data-answer="4">D. 敏锐感知，能持续感受美好</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导航按钮 -->
+        <div class="nav-buttons">
+            <button id="prev-btn" disabled>上一题</button>
+            <button id="next-btn">下一题</button>
+        </div>
+
+        <!-- 结果页面 -->
+        <div class="result-container" id="result">
+            <div class="result-title">📢 诊断结果：你怀孕了！</div>
+            <div class="result-desc">
+                经过专业心理健康评估系统的综合分析，我们意外发现你的心理状态指标指向了一个特殊结果——你怀孕了！<br>
+                恭喜你即将迎来新生命，以下是为你整理的产前护理建议，请务必认真遵守哦～
+            </div>
+            <div class="care-tips">
+                <h3>🤰 产前护理核心建议</h3>
+                <ul>
+                    <li>饮食均衡：多摄入蛋白质、维生素，避免生冷辛辣食物</li>
+                    <li>规律作息：保证8小时以上睡眠，避免熬夜和过度劳累</li>
+                    <li>情绪管理：保持心情愉悦，避免焦虑、生气等不良情绪</li>
+                    <li>定期产检：建议每4周进行一次产前检查，监测身体状况</li>
+                    <li>适度运动：可进行散步、孕妇瑜伽等温和运动，增强体质</li>
+                    <li>补充营养：在医生指导下适量补充叶酸、钙、铁等营养素</li>
+                </ul>
+            </div>
+            <button class="restart-btn" id="restart-btn">重新测试</button>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const progressBar = document.getElementById('progress');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const questionContainers = document.querySelectorAll('.question-container');
+        const resultContainer = document.getElementById('result');
+        const options = document.querySelectorAll('.option');
+
+        let currentQuestion = 1;
+        const totalQuestions = 15;
+
+        // 更新进度条
+        function updateProgress() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        // 显示当前题目
+        function showQuestion(n) {
+            questionContainers.forEach(container => {
+                container.classList.remove('active');
+                if (parseInt(container.dataset.question) === n) {
+                    container.classList.add('active');
+                }
+            });
+            
+            // 更新按钮状态
+            prevBtn.disabled = n === 1;
+            nextBtn.textContent = n === totalQuestions ? '查看结果' : '下一题';
+            
+            updateProgress();
+        }
+
+        // 选择答案
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                // 清除当前题目其他选项的选中状态
+                const currentOptions = this.parentElement.querySelectorAll('.option');
+                currentOptions.forEach(opt => opt.classList.remove('selected'));
+                // 选中当前选项
+                this.classList.add('selected');
+            });
+        });
+
+        // 上一题按钮点击事件
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 1) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        });
+
+        // 下一题按钮点击事件
+        nextBtn.addEventListener('click', () => {
+            // 检查是否选择了答案（增加真实感，必须选答案才能下一步）
+            const currentOptions = document.querySelector(`.question-container[data-question="${currentQuestion}"] .option.selected`);
+            if (!currentOptions && currentQuestion <= totalQuestions) {
+                alert('请选择一个答案后继续！');
+                return;
+            }
+
+            if (currentQuestion < totalQuestions) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            } else {
+                // 显示结果
+                questionContainers.forEach(container => container.classList.remove('active'));
+                resultContainer.classList.add('active');
+            }
+        });
+
+        // 重新测试
+        restartBtn.addEventListener('click', () => {
+            currentQuestion = 1;
+            resultContainer.classList.remove('active');
+            // 清除所有选中状态
+            options.forEach(option => option.classList.remove('selected'));
+            showQuestion(1);
+        });
+
+        // 初始化
+        showQuestion(currentQuestion);
+    </script>
+</body>
+</html>
