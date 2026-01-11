@@ -3,1447 +3,359 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>学习记录 | 贡献统计图</title>
-    <!-- Tailwind CSS 快速加载 -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
-    <!-- 图标库 -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
-    <!-- 配置 Tailwind 自定义颜色 -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        // 用户指定配色
-                        primary: '#74d3ae',    // 薄荷绿（主色）
-                        secondary: '#678d58',  // 深草绿
-                        accent: '#a6c48a',     // 浅草绿
-                        bgLight: '#f6e7cb',    // 浅米色
-                        accentWarm: '#dd9787', // 暖橘色
-                        // 玻璃态背景（适配新配色）
-                        glass: 'rgba(246, 231, 203, 0.18)',
-                        glassBorder: 'rgba(116, 211, 174, 0.25)',
-                        glassHover: 'rgba(246, 231, 203, 0.28)',
-                        // 时段配色（使用指定色系）
-                        morning: '#74d3ae',    // 薄荷绿
-                        afternoon: '#678d58',  // 深草绿
-                        evening: '#a6c48a',    // 浅草绿
-                        night: '#dd9787',      // 暖橘色
-                    },
-                    boxShadow: {
-                        glass: '0 8px 32px 0 rgba(103, 141, 88, 0.12)',
-                        glassHover: '0 12px 40px 0 rgba(103, 141, 88, 0.18)',
-                    },
-                    animation: {
-                        'float': 'float 3s ease-in-out infinite',
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        }
-                    }
-                }
-            }
+    <title>每日学习记录 | 学习打卡</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
         }
-    </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            /* 玻璃态核心样式 */
-            .glass-effect {
-                background: theme('colors.glass');
-                backdrop-filter: blur(12px);
-                -webkit-backdrop-filter: blur(12px);
-                border: 1px solid theme('colors.glassBorder');
-                box-shadow: theme('boxShadow.glass');
-                transition: all 0.3s ease;
-            }
-            .glass-effect:hover {
-                background: theme('colors.glassHover');
-                box-shadow: theme('boxShadow.glassHover');
-                transform: translateY(-2px);
-            }
-            /* 贡献图格子样式 */
-            .contribution-cell {
-                width: 14px;
-                height: 14px;
-                border-radius: 2px;
-                transition: all 0.2s ease;
-                cursor: pointer;
-            }
-            .contribution-cell:hover {
-                transform: scale(1.2);
-                filter: brightness(1.2);
-            }
-            /* 自定义滚动条 */
-            ::-webkit-scrollbar {
-                width: 6px;
-                height: 6px;
-            }
-            ::-webkit-scrollbar-thumb {
-                background: theme('colors.glass');
-                border-radius: 3px;
-            }
-            ::-webkit-scrollbar-track {
-                background: transparent;
-            }
-            /* 修复下拉框文字颜色 */
-            select {
-                color: #2D4126; /* 深绿色文字确保清晰 */
-                font-weight: 500;
-            }
-            select option {
-                background: #f6e7cb; /* 浅米色背景 */
-                color: #2D4126;
-            }
-            /* 渐变文字（适配新配色） */
-            .text-gradient {
-                background-clip: text;
-                -webkit-background-clip: text;
-                color: transparent;
-                background-image: linear-gradient(to right, #74d3ae, #678d58, #a6c48a);
-            }
-            /* 卡片装饰 */
-            .card-decoration {
-                position: relative;
-                overflow: hidden;
-            }
-            .card-decoration::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 4px;
-                background: linear-gradient(to right, #74d3ae, #678d58, #a6c48a);
-                border-radius: 2px 2px 0 0;
-            }
-            /* Tab 样式 */
-            .tab-active {
-                border-bottom: 2px solid #74d3ae;
-                color: #2D4126;
-                font-weight: 600;
-            }
-            /* 时间轴进度条 */
-            .time-bar {
-                height: 8px;
-                border-radius: 4px;
-                display: block;
-            }
-            /* 时段背景色 */
-            .time-morning { background: #74d3ae; }
-            .time-afternoon { background: #678d58; }
-            .time-evening { background: #a6c48a; }
-            .time-night { background: #dd9787; }
-            /* 时段标签 */
-            .time-label {
-                font-weight: 600;
-                color: #2D4126;
-                font-size: 0.875rem;
-            }
+        body {
+            background-color: #f0f2f5;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        .add-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        #studyInput {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+        #studyInput:focus {
+            border-color: #42b983;
+        }
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+        .btn-add {
+            background-color: #42b983;
+            color: white;
+        }
+        .btn-mock {
+            background-color: #2196f3;
+            color: white;
+        }
+        .btn-clear {
+            background-color: #e74c3c;
+            color: white;
+        }
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .record-section {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            font-size: 18px;
+            color: #34495e;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f2f5;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .today-title { color: #42b983; }
+        .history-title { color: #2196f3; }
+        .record-list {
+            list-style: none;
+        }
+        .date-group {
+            margin-bottom: 12px;
+        }
+        .date-label {
+            font-size: 14px;
+            color: #7f8c8d;
+            padding: 5px 0;
+        }
+        .record-item {
+            background-color: #f8f9fa;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid #42b983;
+        }
+        .record-text {
+            font-size: 15px;
+            color: #2c3e50;
+        }
+        .delete-btn {
+            background-color: transparent;
+            color: #e74c3c;
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+        .empty-tip {
+            color: #95a5a6;
+            font-size: 15px;
+            padding: 20px 0;
+            text-align: center;
         }
     </style>
 </head>
-<!-- 新配色背景：浅米色渐变 + 薄荷绿点缀 -->
-<body class="min-h-screen bg-gradient-to-br from-f6e7cb via-F8F5EB to-E8F0E0 text-[#2D4126] p-4 md:p-8 relative overflow-x-hidden font-medium">
-    <!-- 背景装饰（适配新配色） -->
-    <div class="absolute top-20 left-10 w-64 h-64 bg-primary/15 rounded-full filter blur-3xl animate-pulse-slow"></div>
-    <div class="absolute bottom-20 right-10 w-80 h-80 bg-accent/15 rounded-full filter blur-3xl animate-pulse-slow"></div>
-    
-    <!-- 主容器 -->
-    <div class="max-w-7xl mx-auto relative z-10">
-        <!-- 头部 -->
-        <header class="glass-effect rounded-2xl p-6 mb-8 card-decoration">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div>
-                    <h1 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold flex items-center gap-2 text-gradient">
-                        <i class="ri-book-open-line animate-float"></i>
-                        学习记录仪表盘
-                    </h1>
-                    <p class="text-[#4A6340] mt-1 font-medium">记录每一天的成长，看见时间的力量</p>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <div class="glass-effect rounded-xl px-4 py-2 flex items-center gap-2">
-                        <i class="ri-calendar-line text-primary"></i>
-                        <span id="current-date" class="font-semibold"></span>
-                    </div>
-                    <!-- 生成测试数据按钮 -->
-                    <button id="generate-test-data" class="glass-effect hover:bg-primary/80 rounded-lg px-4 py-2 transition-all flex items-center gap-2 text-primary font-semibold">
-                        <i class="ri-database-line"></i>
-                        生成测试数据
-                    </button>
-                </div>
-            </div>
-        </header>
+<body>
+    <div class="container">
+        <h1>📚 每日学习记录</h1>
 
-        <!-- 主要内容区 -->
-        <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- 左侧：记录面板 -->
-            <div class="glass-effect rounded-2xl p-6 lg:col-span-1 card-decoration">
-                <h2 class="text-xl font-semibold mb-6 flex items-center gap-2 text-gradient">
-                    <i class="ri-add-circle-line"></i>
-                    记录学习时长
-                </h2>
-                
-                <!-- 类别管理 -->
-                <div class="mb-6">
-                    <h3 class="text-sm text-[#4A6340] mb-2 flex items-center gap-1 font-medium">
-                        <i class="ri-folder-line text-primary"></i>
-                        学习类别管理
-                    </h3>
-                    <div class="flex gap-2 mb-3">
-                        <input type="text" id="new-category" placeholder="添加新类别（如：Python、英语）" 
-                               class="flex-1 bg-[#f6e7cb]/50 border border-[#D9D2B8] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-[#2D4126] font-medium">
-                        <button id="add-category-btn" class="glass-effect hover:bg-primary/80 rounded-lg px-4 py-2 transition-all text-primary font-medium">
-                            <i class="ri-plus-line"></i>
-                        </button>
-                    </div>
-                    <div id="categories-list" class="flex flex-wrap gap-2 max-h-24 overflow-y-auto pb-2">
-                        <!-- 类别标签会动态生成 -->
-                    </div>
-                </div>
-
-                <!-- 时长记录 -->
-                <div class="mb-6">
-                    <h3 class="text-sm text-[#4A6340] mb-2 flex items-center gap-1 font-medium">
-                        <i class="ri-time-line text-primary"></i>
-                        记录今日学习
-                    </h3>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm mb-1 font-medium text-[#4A6340]">选择学习类别</label>
-                            <select id="selected-category" class="w-full bg-[#f6e7cb]/50 border border-[#D9D2B8] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
-                                <option value="">请选择类别</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm mb-1 font-medium text-[#4A6340]">学习时长（分钟）</label>
-                            <input type="number" id="study-minutes" min="1" max="1440" placeholder="输入学习分钟数"
-                                   class="w-full bg-[#f6e7cb]/50 border border-[#D9D2B8] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-[#2D4126] font-medium">
-                        </div>
-                        <div>
-                            <label class="block text-sm mb-1 font-medium text-[#4A6340]">学习备注（可选）</label>
-                            <input type="text" id="study-note" placeholder="简单描述学习内容"
-                                   class="w-full bg-[#f6e7cb]/50 border border-[#D9D2B8] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-[#2D4126] font-medium">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 提交按钮 -->
-                <button id="record-study-btn" class="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 rounded-lg px-4 py-3 font-semibold transition-all shadow-lg hover:shadow-xl text-white">
-                    <i class="ri-save-line"></i>
-                    保存学习记录
-                </button>
-            </div>
-
-            <!-- 右侧：主面板（今日记录 + 统计 + 贡献图） -->
-            <div class="glass-effect rounded-2xl p-6 lg:col-span-2 card-decoration">
-                <h2 class="text-xl font-semibold mb-6 flex items-center gap-2 text-gradient">
-                    <i class="ri-bar-chart-line"></i>
-                    学习数据分析中心
-                </h2>
-                
-                <!-- Tab 栏 -->
-                <div class="flex border-b border-[#D9D2B8] mb-6">
-                    <button id="tab-today" class="tab-active px-6 py-2 text-[#4A6340] hover:text-[#2D4126] transition-all font-medium">
-                        <i class="ri-calendar-todo-line mr-2"></i>今日学习记录
-                    </button>
-                    <button id="tab-stats" class="px-6 py-2 text-[#4A6340] hover:text-[#2D4126] transition-all font-medium">
-                        <i class="ri-pie-chart-line mr-2"></i>学习统计分析
-                    </button>
-                </div>
-                
-                <!-- Tab 内容区 -->
-                <div class="tab-content">
-                    <!-- 今日学习记录 Tab -->
-                    <div id="content-today" class="block">
-                        <div id="today-records" class="space-y-6">
-                            <!-- 今日总览 -->
-                            <div class="glass-effect rounded-xl p-4">
-                                <h3 class="text-lg font-semibold mb-3 flex items-center gap-2 text-[#2D4126]">
-                                    <i class="ri-sun-line text-primary"></i>
-                                    今日学习总览
-                                </h3>
-                                <div id="today-overview" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                    <div class="glass-effect rounded-lg p-3 text-center">
-                                        <div class="text-xl font-bold text-gradient" id="today-total-minutes">0</div>
-                                        <div class="text-xs text-[#4A6340] font-medium mt-1">总时长(分钟)</div>
-                                    </div>
-                                    <div class="glass-effect rounded-lg p-3 text-center">
-                                        <div class="text-xl font-bold text-gradient" id="today-total-hours">0</div>
-                                        <div class="text-xs text-[#4A6340] font-medium mt-1">总时长(小时)</div>
-                                    </div>
-                                    <div class="glass-effect rounded-lg p-3 text-center">
-                                        <div class="text-xl font-bold text-gradient" id="today-category-count">0</div>
-                                        <div class="text-xs text-[#4A6340] font-medium mt-1">学习类别数</div>
-                                    </div>
-                                    <div class="glass-effect rounded-lg p-3 text-center">
-                                        <div class="text-xl font-bold text-gradient" id="today-record-count">0</div>
-                                        <div class="text-xs text-[#4A6340] font-medium mt-1">记录次数</div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- 今日学习时段可视化 -->
-                            <div class="glass-effect rounded-xl p-4">
-                                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-[#2D4126]">
-                                    <i class="ri-timeline-line text-primary"></i>
-                                    今日学习时段分布
-                                </h3>
-                                
-                                <!-- 时段统计卡片 -->
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8"> <!-- 增加底部间距 -->
-                                    <div class="glass-effect rounded-lg p-3 text-center">
-                                        <div class="time-label">早上</div>
-                                        <div class="text-lg font-bold text-morning mt-1" id="morning-minutes">0</div>
-                                        <div class="text-xs text-[#4A6340]">分钟</div>
-                                    </div>
-                                    <div class="glass-effect rounded-lg p-3 text-center">
-                                        <div class="time-label">下午</div>
-                                        <div class="text-lg font-bold text-afternoon mt-1" id="afternoon-minutes">0</div>
-                                        <div class="text-xs text-[#4A6340]">分钟</div>
-                                    </div>
-                                    <div class="glass-effect rounded-lg p-3 text-center">
-                                        <div class="time-label">晚上</div>
-                                        <div class="text-lg font-bold text-evening mt-1" id="evening-minutes">0</div>
-                                        <div class="text-xs text-[#4A6340]">分钟</div>
-                                    </div>
-                                    <div class="glass-effect rounded-lg p-3 text-center">
-                                        <div class="time-label">深夜</div>
-                                        <div class="text-lg font-bold text-night mt-1" id="night-minutes">0</div>
-                                        <div class="text-xs text-[#4A6340]">分钟</div>
-                                    </div>
-                                </div>
-                                
-                                <!-- 时间轴可视化 - 修复遮挡问题 -->
-                                <div class="relative mb-6"> <!-- 调整间距 -->
-                                    <!-- 时间轴背景 -->
-                                    <div class="absolute left-0 top-4 w-full h-4 bg-[#E8F0E0] rounded-full"></div> <!-- 下移时间轴，增加高度 -->
-                                    <!-- 时段区块 -->
-                                    <div id="time-axis" class="absolute left-0 top-4 w-full h-4 rounded-full flex items-center"> <!-- 同步下移 -->
-                                        <!-- 动态生成时段区块 -->
-                                    </div>
-                                    <!-- 时间刻度 - 上移并增加间距，避免遮挡 -->
-                                    <div class="flex justify-between mt-0 text-sm text-[#4A6340] font-medium"> <!-- 移除margin-top，调整字体大小 -->
-                                        <span class="relative z-10 bg-[#f6e7cb]/80 px-2 py-1 rounded">06:00</span> <!-- 增加背景和内边距 -->
-                                        <span class="relative z-10 bg-[#f6e7cb]/80 px-2 py-1 rounded">12:00</span>
-                                        <span class="relative z-10 bg-[#f6e7cb]/80 px-2 py-1 rounded">18:00</span>
-                                        <span class="relative z-10 bg-[#f6e7cb]/80 px-2 py-1 rounded">24:00</span>
-                                    </div>
-                                </div>
-                                
-                                <!-- 详细学习记录 -->
-                                <h4 class="text-md font-semibold mb-3 text-[#4A6340]">今日学习详情</h4>
-                                <div id="time-distribution" class="space-y-4 max-h-80 overflow-y-auto pr-2">
-                                    <!-- 时间分布会动态生成 -->
-                                </div>
-                            </div>
-                            
-                            <!-- 贡献图快速查看 -->
-                            <div class="glass-effect rounded-xl p-4">
-                                <h3 class="text-lg font-semibold mb-3 flex items-center gap-2 text-[#2D4126]">
-                                    <i class="ri-calendar-check-line text-primary"></i>
-                                    近期学习贡献
-                                </h3>
-                                <div class="overflow-x-auto pb-2">
-                                    <div id="mini-contribution-grid" class="space-y-1">
-                                        <!-- 简化版贡献图 -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 学习统计 Tab -->
-                    <div id="content-stats" class="hidden">
-                        <div class="space-y-6">
-                            <!-- 核心统计 -->
-                            <div class="glass-effect rounded-xl p-4">
-                                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-[#2D4126]">
-                                    <i class="ri-dashboard-line text-primary"></i>
-                                    核心学习数据
-                                </h3>
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                    <div class="glass-effect rounded-lg p-3 text-center hover:animate-float">
-                                        <div class="text-2xl font-bold text-gradient" id="total-days">0</div>
-                                        <div class="text-xs text-[#4A6340] font-medium mt-1">学习天数</div>
-                                    </div>
-                                    <div class="glass-effect rounded-lg p-3 text-center hover:animate-float">
-                                        <div class="text-2xl font-bold text-gradient" id="total-hours">0</div>
-                                        <div class="text-xs text-[#4A6340] font-medium mt-1">总学习小时</div>
-                                    </div>
-                                    <div class="glass-effect rounded-lg p-3 text-center hover:animate-float">
-                                        <div class="text-2xl font-bold text-gradient" id="total-categories">0</div>
-                                        <div class="text-xs text-[#4A6340] font-medium mt-1">学习类别数</div>
-                                    </div>
-                                    <div class="glass-effect rounded-lg p-3 text-center hover:animate-float">
-                                        <div class="text-2xl font-bold text-gradient" id="max-day-minutes">0</div>
-                                        <div class="text-xs text-[#4A6340] font-medium mt-1">单日最长(分钟)</div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- 类别统计 -->
-                            <div class="glass-effect rounded-xl p-4">
-                                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-[#2D4126]">
-                                    <i class="ri-book-mark-line text-primary"></i>
-                                    各类别学习时长统计
-                                </h3>
-                                <div id="category-stats" class="space-y-3 max-h-60 overflow-y-auto pr-2">
-                                    <!-- 类别统计会动态生成 -->
-                                </div>
-                            </div>
-                            
-                            <!-- 完整贡献图 -->
-                            <div class="glass-effect rounded-xl p-4">
-                                <h3 class="text-lg font-semibold mb-3 flex items-center gap-2 text-[#2D4126]">
-                                    <i class="ri-calendar-range-line text-primary"></i>
-                                    全年学习贡献图
-                                </h3>
-                                <div class="overflow-x-auto pb-4">
-                                    <div id="full-contribution-grid" class="space-y-1">
-                                        <!-- 完整贡献图 -->
-                                    </div>
-                                </div>
-                                
-                                <!-- 图例 -->
-                                <div class="flex flex-wrap items-center justify-center gap-4 mt-4 text-xs text-[#4A6340] font-medium">
-                                    <span>最少</span>
-                                    <div class="flex gap-1">
-                                        <div class="contribution-cell bg-primary/10"></div>
-                                        <div class="contribution-cell bg-primary/30"></div>
-                                        <div class="contribution-cell bg-primary/50"></div>
-                                        <div class="contribution-cell bg-primary/70"></div>
-                                        <div class="contribution-cell bg-primary/90"></div>
-                                    </div>
-                                    <span>最多</span>
-                                    <span class="ml-4 text-[#6A885E]">（颜色越深 = 学习时长越长，点击格子查看详情）</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <!-- 底部 -->
-        <footer class="glass-effect rounded-2xl p-6 mt-8 text-center text-[#4A6340] text-sm card-decoration font-medium">
-            <p class="flex items-center justify-center gap-2">
-                <i class="ri-database-line text-primary"></i>
-                所有数据存储在浏览器本地 (localStorage)，清除浏览器数据会导致记录丢失
-            </p>
-            <p class="mt-1">© 2025 学习记录 | <span class="text-gradient">自然清新风格 · 轻量高效</span></p>
-        </footer>
-    </div>
-
-    <!-- 详情弹窗 -->
-    <div id="detail-modal" class="fixed inset-0 bg-[#2D4126]/50 backdrop-filter: blur(4px) flex items-center justify-center z-50 hidden">
-        <div class="glass-effect rounded-2xl p-6 w-full max-w-md mx-4 card-decoration transform transition-all duration-300 scale-95 opacity-0" id="modal-card">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-semibold text-gradient" id="modal-date"></h3>
-                <button id="close-modal" class="text-[#4A6340] hover:text-[#2D4126] transition-all p-1 rounded-full hover:bg-[#E8F0E0]/50">
-                    <i class="ri-close-line text-xl"></i>
-                </button>
-            </div>
-            <div id="modal-content" class="space-y-4">
-                <!-- 详情内容动态生成 -->
-            </div>
+        <!-- 新增记录区域 -->
+        <div class="add-box">
+            <input type="text" id="studyInput" placeholder="输入今日学习内容，例如：JavaScript高级语法学习 2小时" maxlength="100">
+            <button class="btn-add" id="addBtn">添加记录</button>
         </div>
-    </div>
 
-    <!-- 提示弹窗 -->
-    <div id="toast" class="fixed bottom-8 right-8 glass-effect rounded-lg px-4 py-3 shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50 card-decoration">
-        <div class="flex items-center gap-2">
-            <i id="toast-icon" class="ri-check-circle-line text-green-700"></i>
-            <span id="toast-message" class="font-medium"></span>
+        <!-- 功能按钮区域 -->
+        <div class="btn-group">
+            <button class="btn-mock" id="generateMockBtn">✨ 一键生成模拟数据</button>
+            <button class="btn-clear" id="clearAllBtn">🗑️ 一键清空全部记录</button>
+        </div>
+
+        <!-- 今日记录 -->
+        <div class="record-section">
+            <h2 class="section-title today-title">☀️ 今日学习</h2>
+            <ul class="record-list" id="todayRecords"></ul>
+        </div>
+
+        <!-- 历史记录 -->
+        <div class="record-section">
+            <h2 class="section-title history-title">📜 历史学习记录</h2>
+            <ul class="record-list" id="historyRecords"></ul>
         </div>
     </div>
 
     <script>
-        // ===================== 工具函数 =====================
-        // 格式化时间为 YYYY-MM-DD HH:mm:ss
-        function formatDateTime(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            const seconds = String(date.getSeconds()).padStart(2, '0');
-            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        // ========== 全局常量与工具方法 ==========
+        const STORAGE_KEY = 'dailyStudyRecords'; // localStorage存储键名
+        const studyInput = document.getElementById('studyInput');
+        const addBtn = document.getElementById('addBtn');
+        const generateMockBtn = document.getElementById('generateMockBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const todayRecordsEl = document.getElementById('todayRecords');
+        const historyRecordsEl = document.getElementById('historyRecords');
+
+        // 获取今日日期 yyyy-mm-dd 格式
+        function getTodayDate() {
+            return new Date().toISOString().split('T')[0];
         }
 
-        // 格式化时间为 HH:mm:ss（仅时分秒）
-        function formatTime(date) {
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            const seconds = String(date.getSeconds()).padStart(2, '0');
-            return `${hours}:${minutes}:${seconds}`;
+        // 格式化日期 转为 年-月-日 格式
+        function formatDate(dateStr) {
+            return dateStr.split('T')[0];
         }
 
-        // 计算学习开始时间（记录时间 - 学习分钟数）
-        function calculateStartTime(recordTimeStr, minutes) {
-            const endTime = new Date(recordTimeStr);
-            const startTime = new Date(endTime.getTime() - minutes * 60 * 1000);
-            return formatTime(startTime);
-        }
-
-        // 判断时段（早上:6-12, 下午:12-18, 晚上:18-24, 深夜:0-6）
-        function getTimePeriod(hour) {
-            if (hour >= 6 && hour < 12) return 'morning';
-            if (hour >= 12 && hour < 18) return 'afternoon';
-            if (hour >= 18 && hour < 24) return 'evening';
-            return 'night';
-        }
-
-        // 获取时段名称
-        function getPeriodName(period) {
-            const names = {
-                morning: '早上',
-                afternoon: '下午',
-                evening: '晚上',
-                night: '深夜'
-            };
-            return names[period] || period;
-        }
-
-        // 获取时段颜色类名
-        function getPeriodColorClass(period) {
-            const classes = {
-                morning: 'time-morning',
-                afternoon: 'time-afternoon',
-                evening: 'time-evening',
-                night: 'time-night'
-            };
-            return classes[period] || 'time-morning';
-        }
-
-        // 生成指定日期的随机时间（HH:mm:ss）
-        function getRandomTimeForDate(dateStr) {
-            const date = new Date(dateStr);
-            // 随机小时（6-23点，覆盖全时段）
-            const hours = Math.floor(Math.random() * 18) + 6;
-            // 随机分钟
-            const minutes = Math.floor(Math.random() * 60);
-            // 随机秒数
-            const seconds = Math.floor(Math.random() * 60);
-            
-            date.setHours(hours, minutes, seconds);
-            return formatDateTime(date);
-        }
-
-        // ===================== 核心数据管理 =====================
-        // 初始化本地存储数据结构
-        function initStorage() {
-            // 学习类别
-            if (!localStorage.getItem('studyCategories')) {
-                localStorage.setItem('studyCategories', JSON.stringify(['Python', '前端开发', '英语', '算法']));
-            }
-            // 学习记录 { '2025-12-24': { total: 120, items: [{ category: 'Python', minutes: 60, note: '学习函数', createTime: '2025-12-24 10:30:25' }, ...] } }
-            if (!localStorage.getItem('studyRecords')) {
-                localStorage.setItem('studyRecords', JSON.stringify({}));
-            }
-        }
-
-        // 获取数据
-        function getCategories() {
-            return JSON.parse(localStorage.getItem('studyCategories')) || [];
-        }
-
+        // 获取localStorage中的所有记录，无则返回空数组
         function getRecords() {
-            return JSON.parse(localStorage.getItem('studyRecords')) || {};
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : [];
         }
 
-        // 保存数据
-        function saveCategories(categories) {
-            localStorage.setItem('studyCategories', JSON.stringify(categories));
-        }
-
+        // 保存记录到localStorage
         function saveRecords(records) {
-            localStorage.setItem('studyRecords', JSON.stringify(records));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
         }
 
-        // ===================== 生成测试数据功能 =====================
-        function generateTestData() {
-            // 确认是否生成（可选清空原有数据）
-            const shouldClear = confirm('是否清空原有数据后生成测试数据？\n取消则在原有数据基础上追加');
-            
-            // 初始化记录
-            let records = shouldClear ? {} : getRecords();
-            const categories = getCategories();
-            
-            // 如果没有类别，添加默认类别
-            if (categories.length === 0) {
-                saveCategories(['Python', '前端开发', '英语', '算法', '数据结构', '机器学习']);
-                categories.push('Python', '前端开发', '英语', '算法', '数据结构', '机器学习');
+        // ========== 核心功能方法 ==========
+        // 添加新的学习记录
+        function addNewRecord(content) {
+            if (!content.trim()) {
+                alert('请输入有效的学习内容！');
+                return;
             }
-            
-            // 学习备注示例
-            const notes = [
-                '基础语法学习', '项目实战', '刷题练习', '知识点复盘', '视频课程学习',
-                '文档阅读', '面试准备', '开源项目贡献', '错题整理', '知识点总结'
-            ];
-            
-            // 生成过去180天的随机数据
-            const endDate = new Date();
-            const startDate = new Date(endDate);
-            startDate.setDate(startDate.getDate() - 180);
-            
-            // 遍历每一天
-            const currentDate = new Date(startDate);
-            while (currentDate <= endDate) {
-                const dateStr = currentDate.toISOString().split('T')[0];
-                
-                // 70%的概率生成学习记录（模拟不是每天都学习）
-                if (Math.random() > 0.3) {
-                    // 随机生成1-4个学习项（覆盖不同时段）
-                    const itemCount = Math.floor(Math.random() * 4) + 1;
-                    const items = [];
-                    let totalMinutes = 0;
-                    
-                    for (let i = 0; i < itemCount; i++) {
-                        // 随机选择类别
-                        const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-                        // 随机时长（10-180分钟）
-                        const randomMinutes = Math.floor(Math.random() * 170) + 10;
-                        // 随机备注
-                        const randomNote = notes[Math.floor(Math.random() * notes.length)];
-                        // 生成随机创建时间
-                        const createTime = getRandomTimeForDate(dateStr);
-                        
-                        items.push({
-                            category: randomCategory,
-                            minutes: randomMinutes,
-                            note: randomNote,
-                            createTime: createTime // 新增：记录创建时间
-                        });
-                        totalMinutes += randomMinutes;
-                    }
-                    
-                    // 保存当天记录
-                    records[dateStr] = {
-                        total: totalMinutes,
-                        items: items
-                    };
-                }
-                
-                // 下一天
-                currentDate.setDate(currentDate.getDate() + 1);
-            }
-            
-            // 保存数据并刷新UI
-            saveRecords(records);
-            renderCategories(); // 刷新类别（如果添加了默认类别）
-            renderTodayRecords();
-            renderAllStats();
-            renderMiniContributionGrid();
-            renderFullContributionGrid();
-            
-            showToast('测试数据生成完成！共生成过去180天的随机学习记录');
-        }
-
-        // ===================== 查看单日详情功能 =====================
-        function showDayDetail(dateStr) {
-            const records = getRecords();
-            const dayRecord = records[dateStr];
-            
-            // 格式化日期显示
-            const date = new Date(dateStr);
-            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
-            const formattedDate = date.toLocaleDateString('zh-CN', options);
-            
-            // 更新弹窗标题
-            document.getElementById('modal-date').textContent = formattedDate;
-            
-            // 更新弹窗内容
-            const modalContent = document.getElementById('modal-content');
-            modalContent.innerHTML = '';
-            
-            if (dayRecord && dayRecord.items.length > 0) {
-                // 显示总时长
-                const totalDiv = document.createElement('div');
-                totalDiv.className = 'glass-effect rounded-lg px-4 py-3';
-                totalDiv.innerHTML = `
-                    <div class="flex justify-between items-center">
-                        <span class="text-lg font-medium">当日总学习时长</span>
-                        <span class="text-xl font-bold text-gradient">${dayRecord.total} 分钟 (${(dayRecord.total / 60).toFixed(1)} 小时)</span>
-                    </div>
-                `;
-                modalContent.appendChild(totalDiv);
-                
-                // 显示时段统计
-                const periodStats = calculatePeriodStats(dayRecord.items);
-                const periodDiv = document.createElement('div');
-                periodDiv.className = 'glass-effect rounded-lg px-4 py-3 mt-2';
-                periodDiv.innerHTML = `
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="font-medium">时段分布</span>
-                    </div>
-                    <div class="grid grid-cols-4 gap-2">
-                        <div class="text-center">
-                            <div class="text-xs text-[#4A6340]">早上</div>
-                            <div class="font-bold text-morning">${periodStats.morning}分钟</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-xs text-[#4A6340]">下午</div>
-                            <div class="font-bold text-afternoon">${periodStats.afternoon}分钟</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-xs text-[#4A6340]">晚上</div>
-                            <div class="font-bold text-evening">${periodStats.evening}分钟</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-xs text-[#4A6340]">深夜</div>
-                            <div class="font-bold text-night">${periodStats.night}分钟</div>
-                        </div>
-                    </div>
-                `;
-                modalContent.appendChild(periodDiv);
-                
-                // 显示学习项列表
-                const listTitle = document.createElement('div');
-                listTitle.className = 'text-sm text-[#4A6340] mt-4 font-medium';
-                listTitle.textContent = '学习详情（按记录时间排序）';
-                modalContent.appendChild(listTitle);
-                
-                // 按创建时间排序
-                const sortedItems = [...dayRecord.items].sort((a, b) => {
-                    return new Date(a.createTime) - new Date(b.createTime);
-                });
-                
-                const listContainer = document.createElement('div');
-                listContainer.className = 'space-y-2';
-                
-                sortedItems.forEach((item, index) => {
-                    // 解析创建时间
-                    const createTime = new Date(item.createTime);
-                    // 计算开始时间
-                    const startTime = calculateStartTime(item.createTime, item.minutes);
-                    // 获取时段
-                    const period = getTimePeriod(createTime.getHours());
-                    const periodName = getPeriodName(period);
-                    const colorClass = getPeriodColorClass(period);
-                    
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'glass-effect rounded-lg px-4 py-3 hover:translate-x-1 transition-all';
-                    itemDiv.innerHTML = `
-                        <div class="flex justify-between mb-1">
-                            <span class="font-medium text-gradient">${item.category}</span>
-                            <span class="${colorClass} font-medium">${periodName} · ${item.minutes} 分钟</span>
-                        </div>
-                        <div class="text-sm text-[#4A6340] mb-1">
-                            <i class="ri-time-line mr-1"></i>学习时段：${startTime} - ${formatTime(createTime)}
-                        </div>
-                        <div class="text-sm text-[#4A6340] mb-1">
-                            <i class="ri-file-text-line mr-1"></i>${item.note}
-                        </div>
-                        <div class="text-xs text-[#6A885E]">
-                            <i class="ri-clock-line mr-1"></i>记录时间：${formatTime(createTime)}
-                        </div>
-                    `;
-                    listContainer.appendChild(itemDiv);
-                });
-                
-                modalContent.appendChild(listContainer);
-            } else {
-                // 无记录
-                const emptyDiv = document.createElement('div');
-                emptyDiv.className = 'text-[#4A6340] text-center py-8';
-                emptyDiv.innerHTML = `
-                    <i class="ri-inbox-line text-4xl mb-2 text-[#6A885E]"></i>
-                    <p>该日期暂无学习记录</p>
-                `;
-                modalContent.appendChild(emptyDiv);
-            }
-            
-            // 显示弹窗并添加动画
-            const modal = document.getElementById('detail-modal');
-            const modalCard = document.getElementById('modal-card');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modalCard.classList.remove('scale-95', 'opacity-0');
-                modalCard.classList.add('scale-100', 'opacity-100');
-            }, 50);
-        }
-
-        // ===================== Tab 切换功能 =====================
-        function initTabs() {
-            const tabToday = document.getElementById('tab-today');
-            const tabStats = document.getElementById('tab-stats');
-            const contentToday = document.getElementById('content-today');
-            const contentStats = document.getElementById('content-stats');
-            
-            // 今日记录 Tab
-            tabToday.addEventListener('click', () => {
-                // 更新 Tab 样式
-                tabToday.classList.add('tab-active');
-                tabStats.classList.remove('tab-active');
-                // 更新内容显示
-                contentToday.classList.remove('hidden');
-                contentToday.classList.add('block');
-                contentStats.classList.remove('block');
-                contentStats.classList.add('hidden');
-                // 刷新今日记录数据
-                renderTodayRecords();
-            });
-            
-            // 统计 Tab
-            tabStats.addEventListener('click', () => {
-                // 更新 Tab 样式
-                tabStats.classList.add('tab-active');
-                tabToday.classList.remove('tab-active');
-                // 更新内容显示
-                contentStats.classList.remove('hidden');
-                contentStats.classList.add('block');
-                contentToday.classList.remove('block');
-                contentToday.classList.add('hidden');
-                // 刷新统计数据
-                renderAllStats();
-                renderFullContributionGrid();
-            });
-        }
-
-        // ===================== 时段统计计算 =====================
-        function calculatePeriodStats(items) {
-            const stats = {
-                morning: 0,
-                afternoon: 0,
-                evening: 0,
-                night: 0
+            const today = getTodayDate();
+            const newRecord = {
+                id: Date.now(), // 时间戳作为唯一ID
+                content: content.trim(),
+                date: today,
+                time: new Date().toLocaleTimeString('zh-CN', {hour12: false})
             };
-            
-            items.forEach(item => {
-                const endTime = new Date(item.createTime);
-                const startTime = new Date(endTime.getTime() - item.minutes * 60 * 1000);
-                
-                // 简化计算：按结束时间所属时段统计
-                const period = getTimePeriod(endTime.getHours());
-                stats[period] += item.minutes;
-            });
-            
-            return stats;
-        }
-
-        // 生成时间轴可视化 - 适配新样式
-        function renderTimeAxis(items) {
-            const timeAxis = document.getElementById('time-axis');
-            timeAxis.innerHTML = '';
-            
-            if (items.length === 0) return;
-            
-            // 按开始时间排序
-            const sortedItems = [...items].map(item => {
-                const endTime = new Date(item.createTime);
-                const startTime = new Date(endTime.getTime() - item.minutes * 60 * 1000);
-                return {
-                    ...item,
-                    startTime: startTime,
-                    endTime: endTime,
-                    period: getTimePeriod(endTime.getHours())
-                };
-            }).sort((a, b) => a.startTime - b.startTime);
-            
-            // 生成每个学习块
-            sortedItems.forEach(item => {
-                // 计算开始和结束时间在一天中的百分比（0-100）
-                const startHour = item.startTime.getHours() + item.startTime.getMinutes() / 60;
-                const endHour = item.endTime.getHours() + item.endTime.getMinutes() / 60;
-                
-                const startPercent = (startHour / 24) * 100;
-                const endPercent = (endHour / 24) * 100;
-                const widthPercent = endPercent - startPercent;
-                
-                // 创建时间块 - 适配新高度
-                const timeBlock = document.createElement('div');
-                timeBlock.className = `absolute h-full rounded-full ${getPeriodColorClass(item.period)}`;
-                timeBlock.style.left = `${startPercent}%`;
-                timeBlock.style.width = `${widthPercent}%`;
-                timeBlock.title = `${item.category}: ${item.minutes}分钟 (${formatTime(item.startTime)} - ${formatTime(item.endTime)})`;
-                
-                timeAxis.appendChild(timeBlock);
-            });
-        }
-
-        // ===================== UI 渲染 =====================
-        // 显示当前日期
-        function renderCurrentDate() {
-            const now = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
-            document.getElementById('current-date').textContent = now.toLocaleDateString('zh-CN', options);
-        }
-
-        // 渲染类别列表
-        function renderCategories() {
-            const categories = getCategories();
-            const categoriesList = document.getElementById('categories-list');
-            const categorySelect = document.getElementById('selected-category');
-            
-            // 清空现有内容
-            categoriesList.innerHTML = '';
-            categorySelect.innerHTML = '<option value="">请选择类别</option>';
-            
-            // 渲染类别标签
-            categories.forEach(category => {
-                // 类别标签
-                const tag = document.createElement('div');
-                tag.className = 'glass-effect rounded-full px-3 py-1 flex items-center gap-1 hover:translate-x-1 transition-all';
-                tag.innerHTML = `
-                    <span class="font-medium">${category}</span>
-                    <button class="delete-category text-[#6A885E] hover:text-red-700 transition-all p-0.5 rounded-full hover:bg-red-100/50" data-category="${category}">
-                        <i class="ri-close-line text-xs"></i>
-                    </button>
-                `;
-                categoriesList.appendChild(tag);
-                
-                // 下拉选项
-                const option = document.createElement('option');
-                option.value = category;
-                option.textContent = category;
-                categorySelect.appendChild(option);
-            });
-            
-            // 绑定删除事件
-            document.querySelectorAll('.delete-category').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const category = this.getAttribute('data-category');
-                    deleteCategory(category);
-                });
-            });
-        }
-
-        // 渲染今日学习记录（包含时段可视化）
-        function renderTodayRecords() {
-            const today = new Date().toISOString().split('T')[0];
             const records = getRecords();
-            const todayRecord = records[today] || { total: 0, items: [] };
-            
-            // 更新今日总览数据
-            document.getElementById('today-total-minutes').textContent = todayRecord.total;
-            document.getElementById('today-total-hours').textContent = (todayRecord.total / 60).toFixed(1);
-            document.getElementById('today-category-count').textContent = todayRecord.items.length > 0 
-                ? new Set(todayRecord.items.map(item => item.category)).size 
-                : 0;
-            document.getElementById('today-record-count').textContent = todayRecord.items.length;
-            
-            // 计算时段统计
-            const periodStats = calculatePeriodStats(todayRecord.items);
-            document.getElementById('morning-minutes').textContent = periodStats.morning;
-            document.getElementById('afternoon-minutes').textContent = periodStats.afternoon;
-            document.getElementById('evening-minutes').textContent = periodStats.evening;
-            document.getElementById('night-minutes').textContent = periodStats.night;
-            
-            // 渲染时间轴
-            renderTimeAxis(todayRecord.items);
-            
-            // 渲染今日详细记录
-            const timeDistribution = document.getElementById('time-distribution');
-            timeDistribution.innerHTML = '';
-            
-            if (todayRecord.items.length > 0) {
-                // 按创建时间排序
-                const sortedItems = [...todayRecord.items].sort((a, b) => {
-                    return new Date(a.createTime) - new Date(b.createTime);
-                });
-                
-                sortedItems.forEach((item, index) => {
-                    // 计算开始时间
-                    const startTime = calculateStartTime(item.createTime, item.minutes);
-                    const endTime = formatTime(new Date(item.createTime));
-                    // 获取时段信息
-                    const endHour = new Date(item.createTime).getHours();
-                    const period = getTimePeriod(endHour);
-                    const periodName = getPeriodName(period);
-                    const colorClass = getPeriodColorClass(period);
-                    
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'glass-effect rounded-lg px-4 py-3 hover:translate-x-1 transition-all';
-                    itemDiv.innerHTML = `
-                        <div class="flex justify-between items-center mb-2">
-                            <div>
-                                <span class="font-semibold text-gradient">${item.category}</span>
-                                <span class="ml-2 text-sm ${colorClass} font-medium">${periodName}</span>
-                            </div>
-                            <span class="text-sm font-medium">${item.minutes} 分钟</span>
-                        </div>
-                        <div class="flex justify-between mb-2 text-sm text-[#4A6340]">
-                            <span><i class="ri-time-line mr-1"></i>${startTime} - ${endTime}</span>
-                            <span><i class="ri-file-text-line mr-1"></i>${item.note}</span>
-                        </div>
-                        <div class="relative w-full h-3 bg-[#E8F0E0] rounded-full overflow-hidden"> <!-- 调整高度 -->
-                            <span class="${colorClass} time-bar" style="width: ${Math.min(100, (item.minutes / 360) * 100)}%"></span>
-                        </div>
-                        <div class="text-xs text-[#6A885E] mt-1 font-medium">
-                            <i class="ri-clock-line mr-1"></i>记录于 ${formatTime(new Date(item.createTime))}
-                        </div>
-                    `;
-                    timeDistribution.appendChild(itemDiv);
-                });
-            } else {
-                // 今日无记录
-                const emptyDiv = document.createElement('div');
-                emptyDiv.className = 'text-[#4A6340] text-center py-8';
-                emptyDiv.innerHTML = `
-                    <i class="ri-inbox-line text-4xl mb-2 text-[#6A885E]"></i>
-                    <p class="font-medium">今日暂无学习记录，开始记录吧！</p>
-                `;
-                timeDistribution.appendChild(emptyDiv);
-            }
-            
-            // 渲染简化版贡献图
-            renderMiniContributionGrid();
-        }
-
-        // 渲染简化版贡献图（近期30天）
-        function renderMiniContributionGrid() {
-            const records = getRecords();
-            const gridContainer = document.getElementById('mini-contribution-grid');
-            gridContainer.innerHTML = '';
-            
-            // 获取近30天的日期
-            const endDate = new Date();
-            const startDate = new Date(endDate);
-            startDate.setDate(startDate.getDate() - 30);
-            
-            // 生成日期数组
-            const dates = [];
-            const currentDate = new Date(startDate);
-            while (currentDate <= endDate) {
-                const dateStr = currentDate.toISOString().split('T')[0];
-                const minutes = records[dateStr]?.total || 0;
-                dates.push({
-                    date: dateStr,
-                    minutes: minutes
-                });
-                currentDate.setDate(currentDate.getDate() + 1);
-            }
-            
-            // 找出最大分钟数
-            let maxMinutes = Math.max(...dates.map(d => d.minutes), 60);
-            
-            // 渲染简化网格
-            const row = document.createElement('div');
-            row.className = 'flex items-center';
-            
-            dates.forEach(day => {
-                const cell = document.createElement('div');
-                cell.className = 'contribution-cell mx-0.5';
-                
-                // 根据时长计算颜色深浅（使用新主色）
-                const opacity = Math.min(1, day.minutes / maxMinutes);
-                cell.style.backgroundColor = `rgba(116, 211, 174, ${opacity})`;
-                
-                // 格式化悬浮提示
-                const date = new Date(day.date);
-                const tipDate = date.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' });
-                cell.title = `${tipDate}\n学习时长: ${day.minutes} 分钟\n点击查看详情`;
-                
-                // 绑定点击事件
-                cell.addEventListener('click', () => {
-                    showDayDetail(day.date);
-                });
-                
-                row.appendChild(cell);
-            });
-            
-            gridContainer.appendChild(row);
-            
-            // 添加说明
-            const info = document.createElement('div');
-            info.className = 'text-xs text-[#6A885E] mt-2 text-center font-medium';
-            info.textContent = '近30天学习情况（点击查看详情）';
-            gridContainer.appendChild(info);
-        }
-
-        // 渲染所有统计数据
-        function renderAllStats() {
-            const records = getRecords();
-            const categories = getCategories();
-            
-            // 计算核心统计数据
-            const totalDays = Object.keys(records).filter(date => records[date].total > 0).length;
-            
-            let totalMinutes = 0;
-            let maxDayMinutes = 0;
-            Object.values(records).forEach(day => {
-                totalMinutes += day.total;
-                if (day.total > maxDayMinutes) maxDayMinutes = day.total;
-            });
-            const totalHours = (totalMinutes / 60).toFixed(1);
-            
-            // 更新核心统计
-            document.getElementById('total-days').textContent = totalDays;
-            document.getElementById('total-hours').textContent = totalHours;
-            document.getElementById('total-categories').textContent = categories.length;
-            document.getElementById('max-day-minutes').textContent = maxDayMinutes;
-            
-            // 更新全局总时长变量
-            window.totalMinutes = totalMinutes;
-            
-            // 渲染类别统计
-            renderCategoryStats();
-        }
-
-        // 渲染类别学习时长统计
-        function renderCategoryStats() {
-            const records = getRecords();
-            const categories = getCategories();
-            const categoryStats = document.getElementById('category-stats');
-            
-            categoryStats.innerHTML = '';
-            
-            // 计算每个类别的总时长
-            const categoryTotal = {};
-            categories.forEach(category => {
-                categoryTotal[category] = 0;
-            });
-            
-            // 遍历所有记录
-            Object.values(records).forEach(day => {
-                day.items.forEach(item => {
-                    if (categoryTotal[item.category] !== undefined) {
-                        categoryTotal[item.category] += item.minutes;
-                    }
-                });
-            });
-            
-            // 按时长排序
-            const sortedCategories = Object.entries(categoryTotal).sort((a, b) => b[1] - a[1]);
-            
-            if (sortedCategories.length > 0) {
-                sortedCategories.forEach(([category, minutes]) => {
-                    const hours = (minutes / 60).toFixed(1);
-                    const percentage = window.totalMinutes > 0 ? (minutes / window.totalMinutes * 100).toFixed(1) : 0;
-                    
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'glass-effect rounded-lg px-4 py-3 hover:translate-x-1 transition-all';
-                    itemDiv.innerHTML = `
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="font-semibold text-gradient">${category}</span>
-                            <div class="text-right">
-                                <span class="font-medium">${hours} 小时</span>
-                                <span class="text-xs text-[#6A885E] ml-1">(${percentage}%)</span>
-                            </div>
-                        </div>
-                        <div class="relative w-full h-3 bg-[#E8F0E0] rounded-full overflow-hidden"> <!-- 调整高度 -->
-                            <span class="time-bar time-morning" style="width: ${percentage}%"></span>
-                        </div>
-                    `;
-                    categoryStats.appendChild(itemDiv);
-                });
-            } else {
-                const emptyDiv = document.createElement('div');
-                emptyDiv.className = 'text-[#4A6340] text-center py-4';
-                emptyDiv.innerHTML = `
-                    <i class="ri-inbox-line text-2xl mb-2 text-[#6A885E]"></i>
-                    <p class="font-medium">暂无学习数据</p>
-                `;
-                categoryStats.appendChild(emptyDiv);
-            }
-        }
-
-        // 渲染完整贡献图
-        function renderFullContributionGrid() {
-            const records = getRecords();
-            const gridContainer = document.getElementById('full-contribution-grid');
-            gridContainer.innerHTML = '';
-            
-            // 获取过去一年的日期范围
-            const endDate = new Date();
-            const startDate = new Date(endDate);
-            startDate.setFullYear(startDate.getFullYear() - 1);
-            
-            // 计算需要显示的周数（约52周）
-            const weeks = [];
-            const currentDate = new Date(startDate);
-            
-            // 生成周数据
-            while (currentDate <= endDate) {
-                const week = [];
-                // 一周7天
-                for (let i = 0; i < 7; i++) {
-                    const dateStr = currentDate.toISOString().split('T')[0];
-                    const minutes = records[dateStr]?.total || 0;
-                    
-                    week.push({
-                        date: dateStr,
-                        minutes: minutes
-                    });
-                    
-                    currentDate.setDate(currentDate.getDate() + 1);
-                    if (currentDate > endDate) break;
-                }
-                weeks.push(week);
-            }
-            
-            // 找出最大分钟数（用于计算颜色深浅）
-            let maxMinutes = 0;
-            Object.values(records).forEach(day => {
-                if (day.total > maxMinutes) maxDayMinutes = day.total;
-            });
-            // 避免除以0
-            maxMinutes = maxMinutes || 60;
-            
-            // 渲染月份标签行
-            const monthLabels = document.createElement('div');
-            monthLabels.className = 'flex mb-1';
-            // 留空第一列（星期标签）
-            const emptyCol = document.createElement('div');
-            emptyCol.className = 'w-14';
-            monthLabels.appendChild(emptyCol);
-            
-            // 月份标签（简化：每4周显示一个）
-            const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-            let lastMonth = -1;
-            
-            weeks.forEach((week, weekIndex) => {
-                if (week.length > 0 && weekIndex % 4 === 0) {
-                    const month = new Date(week[0].date).getMonth();
-                    if (month !== lastMonth) {
-                        const label = document.createElement('div');
-                        label.className = 'w-14 text-xs text-[#6A885E] text-right pr-2 font-medium';
-                        label.textContent = monthNames[month];
-                        monthLabels.appendChild(label);
-                        lastMonth = month;
-                    } else {
-                        const emptyLabel = document.createElement('div');
-                        emptyLabel.className = 'w-14';
-                        monthLabels.appendChild(emptyLabel);
-                    }
-                }
-            });
-            gridContainer.appendChild(monthLabels);
-            
-            // 渲染星期标签和格子
-            const weekDays = ['周日','周一','周二','周三','周四','周五','周六'];
-            weekDays.forEach((dayName, dayIndex) => {
-                const row = document.createElement('div');
-                row.className = 'flex items-center';
-                
-                // 星期标签
-                const dayLabel = document.createElement('div');
-                dayLabel.className = 'w-14 text-xs text-[#6A885E] pr-2 font-medium';
-                dayLabel.textContent = dayName;
-                row.appendChild(dayLabel);
-                
-                // 渲染每行的格子
-                weeks.forEach(week => {
-                    const dayData = week[dayIndex];
-                    if (dayData) {
-                        const cell = document.createElement('div');
-                        cell.className = 'contribution-cell mx-0.5';
-                        
-                        // 根据时长计算颜色深浅（使用新主色）
-                        const opacity = Math.min(1, dayData.minutes / maxMinutes);
-                        cell.style.backgroundColor = `rgba(116, 211, 174, ${opacity})`;
-                        
-                        // 格式化悬浮提示日期（显示完整的几月几日）
-                        const date = new Date(dayData.date);
-                        const tipDate = date.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' });
-                        cell.title = `${tipDate} (${date.getFullYear()}年)\n学习时长: ${dayData.minutes} 分钟\n点击查看详情`;
-                        
-                        // 绑定点击事件查看详情
-                        cell.addEventListener('click', () => {
-                            showDayDetail(dayData.date);
-                        });
-                        
-                        row.appendChild(cell);
-                    } else {
-                        // 空格子
-                        const emptyCell = document.createElement('div');
-                        emptyCell.className = 'w-14 mx-0.5';
-                        row.appendChild(emptyCell);
-                    }
-                });
-                
-                gridContainer.appendChild(row);
-            });
-        }
-
-        // 显示提示弹窗
-        function showToast(message, isError = false) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toast-message');
-            const toastIcon = document.getElementById('toast-icon');
-            
-            toastMessage.textContent = message;
-            toast.className = toast.className.replace('translate-y-20 opacity-0', 'translate-y-0 opacity-100');
-            
-            if (isError) {
-                toast.style.borderLeft = '3px solid #ef4444';
-                toastIcon.className = 'ri-error-warning-line text-red-700';
-            } else {
-                toast.style.borderLeft = '3px solid #10b981';
-                toastIcon.className = 'ri-check-circle-line text-green-700';
-            }
-            
-            setTimeout(() => {
-                toast.className = toast.className.replace('translate-y-0 opacity-100', 'translate-y-20 opacity-0');
-            }, 3000);
-        }
-
-        // ===================== 事件处理 =====================
-        // 添加类别
-        function addCategory() {
-            const newCategoryInput = document.getElementById('new-category');
-            const category = newCategoryInput.value.trim();
-            
-            if (!category) {
-                showToast('请输入类别名称', true);
-                return;
-            }
-            
-            const categories = getCategories();
-            if (categories.includes(category)) {
-                showToast('该类别已存在', true);
-                return;
-            }
-            
-            categories.push(category);
-            saveCategories(categories);
-            renderCategories();
-            
-            newCategoryInput.value = '';
-            showToast(`成功添加类别: ${category}`);
-        }
-
-        // 删除类别
-        function deleteCategory(category) {
-            if (confirm(`确定要删除类别"${category}"吗？该类别下的学习记录不会被删除`)) {
-                const categories = getCategories();
-                const newCategories = categories.filter(c => c !== category);
-                saveCategories(newCategories);
-                renderCategories();
-                renderAllStats(); // 刷新统计
-                showToast(`已删除类别: ${category}`);
-            }
-        }
-
-        // 记录学习时长（新增记录时间）
-        function recordStudyTime() {
-            const categorySelect = document.getElementById('selected-category');
-            const minutesInput = document.getElementById('study-minutes');
-            const noteInput = document.getElementById('study-note');
-            
-            const category = categorySelect.value;
-            const minutes = parseInt(minutesInput.value);
-            const note = noteInput.value.trim();
-            
-            // 验证
-            if (!category) {
-                showToast('请选择学习类别', true);
-                return;
-            }
-            
-            if (isNaN(minutes) || minutes < 1 || minutes > 1440) {
-                showToast('请输入有效的学习时长（1-1440分钟）', true);
-                return;
-            }
-            
-            // 获取今日日期和当前时间
-            const today = new Date().toISOString().split('T')[0];
-            const createTime = formatDateTime(new Date()); // 记录当前精确时间
-            const records = getRecords();
-            
-            // 初始化今日记录
-            if (!records[today]) {
-                records[today] = {
-                    total: 0,
-                    items: []
-                };
-            }
-            
-            // 添加新记录（包含创建时间）
-            records[today].items.push({
-                category: category,
-                minutes: minutes,
-                note: note || '无备注',
-                createTime: createTime // 新增：保存记录创建时间
-            });
-            
-            // 重新计算今日总时长
-            records[today].total = records[today].items.reduce((sum, item) => sum + item.minutes, 0);
-            
-            // 保存并刷新UI
+            records.unshift(newRecord); // 最新的记录放前面
             saveRecords(records);
-            renderTodayRecords(); // 刷新今日记录
-            renderAllStats(); // 刷新统计
-            
-            // 清空输入框
-            minutesInput.value = '';
-            noteInput.value = '';
-            
-            showToast(`成功记录 ${category} 学习 ${minutes} 分钟（记录时间：${formatTime(new Date())}）`);
+            renderAllRecords(); // 重新渲染
+            studyInput.value = ''; // 清空输入框
+            studyInput.focus(); // 聚焦输入框
         }
 
-        // ===================== 初始化 =====================
-        function init() {
-            // 初始化存储
-            initStorage();
-            
-            // 初始化Tab切换
-            initTabs();
-            
-            // 渲染UI
-            renderCurrentDate();
-            renderCategories();
-            renderTodayRecords();
-            renderAllStats();
-            renderMiniContributionGrid();
-            renderFullContributionGrid();
-            
-            // 绑定事件
-            document.getElementById('add-category-btn').addEventListener('click', addCategory);
-            document.getElementById('record-study-btn').addEventListener('click', recordStudyTime);
-            document.getElementById('generate-test-data').addEventListener('click', generateTestData);
-            
-            // 关闭弹窗事件
-            document.getElementById('close-modal').addEventListener('click', () => {
-                const modal = document.getElementById('detail-modal');
-                const modalCard = document.getElementById('modal-card');
-                modalCard.classList.remove('scale-100', 'opacity-100');
-                modalCard.classList.add('scale-95', 'opacity-0');
-                setTimeout(() => {
-                    modal.classList.add('hidden');
-                }, 300);
-            });
-            
-            // 点击弹窗外层关闭
-            document.getElementById('detail-modal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('detail-modal')) {
-                    const modalCard = document.getElementById('modal-card');
-                    modalCard.classList.remove('scale-100', 'opacity-100');
-                    modalCard.classList.add('scale-95', 'opacity-0');
-                    setTimeout(() => {
-                        document.getElementById('detail-modal').classList.add('hidden');
-                    }, 300);
-                }
-            });
-            
-            // 回车添加类别
-            document.getElementById('new-category').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') addCategory();
-            });
-            
-            // 回车记录学习时长
-            document.getElementById('study-note').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') recordStudyTime();
-            });
-        }
-
-        // 全局变量（用于类别统计）
-        window.totalMinutes = 0;
-        
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', () => {
-            // 先计算总时长
+        // 渲染所有记录（今日+历史）
+        function renderAllRecords() {
             const records = getRecords();
-            window.totalMinutes = 0;
-            Object.values(records).forEach(day => {
-                window.totalMinutes += day.total;
+            const today = getTodayDate();
+            const todayRecords = records.filter(item => item.date === today);
+            const historyRecords = records.filter(item => item.date !== today);
+
+            // 渲染今日记录
+            renderToday(todayRecords);
+            // 渲染历史记录（按日期分组）
+            renderHistory(historyRecords);
+        }
+
+        // 渲染今日记录
+        function renderToday(list) {
+            if (list.length === 0) {
+                todayRecordsEl.innerHTML = '<li class="empty-tip">今日暂无学习记录，快来添加吧 ✍️</li>';
+                return;
+            }
+            todayRecordsEl.innerHTML = list.map(item => `
+                <li class="record-item">
+                    <span class="record-text">${item.content} <small>(${item.time})</small></span>
+                    <button class="delete-btn" data-id="${item.id}">删除</button>
+                </li>
+            `).join('');
+        }
+
+        // 渲染历史记录（按日期分组倒序展示）
+        function renderHistory(list) {
+            if (list.length === 0) {
+                historyRecordsEl.innerHTML = '<li class="empty-tip">暂无历史学习记录 📖</li>';
+                return;
+            }
+
+            // 按日期分组
+            const dateGroups = {};
+            list.forEach(item => {
+                if (!dateGroups[item.date]) dateGroups[item.date] = [];
+                dateGroups[item.date].push(item);
             });
-            
-            init();
+
+            // 日期倒序排列
+            const sortedDates = Object.keys(dateGroups).sort((a, b) => new Date(b) - new Date(a));
+            let html = '';
+            sortedDates.forEach(date => {
+                html += `<div class="date-group">
+                    <div class="date-label">📅 ${date}</div>
+                    <ul>${dateGroups[date].map(item => `
+                        <li class="record-item">
+                            <span class="record-text">${item.content} <small>(${item.time})</small></span>
+                            <button class="delete-btn" data-id="${item.id}">删除</button>
+                        </li>
+                    `).join('')}</ul>
+                </div>`;
+            });
+            historyRecordsEl.innerHTML = html;
+        }
+
+        // 生成模拟数据（近7天随机学习内容）
+        function generateMockData() {
+            const mockContents = [
+                "JavaScript DOM操作学习 1.5小时",
+                "CSS Flex布局实战练习 1小时",
+                "HTML语义化标签复习 0.5小时",
+                "前端性能优化知识点总结 2小时",
+                "Vue基础语法学习 2.5小时",
+                "算法刷题：二分查找 1小时",
+                "HTTP请求与响应原理学习 1小时",
+                "Git分支管理操作练习 0.8小时",
+                "React组件化开发入门 2小时",
+                "数据结构：数组与链表复习 1.2小时"
+            ];
+            const mockRecords = [];
+            const today = new Date();
+
+            // 生成近7天的模拟数据，每天1-3条随机记录
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                const randomCount = Math.floor(Math.random() * 3) + 1; // 1-3条
+
+                for (let j = 0; j < randomCount; j++) {
+                    const randomContent = mockContents[Math.floor(Math.random() * mockContents.length)];
+                    const randomHour = (Math.floor(Math.random() * 23) + 1).toString().padStart(2, '0');
+                    const randomMin = (Math.floor(Math.random() * 59) + 1).toString().padStart(2, '0');
+                    const randomTime = `${randomHour}:${randomMin}`;
+                    
+                    mockRecords.push({
+                        id: Date.now() - i * 1000 - j,
+                        content: randomContent,
+                        date: dateStr,
+                        time: randomTime
+                    });
+                }
+            }
+
+            saveRecords(mockRecords);
+            renderAllRecords();
+            alert('✅ 模拟数据生成成功！共生成近7天的学习记录');
+        }
+
+        // 清空全部记录
+        function clearAllRecords() {
+            if (confirm('⚠️ 确定要清空所有学习记录吗？该操作不可恢复！')) {
+                localStorage.removeItem(STORAGE_KEY);
+                renderAllRecords();
+                alert('✅ 所有记录已清空');
+            }
+        }
+
+        // 删除单条记录
+        function deleteRecordById(id) {
+            let records = getRecords();
+            records = records.filter(item => item.id !== id);
+            saveRecords(records);
+            renderAllRecords();
+        }
+
+        // ========== 事件绑定 ==========
+        // 添加记录-点击按钮
+        addBtn.addEventListener('click', () => addNewRecord(studyInput.value));
+        // 添加记录-按下回车
+        studyInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addNewRecord(studyInput.value);
         });
+        // 生成模拟数据
+        generateMockBtn.addEventListener('click', generateMockData);
+        // 清空全部记录
+        clearAllBtn.addEventListener('click', clearAllRecords);
+        // 委托绑定删除按钮事件
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-btn')) {
+                const id = Number(e.target.dataset.id);
+                deleteRecordById(id);
+            }
+        });
+
+        // ========== 页面初始化 ==========
+        window.addEventListener('DOMContentLoaded', renderAllRecords);
     </script>
 </body>
 </html>
