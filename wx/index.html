@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>外星人翻译器 🛸</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c0c24, #1a1a40);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(25, 25, 50, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0, 200, 255, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #00e5ff;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #00e5ff;
+        }
+
+        .translation-box {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #99e6ff;
+            font-weight: bold;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 2px solid #00e5ff;
+            border-radius: 8px;
+            background: rgba(10, 10, 30, 0.9);
+            color: #fff;
+            font-size: 16px;
+            resize: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #00e5ff, #0088ff);
+            color: #000;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.8);
+        }
+
+        .copy-btn {
+            background: linear-gradient(90deg, #ffd000, #ff8800);
+            box-shadow: 0 0 10px rgba(255, 208, 0, 0.5);
+        }
+
+        .tip {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(50, 50, 80, 0.5);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛸 外星人翻译器 🛸</h1>
+
+        <div class="translation-box">
+            <label for="chinese-input">👽 输入中文：</label>
+            <textarea id="chinese-input" placeholder="在这里输入中文..."></textarea>
+        </div>
+
+        <div class="button-group">
+            <button id="to-alien-btn">中文 → 外星语</button>
+            <button id="to-chinese-btn">外星语 → 中文</button>
+        </div>
+
+        <div class="translation-box">
+            <label for="alien-output">👾 输入外星语：</label>
+            <textarea id="alien-output" placeholder="在这里输入外星语..."></textarea>
+        </div>
+
+        <div class="button-group">
+            <button id="copy-btn" class="copy-btn">📋 复制外星语</button>
+            <button id="clear-btn">🧹 清空内容</button>
+        </div>
+
+        <div class="tip">
+            提示：支持所有中文/符号翻译！复制外星语到聊天框，对方用此工具可还原
+        </div>
+    </div>
+
+    <script>
+        // 核心：埃塞俄比亚语符号映射表（覆盖Base64所有字符，简短且有外星感）
+        const ethiopianMap = {
+            // Base64基础字符 → 埃塞俄比亚语符号
+            'A':'ም', 'B':'ን', 'C':'እ', 'D':'የ', 'E':'ሰ', 'F':'ራ', 
+            'G':'ክ', 'H':'ነ', 'I':'ው', 'J':'?', 'K':'ይ', 'L':'ህ', 
+            'M':'አ', 'N':'ደ', 'O':'ገ', 'P':'ኛ', 'Q':'።', 'R':'፡', 
+            'S':'፣', 'T':'፤', 'U':'፥', 'V':'፦', 'W':'፧', 'X':'፨', 
+            'Y':'፩', 'Z':'፪', 'a':'፫', 'b':'፬', 'c':'፭', 'd':'፮', 
+            'e':'፯', 'f':'፰', 'g':'፱', 'h':'፲', 'i':'፳', 'j':'፴', 
+            'k':'፵', 'l':'፶', 'm':'፷', 'n':'፸', 'o':'፹', 'p':'፺', 
+            'q':'፻', 'r':'፼', 's':'ᎏ', 't':'᎑', 'u':'᎓', 'v':'᎕', 
+            'w':'᎗', 'x':'᎙', 'y':'᎛', 'z':'᎟', '0':'አ', '1':'ቡ', 
+            '2':'ባ', '3':'ቤ', '4':'ቦ', '5':'ቨ', '6':'ቪ', '7':'ቬ', 
+            '8':'ቮ', '9':'ቸ', '+':'ቹ', '/':'ቺ', '=':'ቻ'
+        };
+
+        // 生成反向映射表（埃塞俄比亚符号 → Base64字符）
+        const reverseEthiopianMap = {};
+        for (const [base64Char, ethiopianChar] of Object.entries(ethiopianMap)) {
+            reverseEthiopianMap[ethiopianChar] = base64Char;
+        }
+
+        // 获取DOM元素
+        const chineseInput = document.getElementById('chinese-input');
+        const alienOutput = document.getElementById('alien-output');
+        const toAlienBtn = document.getElementById('to-alien-btn');
+        const toChineseBtn = document.getElementById('to-chinese-btn');
+        const copyBtn = document.getElementById('copy-btn');
+        const clearBtn = document.getElementById('clear-btn');
+
+        // 中文转外星语（Base64压缩 + 埃塞俄比亚符号替换，大幅缩短长度）
+        function translateToAlien() {
+            try {
+                const chineseText = chineseInput.value.trim();
+                if (!chineseText) {
+                    alienOutput.value = '';
+                    return;
+                }
+
+                // 步骤1：中文转Base64（天然压缩，缩短长度）
+                const utf8Bytes = new TextEncoder().encode(chineseText);
+                const base64Str = btoa(String.fromCharCode(...utf8Bytes));
+
+                // 步骤2：Base64字符替换成埃塞俄比亚语符号（外星语）
+                let alienText = '';
+                for (let char of base64Str) {
+                    alienText += ethiopianMap[char] || char;
+                }
+
+                alienOutput.value = alienText;
+            } catch (e) {
+                alert('翻译失败：' + e.message);
+                alienOutput.value = '';
+            }
+        }
+
+        // 外星语转中文（还原Base64 + 解码）
+        function translateToChinese() {
+            try {
+                const alienText = alienOutput.value.trim();
+                if (!alienText) {
+                    chineseInput.value = '';
+                    return;
+                }
+
+                // 步骤1：埃塞俄比亚符号还原成Base64字符
+                let base64Str = '';
+                for (let char of alienText) {
+                    base64Str += reverseEthiopianMap[char] || char;
+                }
+
+                // 步骤2：Base64解码回中文
+                const utf8Bytes = new Uint8Array(atob(base64Str).split('').map(c => c.charCodeAt(0)));
+                const chineseText = new TextDecoder().decode(utf8Bytes);
+
+                chineseInput.value = chineseText;
+            } catch (e) {
+                alert('还原失败，请确认输入的是正确的外星语！');
+                chineseInput.value = '';
+            }
+        }
+
+        // 复制外星语
+        function copyAlienText() {
+            if (!alienOutput.value) {
+                alert('没有可复制的外星语内容！');
+                return;
+            }
+            
+            navigator.clipboard.writeText(alienOutput.value)
+                .then(() => {
+                    alert('外星语已复制到剪贴板！');
+                })
+                .catch(err => {
+                    console.error('复制失败:', err);
+                    alienOutput.select();
+                    document.execCommand('copy');
+                    alert('外星语已复制到剪贴板！');
+                });
+        }
+
+        // 清空内容
+        function clearAll() {
+            chineseInput.value = '';
+            alienOutput.value = '';
+        }
+
+        // 绑定事件
+        toAlienBtn.addEventListener('click', translateToAlien);
+        toChineseBtn.addEventListener('click', translateToChinese);
+        copyBtn.addEventListener('click', copyAlienText);
+        clearBtn.addEventListener('click', clearAll);
+
+        // 快捷键支持
+        chineseInput.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') translateToAlien();
+        });
+        alienOutput.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') translateToChinese();
+        });
+    </script>
+</body>
+</html>
