@@ -120,6 +120,7 @@
             font-size: 18px;
             color: #666;
             margin-top: 20px;
+            line-height: 1.6;
         }
         
         .loading {
@@ -263,6 +264,28 @@
         const quizSection = document.getElementById('quiz-section');
         const loadingSection = document.getElementById('loading-section');
         const resultSection = document.getElementById('result-section');
+        const resultTitle = document.getElementById('result-title');
+        const resultDesc = document.getElementById('result-desc');
+        
+        // 定义0/1/S/M结果列表和对应搞笑描述
+        const randomResults = [
+            { 
+                value: "0", 
+                desc: "恭喜你！你的最终人格定位是：0<br>核心特质：温柔被动，偏爱被照顾，自带软萌属性，是人群里的小宝贝～" 
+            },
+            { 
+                value: "1", 
+                desc: "恭喜你！你的最终人格定位是：1<br>核心特质：主动强势，有保护欲，习惯掌控节奏，妥妥的“主心骨”型人格～" 
+            },
+            { 
+                value: "S", 
+                desc: "恭喜你！你的最终人格定位是：S<br>核心特质：偏爱主导，享受掌控感，自带“支配者”气场，拿捏氛围感一把手～" 
+            },
+            { 
+                value: "M", 
+                desc: "恭喜你！你的最终人格定位是：M<br>你已急哭" 
+            }
+        ];
         
         // 记录已回答的题目数量
         let answeredCount = 0;
@@ -303,6 +326,15 @@
             setTimeout(() => {
                 loadingSection.style.display = 'none';
                 resultSection.style.display = 'block';
+                
+                // 随机选择一个结果
+                const randomIndex = Math.floor(Math.random() * randomResults.length);
+                const selectedResult = randomResults[randomIndex];
+                
+                // 更新结果显示
+                resultTitle.textContent = `你是${selectedResult.value}`;
+                resultDesc.innerHTML = selectedResult.desc;
+                
             }, 3000);
         });
         
