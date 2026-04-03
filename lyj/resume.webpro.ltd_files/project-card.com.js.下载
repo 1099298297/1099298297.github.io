@@ -1,0 +1,27 @@
+Vue.component("project-card", {
+  props: ["project", "css"],
+  template: `
+        <div class="project print-block">
+          <div class="project-content">
+            <div class="project-header">
+              <div>
+                <div class="project-title">{{ project.title }}</div>
+                <div class="project-date">{{ project.date }}</div>
+              </div>
+              <img
+                v-if="project.logo"
+                :src="project.logo"
+                :alt="project.title"
+                :style="project.logoStyle || {}"
+              />
+            </div>
+            <div class="project-role">{{ project.role }}</div>
+            <div class="project-desc" v-html="project.desc"></div>
+            <div
+              class="project-stack"
+              v-html="project.stack.map(stack => \`<span>\${stack}</span>\`).join('')"
+            ></div>
+          </div>
+        </div>
+      `,
+});

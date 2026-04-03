@@ -1,0 +1,520 @@
+const resume = {
+  topImgText: "我的简历",
+  topImg: "https://resume.webpro.ltd/assets/img/20200308223337.jpg",
+  avatarImg: "https://resume.webpro.ltd/assets/img/my_avatar.jpg",
+  personalInfoTitle: "个人信息",
+  personalInfo: [
+    {
+      key: "姓名",
+      value: "苏大富 | Bill",
+      icon: "",
+      isTag: false,
+      topShow: true,
+      bottomShow: true,
+      link: "",
+    },
+    {
+      key: "政治面貌",
+      value: "中共预备党员",
+      icon: "",
+      isTag: false,
+      topShow: true,
+      bottomShow: false,
+      link: "",
+    },
+    {
+      key: "学历",
+      value: "硕士研究生",
+      icon: "",
+      isTag: false,
+      topShow: true,
+      bottomShow: false,
+      link: "",
+    },
+    {
+      key: "本科",
+      value: "安徽工业大学 | 网络工程",
+      icon: "",
+      isTag: false,
+      topShow: true,
+      bottomShow: false,
+      link: "http://www.ahut.edu.cn/",
+    },
+    {
+      key: "硕士",
+      value: "安徽工业大学 | 计算机科学与技术",
+      icon: "",
+      isTag: false,
+      topShow: true,
+      bottomShow: false,
+      link: "http://www.ahut.edu.cn/",
+    },
+    {
+      key: "电话",
+      value: "150 1090 5245",
+      icon: "",
+      isTag: false,
+      topShow: true,
+      bottomShow: true,
+      link: "tel:15010905245",
+    },
+    {
+      key: "邮箱",
+      value: "billwhite246@foxmail.com",
+      icon: "",
+      isTag: true,
+      topShow: true,
+      bottomShow: true,
+      link: "mailto:billwhite246@foxmail.com",
+    },
+  ],
+  myAreaTitle: "我的领域",
+  myArea: [
+    {
+      key: "项目",
+      value:
+        "数据库集群、高可用服务集群解决方案，CI/CD、自动化运维，Docker集群容器编排、负载均衡，网络安全。",
+      icon: "",
+      isTag: false,
+    },
+    {
+      key: "管理",
+      value: "需求分析、项目（任务/进度/质量）管理、代码分支管理，团队管理。",
+      icon: "",
+      isTag: false,
+    },
+    {
+      key: "科研",
+      value:
+        "使用Pytorch框架，CNN卷积神经网络、LSTM、GADF、GASF、信号处理、滤波、降噪，机器学习常用算法KNN、SVM、回归等。",
+      icon: "",
+      isTag: false,
+    },
+    {
+      key: "嵌入式",
+      value:
+        "基于Linux平台(Ubuntu、CentOS)的C/C++开发，Shell脚本，Linux内核、进程、线程、信号、网络编程。",
+      icon: "",
+      isTag: false,
+    },
+  ],
+  // skillsTitle: "技术栈标签",
+  skills: [
+    // Linux相关
+    [
+      "Shell",
+      "Linux C/C++",
+      "epoll",
+      "进程/线程调度",
+      "Deamon",
+      "FTP",
+      "TCP/UDP",
+      "HTTP",
+    ],
+    // 服务器相关、容器、架构相关
+    [
+      "Nginx",
+      "Haproxy",
+      "Docker Swarm",
+      "keepalived",
+      "Jenkins",
+      "Gitlab",
+      "JFrog",
+    ],
+    // 前端后端相关
+    ["Vue", "JQuery", "Spring", "Nacos", "Mybatis", "Shiro", "JWT", "OAuth"],
+    // 数据库相关
+    [
+      "MySQL",
+      "Oracle",
+      "Redis",
+      "Redis Cluster",
+      "MongoDB",
+      "MySQL Master-Slave",
+      "MySQL Cluster",
+    ],
+  ],
+  // 项目经历列表
+  projectList: [
+    {
+      logo: "https://resume.webpro.ltd/assets/img/yxbook.jpg",
+      title: "易享book二手书交易平台",
+      date: "2018.6 - 2018.12",
+      role: "项目管理/主要研发人员",
+      // H5+jQuery+mui+PHP5.6+MySQL5.7
+      stack: ["H5", "jQuery", "mui(uni-app)", "PHP5.6", "MySQL5.7"],
+      desc: "外包的校园二手书交易平台， 集成了微信公众平台、手机验证码登录，客户端可以查看、筛选、搜索二手书并查看书籍详细信息、 折扣价格、租赁或购买图书，集成支付宝支付方式； 管理端实现对书籍的出入库及数据管理、订单查看、工资结算、仓库预警，集成小票机...， 18年12月上线后，三天内交易额达到￥30000+。",
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/anhuichuangjie.png",
+      title: "环保金盾企业环保数据系统",
+      date: "2018.06 - 2018.11",
+      role: "项目管理/主要研发人员",
+      // H5+jQuery+PHP5.6+MySQL5.7 +hybridApp;
+      stack: ["H5", "jQuery", "PHP5.6", "MySQL5.7", "HybridApp"],
+      desc: "企业信息登记、定期到平台上进行环境相关数据的申报（按照有关部门的要求进行数据收集），例如经营资质、污水排放、污染物统计申报等， 简而言之，平台主要用来进行信息收集，包括PC端和APP端。",
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/xxh.png",
+      logoStyle: { height: "50px" },
+      title: "信息化处微服务平台",
+      date: "2019-09 - 2020-02",
+      role: "项目管理/主要研发人员",
+      // vue-cli3+springboot(wpa)+shiro+ JWT+Mybatis+MySQL+Redis;
+      stack: [
+        "vue-cli3",
+        "springboot",
+        "集成校内CAS统一认证",
+        "shiro",
+        "JWT",
+        "Mybatis",
+        "MySQL",
+        "Redis",
+      ],
+      desc: "该项目运行在安工大信息化公众号下，主要用于校内信息化相关问题的申报维修， 分为客户端、工程师端及后台管理三个用户端，采用git+jenkins自动化部署； 本人基于springboot开发wpa框架仅需配置基础的微信公众号参数即可快速实现与公众号集成、权限控制。",
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/xxh.png",
+      logoStyle: { height: "50px" },
+      title: "安工大十大事件投票",
+      date: "2020.03 - 2020.03",
+      role: "项目管理/主要研发人员",
+      stack: [
+        "vue-cli3",
+        "springboot",
+        "shiro",
+        "JWT",
+        "Mybatis(-plus)",
+        "MySQL",
+        "Redis",
+      ],
+      desc: "用于我校工会的安工大十大事件投票系统，集成了安工大智慧校园CAS统一认证系统，具有发布大事件投票、教师投票、各个部门投票情况查看、事件投票排名、一键发布十大事件等功能，由于仅供校内教师投票，故部署在内网使用。",
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/yiban.png",
+      title: "安工大×易班易查询",
+      date: "2018.6 - 2020.03",
+      role: "项目管理/主要研发人员",
+      stack: [
+        "Nginx负载均衡",
+        "vue-cli3",
+        "springboot",
+        "OAuth2.0",
+        "shiro",
+        "JWT",
+        "Mybatis(-plus)",
+        "Oracle",
+        "Redis",
+      ],
+      desc: "集成了易班OAuth2.0统一认证平台，为在校学生提供便捷的查询服务，可在平台查询成绩、考勤、课表、校历等信息，还可发布失物招领信息。使用aop+token技术进行权限的统一控制，保障学生数据的安全；nginx反向代理多个微服务进行负载均衡。",
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/ahut.png",
+      title: "安工大×到梦空间",
+      date: "2020.03 - 2020.03",
+      role: "研发人员",
+      stack: ["PHP", "Curl模拟登陆爬虫", "MySQL"],
+      desc: "官方开发的到梦空间后台管理提供的功能有限，根据我校个性化需求开发的相关接口，无需手动登录后台账户，通过curl技术模拟HTTP、cookie等动作进行数据的爬取和收集。",
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/ahut.png",
+      title: "安工大新生大数据",
+      date: "2020.9 - 2020.9",
+      role: "项目管理/主要研发人员",
+      stack: [
+        "H5",
+        "Echarts",
+        "springboot",
+        "Mybatis(-plus)",
+        "MySQL",
+        "Redis",
+      ],
+      desc: "集成在安徽工业大学官方微信公众号迎新文章中的阅读原文链接，通过动态计算每个新生在总体中的相关数据指标，为新生增添入学乐趣。",
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/yiban.png",
+      title: "安工大×易班失物招领",
+      date: "2019.06",
+      role: "项目管理/主要研发人员",
+      stack: [
+        "H5",
+        "mui.js(uni-app)",
+        "springboot",
+        "OAuth2.0",
+        "shiro",
+        "JWT",
+        "Mybatis(-plus)",
+        "Oracle",
+        "Redis",
+      ],
+      desc: "基于易班APP轻应用的失物招领程序，具有发布、查看、编辑、撤回、分享失物招领信息的功能，目前代码可直接部署使用。",
+    },
+    {
+      logo: "",
+      title: "万能表单生成器",
+      date: "2020.07",
+      role: "",
+      stack: ["PHP", "MySQL", "Vue.js", "ElementUI", "ECharts"],
+      desc: "通过后台动态设置表单标题、协议以及统计的信息（包括信息类型），发布表单，统计信息，并筛选、导出数据。用于计算机研究生院每年的调剂信息统计、导师双选会。",
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/checkcode-demo3.png",
+      title: "验证码识别",
+      date: "2017.12 - 2018.03",
+      role: "",
+      stack: ["PHP", "滤波", "降噪", "二值化", "字模", "置信度"],
+      desc: "采取的样本是老版正方教务系统的验证码<img style='height: 30px;' src='https://resume.webpro.ltd/assets/img/checkcode-demo.jpg' />，通过爬取、滤波、降噪、等方式对验证码图片进行处理：<img style='height: 30px;' src='https://resume.webpro.ltd/assets/img/checkcode-demo1.jpg' /><img style='height: 30px;' src='https://resume.webpro.ltd/assets/img/checkcode-demo2.jpg' />， 排除图像的干扰点、干扰线后，进行二值化操作，提取0-9字模及显著特征， 比对后按置信度排序，置信度最高者即为识别结果。曾用于我校学长研发的”微行工大“APP上，为查成绩、考勤提供免输验证码自动爬虫服务。<br/><img style='margin-top:10px; width: 70%;' src='https://resume.webpro.ltd/assets/img/checkcode-demo3.png' />",
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/wuhu.png",
+      title: "轨道号线站点及道岔管理系统",
+      date: "2021.12 - 2022.2",
+      role: "后端开发工程师",
+      stack: ["SpringBoot", "MySQL", "Vue.js", "Jenkins", "Docker"],
+      desc: `
+      外派到南京中车、苏宁慧谷研发芜湖轨道（1、2号线及道岔）设备管理系统。<br/>
+      对轨道号线、站点、道岔等关键地点进行设备管理，设备故障报修，设备维修，设备保养，设备巡检，设备报废等。
+      `,
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/yiban.png",
+      title: "安工大×易班微请假",
+      date: "2021.4 - 2021.7",
+      role: "项目管理/主要研发人员",
+      stack: [
+        "Docker Swarm",
+        "GitLab",
+        "Jenkins CI/CD",
+        "Nginx负载均衡",
+        "Docker Swarm Overlay DNS负载均衡",
+        "Keepalived",
+        "haproxy",
+        "OAuth2.0",
+        "springboot",
+        "Vue.js",
+        "MySQL",
+        "Redis",
+        "CDN",
+        "OSS",
+      ],
+      desc: "旨在替代纸质请假流程，减轻学生、辅导员的工作量。学生线上发起请假，辅导员核实后线上审批，生成“请假绿码”，任课教师或保卫处可通过微信扫一扫校验。设有二级审批机制，院长对辅导员无权限批准的假条进行二级审批。采用分布式部署，在集中请假时间段负载均衡，一般情况下实现高可用。",
+    },
+    {
+      logo: "",
+      title: "CNN卷积计算提取图像边缘",
+      date: "2018.9",
+      role: "",
+      stack: ["PHP", "算子", "卷积运算"],
+      desc: "卷积神经网络算法一般应用在图像识别领域，如对数字字母的识别、区分猫狗等。卷积神经网络运算的第一步即使对输入图像进行边缘提取。",
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/yiban.png",
+      title: "工大易小答-智能对话机器人",
+      date: "2024.3 - 2025.6",
+      role: "知识库建设、API接口开发",
+      stack: ["Linux", "知识库", "text-emmbding", "OneAPI", "ChatGPT"],
+      desc: `基于FastGPT构建知识库，使用text-emmbding技术对问题进行编码，通过OneAPI接口进行问题匹配，返回答案。调用GPT进行对话生成，解决未在知识库的问题。<br/>`,
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/tzb.png",
+      logoStyle: { height: "50px" },
+      title: "安徽省挑战杯竞赛平台",
+      date: "2023.2 - 2023.6",
+      role: "项目管理/主要研发人员",
+      stack: [
+        "Docker Swarm",
+        "GitLab",
+        "Jenkins CI/CD",
+        "Nginx负载均衡",
+        "Docker Swarm Overlay DNS负载均衡",
+        "Keepalived",
+        "haproxy",
+        "springboot",
+        "Vue.js",
+        "MySQL",
+        "Redis",
+        "CDN",
+        "OSS",
+      ],
+      desc: "简化省赛流程，提高比赛效率。教师学生注册，作品线上提交。评委线上评审，作品线上答辩。评委打分，系统自动计算。作品线上展示，公示。作品线上下载，打印。作品线上查看，评审意见。作品线上修改，再次提交。",
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/zcjygs.png",
+      title: "安工大资产经营公司资产管理系统",
+      date: "2024.3 - 2024.12",
+      role: "项目管理/运维架构",
+      stack: [
+        "Jenkins CI/CD",
+        "Gitlab",
+        "Docker Swarm",
+        "Nginx",
+        "Keepalived",
+        "haproxy",
+        "springboot",
+        "Vue.js",
+        "MySQL",
+        "Redis",
+        "CDN",
+        "OSS",
+      ],
+      desc: `
+      1. 区域和房产信息的增删改查。<br/>
+      2. 房产和业主信息的审核、管理。<br/>
+      3. 业务受理、费用收取和历史记录查询。<br/>
+      4. 智慧服务功能，如公告、投诉处理、报修管理等。<br/>
+      5. 报表管理，包括缴费、押金、欠费等数据的导出。<br/>
+      6. 系统权限管理和合同管理。<br/>
+      7. 费用管理与审核。<br/>
+      8. 支持微信端投诉和报修，进度实时跟踪。
+      `,
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/xinhao.png",
+      title: "GAFA-SWin-GAM预测性设备维护(省级课题)",
+      date: "2024.3 - 2025.6",
+      role: "算法研发",
+      stack: [
+        "Linux C/C++",
+        "嵌入式",
+        "FTP",
+        "Pytorch",
+        "CNN",
+        "LSTM",
+        "GADF,GASF",
+        "信号处理",
+      ],
+      desc: `
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        基于格拉姆角场（GAF）、Swin Transformer 和全局注意力机制（GAM-Attention）的故障诊断模型。通过将一维机械振动信号编码为二维图像，并采用Swin Transformer 的窗口注意力机制提取局部特征，以及基于全局注意力机制的卷积神经网络（CNN）提取全局特征，有效地提高了故障诊断的准确率和模型的泛化能力。
+        <br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        使用边缘计算对设备的实时数据进行处理，积累到一定量后通过FTP传输数据到服务器，再使用Pytorch框架进行模型训练，实现设备故障预测，减轻中心服务器的压力。
+        `,
+    },
+  ],
+  // 工作经历
+  workList: [
+    {
+      logo: "https://resume.webpro.ltd/assets/img/ahut.png",
+      date: "2018.5 - 2019.10",
+      company: "安徽工业大学新媒体中心",
+      duty: "研发专员",
+      content: `官媒机构号的需求分析，产品设计、研发，产品跟踪，及后续产品优化工作；\n稳定部署到服务器；\n负责新生大数据系统的研发；`,
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/yxbook.jpg",
+      date: "2018.6 - 2018.12",
+      company: "马鞍山三为书务网络科技有限公司",
+      duty: "主持外包《易享book》项目",
+      content: `客户需求分析，产品设计，产品跟踪，及后续产品优化工作；\n技术研发以及资金对接安全保障；\n集成第三方API开发，提供短信验证码、ISBN解析、定位解析、对象存储等服务；\n配置微信公众号相关参数，把握上线后细节问题，稳定部署到服务器；`,
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/anhuichuangjie.png",
+      date: "2018.6 - 2018.12",
+      company: "安徽创杰环境科技有限公司",
+      duty: "主持外包《环保金盾》项目",
+      content:
+        "团队管理，技术分工，环保金盾架构策划；\n客户需求分析，产品设计，产品跟踪，及后续产品优化工作；\n集成第三方API开发；\n稳定部署到服务器；",
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/xxh.png",
+      date: "2018.6 - 2020.6",
+      company: "安徽工业大学信息化处",
+      duty: "研发专员",
+      content:
+        "需求分析，产品设计、研发，产品跟踪，及后续产品优化工作；\n稳定部署到服务器；\n负责信息化微服务平台、十大事件投票系统的研发；",
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/yiban.png",
+      date: "2018.6 - 2025.6",
+      company: "安徽工业大学易班发展中心",
+      duty: "研发负责人",
+      content:
+        "需求分析，产品设计、研发，产品跟踪，及后续产品优化工作；\n稳定部署到服务器；\n负责易班易查询模块的研发；",
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/ahut.png",
+      date: "2020.3 - 2021.6",
+      company: "安徽工业大学团委",
+      duty: "研发专员",
+      content:
+        "需求分析，产品设计、研发，产品跟踪，及后续产品优化工作；\n稳定部署到服务器；\n负责第二课堂小助手的研发；",
+    },
+    {
+      logo: "https://resume.webpro.ltd/assets/img/lixiang.svg",
+      date: "2022 | 算力架构",
+      company: "理想汽车研发总部",
+      duty: "系统研发工程师",
+      content:
+        "AD-MAX、AD-NOA冒烟测试、软件架构融合集成自动化；\nFSD换件标定数据自动化备份恢复工具支研发及店端支持；\nFSD实车台架工作、监控、维护自动化方案规划及建设；上游厂商代码管理方案制定；",
+    },
+  ],
+  // 个人证书
+  // certificate: {
+  //   // 竖证书
+  //   horizontal: [
+  //     "https://img.webpro.ltd/picbed/202407071631110.jpg",
+  //     "https://img.webpro.ltd/picbed/202407071630190.png",
+  //   ],
+  //   // 横证书
+  //   vertical: [
+  //     "https://img.webpro.ltd/picbed/202407071638565.jpg",
+  //     "https://img.webpro.ltd/picbed/202407071638338.jpg",
+  //     "https://img.webpro.ltd/picbed/202407071638303.png",
+  //   ],
+  // },
+  // 社会实践
+  socialPractice: [
+    {
+      date: "2022.9 - 2025.6",
+      description: "硕计221 班长",
+      image: "",
+    },
+    {
+      date: "2023.9",
+      description: "2023年新生迎新志愿者",
+      image: "https://img.webpro.ltd/picbed/20240907122928.png",
+    },
+    {
+      date: "2024.6",
+      description: "2024年易班招新志愿者",
+      image: "",
+    },
+    {
+      date: "2024",
+      description: "“心连心·信传情”爱心捐赠主题党日活动",
+      image: "https://img.webpro.ltd/picbed/20240907123054.png",
+    },
+  ],
+  // 个人荣誉证书
+  certificate: [
+    // "https://img.webpro.ltd/picbed/202407071638565.jpg",
+    // "https://img.webpro.ltd/picbed/202407071638338.jpg",
+    "https://img.webpro.ltd/picbed/202407071638303.png",
+    "https://img.webpro.ltd/picbed/202407081406292.jpg",
+    "https://img.webpro.ltd/picbed/202407081407865.jpg",
+    "https://img.webpro.ltd/picbed/202407081407601.jpg",
+    // "https://img.webpro.ltd/picbed/202407081418303.png",
+    // "https://img.webpro.ltd/picbed/202407081916977.jpg",
+    // "https://img.webpro.ltd/picbed/202407081916976.jpg",
+    "https://img.webpro.ltd/picbed/202407081408199.jpg",
+    "https://img.webpro.ltd/picbed/202407081408928.jpg",
+    "https://img.webpro.ltd/picbed/202407081415023.png",
+    "https://img.webpro.ltd/picbed/202407081921072.jpg",
+    "https://img.webpro.ltd/picbed/202407081921071.jpg",
+    "https://img.webpro.ltd/picbed/202407081921070.jpg",
+    "https://img.webpro.ltd/picbed/202407081916974.jpg",
+    // "https://img.webpro.ltd/picbed/202407081406075.JPG",
+    "https://img.webpro.ltd/picbed/202407081407054.jpg",
+    // "https://img.webpro.ltd/picbed/202407081916978.jpg",
+  ],
+  // 户外运动图片
+  outer: [
+    // "https://img.webpro.ltd/picbed/d80baf4a8e1200620a902203f8fc638.jpg",
+    // "https://img.webpro.ltd/picbed/2383ecd2b543592570a77138929936f.jpg",
+    "https://img.webpro.ltd/picbed/0a20b35a03799fc6e43202ab1cabe3d.jpg",
+    "https://img.webpro.ltd/picbed/7420c84f2bbc0fafc3cb62cb19bac42.jpg",
+    "https://img.webpro.ltd/picbed/b912cbc499a625bea95cbbfd82e4806.jpg",
+    "https://img.webpro.ltd/picbed/c42d7b73627a5bfece3806d7c7de083.jpg",
+  ],
+};

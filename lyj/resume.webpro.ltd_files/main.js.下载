@@ -1,0 +1,390 @@
+const app = {
+  el: "#app",
+  data: function () {
+    return {
+      visible: false,
+      show: false,
+      resume: resume,
+      resumeForm: {}, // 简历表单，编辑简历时使用
+      css: {
+        projectCard: {
+          padding: "10px 25px 5px 25px",
+          // "border-top": "3px solid #a397f0",
+        },
+        projectCardMargin: {
+          "margin-bottom": "20px",
+          width: "100%",
+        },
+        workCard: {
+          "padding-left": 0,
+        },
+      },
+      template: {
+        personalInfo: null, // 个人信息模板
+        myArea: null, // 自定义领域模板
+        skills: null, // 技能标签模板
+        projectList: null, // 项目经历模板
+        workList: null, // 工作经历模板
+      },
+      updatingUUID: false, // 新增一个标志变量，防止重复更新
+    };
+  },
+  mounted: function () {
+    // resume.projectList reverse
+    this.resume.projectList.reverse();
+    this.appDomShow();
+    this.initTemplate();
+    this.resumeInit();
+    // 更新页脚copyright时间
+    document.getElementById("currentYear").textContent =
+      new Date().getFullYear();
+  },
+  computed: {
+    leftProjects() {
+      return this.resume.projectList.filter(
+        (project, index) => index % 2 === 0
+      );
+    },
+    rightProjects() {
+      return this.resume.projectList.filter(
+        (project, index) => index % 2 !== 0
+      );
+    },
+    // 个人技能证书分组，一行展示4
+    getCertificate() {
+      let _certificate = JSON.parse(JSON.stringify(this.resume.certificate));
+      _certificate.forEach(function (item, idx) {
+        _certificate[
+          idx
+        ] = `${item}!/format/webp/watermark/text/QGNvcHlyaWdodCBCaWxsIHwg6IuP5aSn5a+M/align/southeast`;
+      });
+      // console.log(_certificate);
+      // 定义一个空的二维数组来存放结果
+      let twoDimensionalArray = [];
+      // 定义每个子数组的长度
+      const chunkSize = 6;
+      // 使用循环将一维数组切割成二维数组
+      for (let i = 0; i < _certificate.length; i += chunkSize) {
+        twoDimensionalArray.push(_certificate.slice(i, i + chunkSize));
+      }
+      // console.log(_certificate);
+      // console.log(twoDimensionalArray);
+      return twoDimensionalArray;
+    },
+  },
+  watch: {},
+  methods: {
+    // Global methods
+    $md5(str) {
+      return CryptoJS.MD5(str).toString();
+    },
+    $genUUID(mixed = "") {
+      if (mixed === "") {
+        mixed = new Date().getTime().toString() + Math.random().toString(); // 添加随机数
+        return this.$md5(mixed);
+      }
+    },
+    // Inner methods
+    myPrint() {
+      console.log(this.resumeForm);
+    },
+    resumeInit() {
+      this.resumeForm = JSON.parse(JSON.stringify(this.resume));
+      this.addItem(
+        "personalInfo",
+        "myArea",
+        "skills",
+        "projectList",
+        "workList"
+      );
+      // 为每个属性对象加一个uuid，用于区分
+      this.addOrUpdateUUID(
+        "personalInfo",
+        "myArea",
+        // "skills",
+        "projectList",
+        "workList"
+      );
+      // 初始化技能数据,让每个标签组带上uuid，方便操作
+      let resumeForm = JSON.parse(JSON.stringify(this.resumeForm));
+      resumeForm.skillDynamicTagList = resumeForm.skills.map((group) => ({
+        dynamicTags: group,
+        inputVisible: false,
+        inputValue: "",
+      }));
+      this.resumeForm = JSON.parse(JSON.stringify(resumeForm));
+    },
+    // 标签管理
+    handleSkillTagClose(groupIndex, tag) {
+      let objPointer = this.resumeForm.skillDynamicTagList[groupIndex];
+      if (objPointer && objPointer.dynamicTags) {
+        const tagIndex = objPointer.dynamicTags.indexOf(tag);
+        if (tagIndex > -1) {
+          objPointer.dynamicTags.splice(tagIndex, 1);
+          this.saveSkillTag();
+        }
+      } else {
+        console.error(`技能组 ${groupIndex} 不存在或未定义`);
+      }
+    },
+    showSkillTagInput(groupIndex) {
+      let objPointer = this.resumeForm.skillDynamicTagList[groupIndex];
+      if (objPointer) {
+        objPointer.inputVisible = true;
+        this.$nextTick(() => {
+          // console.log(this.$refs["saveTagInput" + groupIndex]);
+          this.$refs["saveTagInput" + groupIndex][0].$refs.input.focus();
+        });
+      } else {
+        console.error(`技能组 ${groupIndex} 不存在或未定义`);
+      }
+    },
+    handleSkillTagInputConfirm(groupIndex) {
+      let objPointer = this.resumeForm.skillDynamicTagList[groupIndex];
+      if (objPointer) {
+        let inputValue = objPointer.inputValue;
+        if (inputValue) {
+          objPointer.dynamicTags.push(inputValue);
+          this.saveSkillTag();
+        }
+        objPointer.inputVisible = false;
+        objPointer.inputValue = "";
+      } else {
+        console.error(`技能组 ${groupIndex} 不存在或未定义`);
+      }
+    },
+    // skillDynamicTagList => skills
+    saveSkillTag() {
+      let _resumeForm = JSON.parse(JSON.stringify(this.resumeForm));
+      let skills = _resumeForm.skillDynamicTagList.map(
+        (group) => group.dynamicTags
+      );
+      this.resumeForm.skills = JSON.parse(JSON.stringify(skills));
+    },
+    // 为属性对象添加 uuid，用于原始resume的处理
+    addOrUpdateUUID(...attrNames) {
+      attrNames.forEach((attrName) => {
+        // 检查属性是否存在于 resumeForm 和 template 中
+        if (
+          this.resumeForm.hasOwnProperty(attrName) &&
+          this.template.hasOwnProperty(attrName)
+        ) {
+          this.resumeForm[attrName].forEach((item) => {
+            item.uuid = this.$genUUID();
+          });
+        } else {
+          console.error(`属性 ${attrName} 不存在于 resumeForm 或 template 中`);
+        }
+      });
+    },
+    // 添加空属性
+    addItem(...attrNames) {
+      let resumeForm = JSON.parse(JSON.stringify(this.resumeForm));
+      let i = 0;
+      attrNames.forEach((attrName) => {
+        // 检查属性是否存在于 resumeForm 和 template 中
+        if (
+          resumeForm.hasOwnProperty(attrName) &&
+          this.template.hasOwnProperty(attrName)
+        ) {
+          let obj = JSON.parse(JSON.stringify(this.template[attrName]));
+          obj.uuid = this.$genUUID();
+          resumeForm[attrName].push(JSON.parse(JSON.stringify(obj)));
+          i++;
+        } else {
+          console.error(`属性 ${attrName} 不存在于 resumeForm 或 template 中`);
+        }
+      });
+      if (i == 1) {
+        this.pageScroll(200); // 用户手动添加才滚动
+      }
+      this.resumeForm = resumeForm;
+      console.log(this.resumeForm);
+    },
+    // 删除属性
+    deleteItem(uuid, ...attrNames) {
+      attrNames.forEach((attrName) => {
+        // 检查属性是否存在于 resumeForm 中
+        if (this.resumeForm.hasOwnProperty(attrName)) {
+          const index = this.resumeForm[attrName].findIndex(
+            (item) => item.uuid === uuid
+          );
+          if (index !== -1) {
+            // 使用 Vue.delete 确保删除操作是响应式的
+            Vue.delete(this.resumeForm[attrName], index);
+            this.pageScroll(-200);
+          }
+        } else {
+          console.error(`属性 ${attrName} 不存在于 resumeForm 中`);
+        }
+      });
+    },
+    initTemplate() {
+      let template = {};
+      // personalInfo: null, // 个人信息模板
+      // myArea: null, // 自定义领域模板
+      // skills: null, // 技能标签模板
+      // projectList: null, // 项目经历模板
+      // workList: null, // 工作经历模板
+      template.personalInfo = {
+        key: "", // 键名
+        value: "", // 键值
+        icon: "", // 图标
+        isTag: false, // 是否为标签效果
+        topShow: false, // 是否在顶部显示
+        bottomShow: false, // 是否在底部显示
+        link: "", // 链接
+      };
+      template.myArea = {
+        key: "", // 技能名
+        value: "", // 技能详情
+        icon: "", // 图标
+        isTag: false, // 是否为标签效果
+      };
+      template.skills = [];
+      template.projectList = {
+        name: "", // 项目名称
+        description: "", // 项目描述
+        tags: [], // 项目标签
+        link: "", // 项目链接
+      };
+      template.workList = {
+        logo: "", // 公司logo
+        date: "", // 工作时间
+        company: "", // 公司名称
+        duty: "", // 职责描述
+        content: "", // 工作内容
+      };
+      this.template = JSON.parse(JSON.stringify(template));
+    },
+    // 随机标签颜色
+    // { type: '', label: '标签一' },
+    // { type: 'success', label: '标签二' },
+    // { type: 'info', label: '标签三' },
+    // { type: 'danger', label: '标签四' },
+    // { type: 'warning', label: '标签五' }
+    randomTagType() {
+      const tagTypes = ["", "success", "info", "danger", "warning"];
+      const randomIndex = Math.floor(Math.random() * tagTypes.length);
+      return tagTypes[randomIndex];
+    },
+    // 打印简历
+    printDiv(divId) {
+      const divToPrint = document.getElementById(divId);
+      const newWin = window.open("", "Print-Window");
+      newWin.document.open();
+      newWin.document.write(`
+            <html>
+              <head>
+                <style>
+                  @media print {
+                    body * {
+                      visibility: hidden;
+                    }
+                    #printableArea, #printableArea * {
+                      visibility: visible;
+                    }
+                    #printableArea {
+                      position: absolute;
+                      left: 0;
+                      top: 0;
+                    }
+                    .page-break {
+                      page-break-before: always;
+                    }
+                  }
+                </style>
+              </head>
+              <body onload="window.print()">
+                ${divToPrint.innerHTML}
+              </body>
+            </html>`);
+      newWin.document.close();
+      setTimeout(() => newWin.close(), 10);
+    },
+    appDomShow() {
+      this.show = true;
+    },
+    // 判断是否为偶数
+    isEven(num) {
+      return num % 2 === 0;
+    },
+    pageScroll(scrollDistance) {
+      // 获取当前滚动位置
+      const currentScroll = window.scrollY;
+      window.scrollTo({
+        top: currentScroll + scrollDistance,
+        behavior: "smooth",
+      });
+    },
+  },
+};
+
+// 核心方法
+
+function startApp() {
+  new Vue(app);
+}
+
+function loadScript(comName, callback) {
+  let script = document.createElement("script");
+  script.type = "text/javascript";
+  script.src = "https://resume.webpro.ltd/component/" + comName + ".com.js";
+  script.onload = callback;
+  document.head.appendChild(script);
+}
+
+function registerComponents(callback) {
+  let loadedComponents = 0;
+  componentList.forEach((comName) => {
+    loadScript(comName, () => {
+      loadedComponents++;
+      if (loadedComponents === componentList.length) {
+        console.log("All components loaded and registered");
+        callback(); // 所有组件加载完成后调用回调函数
+      }
+    });
+  });
+}
+
+// 动态加载依赖项
+function loadDependencies(deps, callback) {
+  const libPath = "https://resume.webpro.ltd/assets/lib/";
+  let loadedDeps = 0;
+
+  function checkAllDepsLoaded() {
+    loadedDeps++;
+    if (loadedDeps === deps.length) {
+      callback();
+    }
+  }
+
+  deps.forEach((dep) => {
+    const fullPath = libPath + dep;
+    if (dep.endsWith(".js")) {
+      // 动态创建 script 标签
+      const script = document.createElement("script");
+      script.src = fullPath;
+      script.async = false; // 保持顺序加载
+      script.onload = checkAllDepsLoaded;
+      document.head.appendChild(script);
+    } else if (dep.endsWith(".css")) {
+      // 动态创建 link 标签
+      const link = document.createElement("link");
+      link.href = fullPath;
+      link.rel = "stylesheet";
+      link.onload = checkAllDepsLoaded;
+      document.head.appendChild(link);
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  loadDependencies(dependencies, () => {
+    // 确保依赖项加载完成
+    registerComponents(() => {
+      document.getElementById("app").style = "display: block;";
+      startApp(); // 初始化 Vue 实例
+    }); // 注册组件
+  });
+});

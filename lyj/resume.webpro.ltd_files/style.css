@@ -1,0 +1,345 @@
+body {
+  margin: 0 auto;
+  padding: 0;
+  width: 1000px;
+  font-family: PingFangSC;
+}
+
+#app {
+  display: none;
+  padding: 10px;
+  margin: 0;
+}
+
+.img-header .content {
+  font-family: Courier;
+  display: inline-block;
+  position: absolute;
+  /* margin: 1px auto 0 334px; */
+  /* padding: 10px 0px; */
+  border-radius: 10px;
+  background: rgba(11, 52, 79, 0.5);
+  width: 300px;
+  color: #fff;
+  top: 130px;
+  left: 350px;
+}
+
+.img-header .content p {
+  font-size: 18px;
+  letter-spacing: 5px;
+  text-shadow: 0 2px 4px #000000;
+  text-align: center;
+}
+
+.img-header .top-img {
+  width: 100%;
+  /* height: 300px; */
+  margin-top: 20px;
+}
+
+.personal-info {
+  margin-top: 20px;
+  padding: 10px;
+}
+
+.block-right-split-line {
+  border-right: 1px solid #eff2f6;
+}
+
+.avatar-img {
+  width: 90px;
+}
+
+/* 图片圆角 */
+.img-header .top-img,
+.avatar-img {
+  border-radius: 10px;
+}
+
+.el-descriptions {
+  font-size: 16px;
+}
+
+.skills-tag {
+  margin-right: 5px;
+  margin-top: 5px;
+}
+
+.stack-tag {
+  margin-right: 5px;
+}
+
+.project-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.project-list-item {
+  width: 95%;
+  margin-left: 2.5%;
+  border: 2px solid #eff2f6;
+  margin-top: 39px;
+  padding: 0 20px 20px 20px;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+/* .project-top {
+  display: flex;
+  height: 66px;
+  margin-top: -33px;
+  margin-left: 33px;
+}
+
+.project-name, .project-date {
+  line-height: 66px;
+  margin-left: 10px;
+  font-size: 16px;
+}
+
+.project-name {
+  font-weight: bold;
+}
+
+.project-name, .project-date span {
+  background-color: #fff;
+}
+
+.project-date {
+  color: #999;
+  margin-left: auto;
+}
+
+.project-logo, .project-name, .project-date {
+    display: inline-block;
+}
+
+.project-logo, .project-logo img, .project-name, .project-date{
+  height: 100%;
+} */
+
+.my-timeline-left {
+  /* border-right: 5px solid #a397f0; */
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px 20px 20px 0;
+}
+.project {
+  background-color: #fff;
+  /* border-radius: 10px; */
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+  /* margin-bottom: 20px; */
+  /* overflow: hidden; */
+  /* display: flex; */
+  padding-top: 10px;
+}
+.project .project-content .project-header img {
+  width: auto;
+  height: 66px;
+  max-height: 77px;
+  margin-top: -10px;
+  margin-right: -15px;
+  border-radius: 5px;
+  object-fit: contain;
+  /* flex: 1; */
+}
+.project-content {
+  /* border-radius: 10px; */
+}
+.project-content .project-header {
+  display: flex;
+  justify-content: space-between;
+}
+.project-title {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  color: #333;
+  font-weight: 500;
+}
+.project-date {
+  color: #666;
+  margin-bottom: 10px;
+}
+.project-role {
+  color: #888;
+  margin-bottom: 10px;
+}
+.project-desc {
+  margin-bottom: 10px;
+  color: #555;
+}
+.project-stack {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 15px 0;
+}
+.project-stack span {
+  color: #409eff;
+  border-radius: 1px;
+  border: 1px solid #409eff;
+  padding: 2px 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  font-size: 13px;
+}
+.el-timeline-item__timestamp {
+  font-size: 16px;
+  color: #999;
+}
+.work-list {
+  width: 95%;
+  /* margin: 0 auto; */
+}
+
+.work-card {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 6px;
+}
+
+.work-card .logo {
+  width: 240px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  overflow: hidden; /* 确保内容不会溢出 */
+  border-radius: 5px;
+}
+
+.work-card .logo img {
+  max-width: 100%;
+  max-height: 66px;
+  width: auto; /* 确保宽度自动调整 */
+  height: auto; /* 确保高度自动调整 */
+  object-fit: contain; /* 保持宽高比，缩放图片以适应容器 */
+}
+
+.work-card .content p::before {
+  content: "✔"; /* 对勾符号 */
+  color: green; /* 对勾颜色 */
+  margin-right: 8px; /* 对勾与文本之间的间距 */
+}
+
+.el-card__body,
+.el-main {
+  padding: 0 20px;
+}
+.footer {
+  text-align: center;
+  font-size: 12px;
+  color: #9a9a9a;
+  letter-spacing: 1.22px;
+  /* padding: 30px 0 20px 0; */
+}
+.certificate-frame {
+  border: 2px solid #dcdcdc;
+  border-radius: 3px;
+  padding: 3px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background-color: #fff;
+  transition: transform 0.3s ease;
+}
+
+.certificate-frame:hover {
+  transform: scale(1.05);
+}
+
+/* .el-image {
+  border-radius: 5px;
+  max-width: 100%;
+  height: auto;
+} */
+
+.photo-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px; /* 控制每张照片之间的间距 */
+}
+
+.photo-item {
+  border: 2px solid #dcdcdc;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 200px; /* 设置照片的宽度 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.photo-item:hover {
+  transform: scale(1.05); /* 鼠标悬停时放大效果 */
+}
+
+/* .el-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+} */
+.resume-link {
+  font-size: 12px;
+  color: #007bff;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 3px;
+  transition: color 0.3s ease, border-bottom 0.3s ease;
+}
+
+.resume-link:hover {
+  color: #ff5722;
+  border-bottom: 2px solid #ff5722;
+}
+
+.resume-link:active {
+  color: #0056b3;
+}
+
+.resume-link:visited {
+  color: #6610f2;
+}
+.social-practice {
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.social-practice h3 {
+  font-size: 24px;
+  color: #333;
+}
+
+.social-practice p {
+  font-size: 16px;
+  color: #555;
+  display: inline-block;
+}
+/* 打印分页 */
+@media print {
+  /* 在需要分页的元素之前插入分页 */
+  .page-break {
+    page-break-before: always;
+  }
+
+  /* 在需要避免分页的元素之后禁止分页 */
+  .avoid-page-break {
+    page-break-after: avoid;
+  }
+}
+.small {
+  width: 50px;
+  border-radius: 1px;
+}
+/* div加上这个class打印不会跨页 */
+@media print {
+  .print-block {
+    page-break-inside: avoid;
+  }
+}

@@ -1,0 +1,14 @@
+// Assuming component files are in the /components directory
+const componentList = [
+  "project-card", // 项目卡片
+];
+
+// Assuming dependencies are in the /lib directory
+const dependencies = [
+  "vue/vue.js",
+  "crypto-js/crypto-js.min.js",
+  "elementUI/index.js",
+  "elementUI/index.css",
+  "mock/resume.js",
+  "custom/style.css",
+];

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>刘雨杰的简历</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Microsoft YaHei", sans-serif;
+}
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #c3e0fa 0%, #e6f3ff 100%);
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+/* 玻璃态核心 */
+.glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  border-radius: 16px;
+}
+.resume {
+  width: 100%;
+  max-width: 1100px;
+  padding: 40px;
+  color: #1f2937;
+}
+.header {
+  text-align: center;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(255,255,255,0.4);
+}
+.header h1 {
+  font-size: 32px;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+.header .job {
+  font-size: 16px;
+  color: #4b5563;
+}
+.section {
+  margin-bottom: 28px;
+  padding: 20px;
+}
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: #1e40af;
+  display: flex;
+  align-items: center;
+}
+.section-title::before {
+  content: "";
+  width: 6px;
+  height: 18px;
+  background: #1e40af;
+  border-radius: 2px;
+  margin-right: 10px;
+}
+
+/* 个人信息：双列 + 头像 */
+.personal-box {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 20px;
+  align-items: center;
+}
+.avatar {
+  width: 100px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid rgba(255,255,255,0.5);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.info-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.info-item {
+  font-size: 15px;
+}
+.info-item label {
+  font-weight: 600;
+  margin-right: 6px;
+  color: #1e40af;
+}
+
+/* 专业领域 */
+.domain-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.domain-item {
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.25);
+}
+.domain-item h4 {
+  color: #1e40af;
+  margin-bottom: 6px;
+}
+
+/* 技能标签玻璃态 */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+.tag {
+  padding: 6px 14px;
+  background: rgba(255,255,255,0.3);
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 30px;
+  font-size: 14px;
+  color: #1e40af;
+}
+
+/* 项目经历：两列玻璃态 + 二级框强化 */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.project-card {
+  padding: 20px;
+  border-radius: 14px;
+  /* 二级框玻璃态强化 */
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 6px 24px rgba(31, 38, 135, 0.2);
+}
+.project-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: #1e40af;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed rgba(31, 64, 175, 0.3);
+}
+.project-role {
+  color: #1e40af;
+  font-style: italic;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+.project-desc {
+  font-size: 15px;
+  color: #374151;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+.project-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.project-stack span {
+  background: rgba(30, 64, 175, 0.1);
+  border: 1px solid rgba(30, 64, 175, 0.3);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: #1e40af;
+  font-weight: 500;
+}
+
+/* 工作经历 */
+.work-card {
+  display: flex;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  margin-bottom: 14px;
+}
+.work-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,0.4);
+}
+.work-info {
+  flex: 1;
+}
+
+@media print {
+  body { background: #fff; }
+  .resume { box-shadow: none; border: none; }
+  .glass { background: #fff; border: none; }
+  .tag, .project-stack span { border: 1px solid #1e40af; background: none; }
+  .project-card, .work-card, .domain-item { border: 1px solid #eee; }
+}
+</style>
+</head>
+<body>
+<div class="resume glass">
+  <div class="header">
+    <h1>刘雨杰</h1>
+    <div class="job">全栈开发 / 项目管理 / AI算法</div>
+  </div>
+
+  <!-- 个人信息：双列 + 头像 -->
+  <div class="section glass">
+    <div class="section-title">个人信息</div>
+    <div class="personal-box">
+      <img class="avatar" src="./resume.webpro.ltd_files/avatar.png" alt="头像">
+      <div class="info-col">
+        <div class="info-item"><label>姓名：</label>刘雨杰</div>
+        <div class="info-item"><label>年龄：</label>22岁</div>
+        <div class="info-item"><label>本科：</label>湖北警官学院 | 计算机科学与技术</div>
+        <div class="info-item"><label>电话/微信：</label>173 7137 8581</div>
+        <div class="info-item"><label>邮箱1：</label>3533450744@qq.com</div>
+        <div class="info-item"><label>邮箱2：</label>chuchunshili@proton.me</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 专业领域 -->
+  <div class="section glass">
+    <div class="section-title">我的领域</div>
+    <div class="domain-grid">
+      <div class="domain-item">
+        <h4>项目</h4>
+        <p>全栈开发、多端小程序开发、高可用数据库集群</p>
+      </div>
+      <div class="domain-item">
+        <h4>管理</h4>
+        <p>需求分析、项目（任务/进度/质量）管理、代码分支管理，团队管理</p>
+      </div>
+      <div class="domain-item">
+        <h4>AI相关</h4>
+        <p>使用Pytorch框架，CNN、RNN、梯度下降、反向传播、机器学习常用算法KNN、SVM、回归等。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 技能栈 -->
+  <div class="section glass">
+    <div class="section-title">技能栈</div>
+    <div class="tags">
+      <span class="tag">JAVA</span>
+      <span class="tag">PYTHON</span>
+      <span class="tag">HTML</span>
+      <span class="tag">MATLAB</span>
+      <span class="tag">git</span>
+      <span class="tag">TCP/UDP</span>
+      <span class="tag">HTTP</span>
+      <span class="tag">Nginx</span>
+      <span class="tag">CNN</span>
+      <span class="tag">Docker Swarm</span>
+      <span class="tag">Gitlab</span>
+      <span class="tag">Vue</span>
+      <span class="tag">JQuery</span>
+      <span class="tag">Spring</span>
+      <span class="tag">Mybatis</span>
+      <span class="tag">Shiro</span>
+      <span class="tag">JWT</span>
+      <span class="tag">OAuth</span>
+      <span class="tag">MySQL</span>
+      <span class="tag">Oracle</span>
+      <span class="tag">Redis</span>
+      <span class="tag">Redis Cluster</span>
+      <span class="tag">MySQL Master-Slave</span>
+      <span class="tag">MySQL Cluster</span>
+    </div>
+  </div>
+
+  <!-- 项目经历：两列玻璃态 -->
+  <div class="section glass">
+    <div class="section-title">项目经历</div>
+    <div class="project-grid">
+      <div class="project-card">
+        <div class="project-title">
+          <span>湖北警官学院播音台竞赛计票小程序</span>
+          <span>2023.2 - 2023.6</span>
+        </div>
+        <div class="project-role">项目管理/主要研发人员</div>
+        <div class="project-desc">
+          用于湖北警官学院大学生课外作品征集。简化竞赛参赛流程，提高比赛效率。学生注册，作品线上提交。评委线上评审，作品线上答辩。评委打分，系统自动计算。作品线上展示，公示。作品线上下载，打印。作品线上查看，评审意见。作品线上修改，再次提交。
+        </div>
+        <div class="project-stack">
+          <span>gitee</span>
+          <span>Nginx负载均衡</span>
+          <span>DNS负载均衡</span>
+          <span>springboot</span>
+          <span>Vue.js</span>
+          <span>MySQL</span>
+          <span>Redis</span>
+          <span>CDN</span>
+          <span>OSS</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-title">
+          <span>CNN卷积计算识别数字</span>
+          <span>2024.10</span>
+        </div>
+        <div class="project-desc">
+          卷积神经网络算法一般应用在图像识别领域，如对数字字母的识别、区分猫狗等。卷积神经网络运算的第一步即使对输入图像进行边缘提取。
+        </div>
+        <div class="project-stack">
+          <span>python</span>
+          <span>MNIST数据集</span>
+          <span>算子</span>
+          <span>卷积运算</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-title">
+          <span>湖北警官学院播音台作品展示小程序</span>
+          <span>2024.7 - 2024.9</span>
+        </div>
+        <div class="project-role">后端开发工程师</div>
+        <div class="project-desc">
+          负责播音台竞赛作品的展示和存档工作，使用springboot对作品数据进行整合处理，小程序端展示高分作品以及用户自己的投稿作品。
+        </div>
+        <div class="project-stack">
+          <span>SpringBoot</span>
+          <span>MySQL</span>
+          <span>Vue.js</span>
+          <span>MyBatis</span>
+          <span>redis</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-title">
+          <span>自动表单生成器</span>
+          <span>2025.1</span>
+        </div>
+        <div class="project-desc">
+          在后台可以调节前端表单的形态和样式，动态设置表单标题、协议以及统计的信息（包括信息类型），发布表单，统计信息，并筛选、导出数据。用于计算机学院课内作业收集和方便同学们完成表单收集作业。
+        </div>
+        <div class="project-stack">
+          <span>PHP</span>
+          <span>MySQL</span>
+          <span>Vue.js</span>
+          <span>ElementUI</span>
+          <span>ECharts</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 工作/实践经历 -->
+  <div class="section glass">
+    <div class="section-title">工作（实践）经历</div>
+    
+    <div class="work-card">
+      <img class="work-img" src="./resume.webpro.ltd_files/1027.jpg" alt="工作图片">
+      <div class="work-info">
+        <div class="project-title">
+          <span>湖北警官学院播音台 | 研发专员</span>
+          <span>2022.10 - 2024.6</span>
+        </div>
+        <div class="project-desc">
+          需求分析，产品设计、研发，产品跟踪，及后续产品优化工作；<br>
+          稳定部署到服务器；<br>
+          负责竞赛投票系统、作品展示系统的研发。
+        </div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <img class="work-img" src="./resume.webpro.ltd_files/yxbook.jpg" alt="工作图片">
+      <div class="work-info">
+        <div class="project-title">
+          <span>安徽省正则网络科技有限公司 | 主持外包 二手书交易小程序</span>
+          <span>2023.9 - 2024.2</span>
+        </div>
+        <div class="project-desc">
+          客户需求分析，产品设计，产品跟踪，及后续产品优化工作；<br>
+          技术研发以及资金对接安全保障；<br>
+          集成第三方API开发，提供短信验证码、ISBN解析、定位解析、对象存储等服务；<br>
+          配置微信公众号相关参数，把握上线后细节问题，稳定部署到服务器。
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
