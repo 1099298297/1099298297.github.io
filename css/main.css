@@ -1024,7 +1024,7 @@ figure .pin-copy {
 
 /* light scheme */
 :root[color-mode="light"] {
-  --bg-body: #FFFFFF;
+  --bg-body: #FFF9F5;
   --color-text-base: #666;
   --color-text-a: #666;
   --color-text-a-hover: #000000;
@@ -2195,4 +2195,21 @@ a:hover {
 .markdown-body h5 .headerlink::before,
 .markdown-body h6 .headerlink::before {
   color: #808080;
+}
+
+/* ── Purple Rain Canvas ── */
+#purple-rain-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* 确保页面内容在紫雨之上 */
+#app {
+  position: relative;
+  z-index: 1;
 }
