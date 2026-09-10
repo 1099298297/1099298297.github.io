@@ -15,6 +15,7 @@ body {
   min-height: 100vh;
   background: linear-gradient(135deg, #c3e0fa 0%, #e6f3ff 100%);
   padding: 20px;
+  /* 屏幕浏览居中，打印时自动取消，避免高度bug */
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -207,12 +208,51 @@ body {
   flex: 1;
 }
 
+/* 【重写打印样式 彻底解决白屏】 */
 @media print {
-  body { background: #fff; }
-  .resume { box-shadow: none; border: none; }
-  .glass { background: #fff; border: none; }
-  .tag, .project-stack span { border: 1px solid #1e40af; background: none; }
-  .project-card, .work-card, .domain-item { border: 1px solid #eee; }
+  /* 修复布局bug，取消flex，正常渲染 */
+  body {
+    display: block;
+    min-height: auto;
+    padding: 0;
+    background: #f8faff !important;
+  }
+  /* 简历容器打印兜底，不纯白，保留质感 */
+  .resume {
+    box-shadow: none;
+    border: none;
+    padding: 20px;
+    background: #ffffff !important;
+    max-width: 100%;
+  }
+  /* 玻璃态元素打印兼容，用浅底色+边框模拟质感，不白屏 */
+  .glass {
+    background: #f8faff !important;
+    border: 1px solid #e0e7ff !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  /* 项目/工作卡片打印不拆分，不白屏 */
+  .project-card, .work-card, .section, .domain-item {
+    page-break-inside: avoid;
+    background: #ffffff !important;
+    border: 1px solid #e0e7ff !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+  /* 标签打印可见 */
+  .tag, .project-stack span {
+    border: 1px solid #1e40af !important;
+    background: #ffffff !important;
+    color: #1e40af !important;
+  }
+  /* 文字颜色强制加深，打印不模糊 */
+  body, .card-text, .project-desc, .info-item {
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }
 </style>
 </head>
