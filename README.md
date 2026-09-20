@@ -2,6 +2,8 @@
 
 一个会随季节变色的玻璃博客。**零依赖**：没有 npm 包，没有框架，构建脚本只用 Node 内置模块。
 
+**线上：<https://railgun.ltd>** · 仓库：<https://github.com/1099298297/1099298297.github.io>
+
 视觉与交互设计（双维度气候系统、粒子、水膜、雾可擦开）的来龙去脉见 [HANDOFF.md](HANDOFF.md)。
 
 ---
@@ -23,6 +25,20 @@ build.mjs           构建脚本
 ```
 
 ## 写东西
+
+### 最省事的发文章流程（不用装任何东西）
+
+1. 打开 <https://github.com/1099298297/1099298297.github.io> → 进入 `content/posts/`
+2. 右上 **Add file → Create new file**，文件名写成 `2026-09-21-my-post.md`（**日期前缀 + 英文短名**）
+3. 粘贴下面的模板，改标题和正文
+4. 底下 **Commit changes** —— 等 1~2 分钟，<https://railgun.ltd> 就更新了
+
+本地写也一样：`node build.mjs --serve` 起预览，满意了再 `git add . && git commit -m "新文章" && git push`。
+新建文章的模板可以用脚本生成：
+
+```powershell
+pwsh -File scripts\new-post.ps1 -Title "模拟退火怎么调参" -Category 技术 -Tags 算法,笔记 -Slug annealing-tuning
+```
 
 ### 新文章
 
@@ -69,8 +85,12 @@ node build.mjs --serve      # 构建 + 起服务，打开 http://localhost:4173/
 
 ### 一、GitHub Pages（仓库里已配好）
 
-推送到 `main` 分支后，`.github/workflows/deploy.yml` 会自动构建并发布，不需要改任何东西。
-仓库的 **Settings → Pages → Source** 需要选 **GitHub Actions**（只需设置一次）。
+站点就在 <https://railgun.ltd> 根路径，仓库是 `1099298297/1099298297.github.io`。
+推送到 `main` 后 `.github/workflows/deploy.yml` 自动构建发布，不需要改任何东西
+（Pages 的 Source 已设为 **GitHub Actions**，自定义域名已绑定 railgun.ltd）。
+
+旧的 Hexo 站点：构建产物快照在 tag `legacy-hexo-2026-09-20`，Hexo 源码在 `code` 分支
+（该分支上的自动部署工作流已停用，避免它把新站覆盖回去）。
 
 ### 二、自己的服务器
 
