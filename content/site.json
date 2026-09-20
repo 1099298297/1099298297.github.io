@@ -1,0 +1,21 @@
+{
+  "title": "雾屿 · Misty Isle",
+  "tagline": "一块会随季节变色的玻璃",
+  "url": "https://railgun.ltd",
+  "base": "",
+  "city": "武汉",
+  "since": 2021,
+  "author": "railgun",
+  "description": "一个关于光、雾与日常碎片的个人博客。季节决定光的颜色，天气决定玻璃上发生的事。",
+  "about": {
+    "kicker": "ABOUT",
+    "heading": "一个写得很慢，但一直没停的地方",
+    "html": "雾屿从 2021 年开始写。没有主题，没有更新计划，没有排版规范以外的野心。<br>如果你也喜欢看光怎么落下来，欢迎留下来。"
+  },
+  "social": [
+    { "label": "邮件", "href": "mailto:1099298297@qq.com", "copy": true },
+    { "label": "RSS", "href": "feed.xml" },
+    { "label": "Github", "href": "https://github.com/1099298297" },
+    { "label": "小红书", "href": "#", "todo": "填上你的小红书主页地址" }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "misty-isle",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "雾屿 · Misty Isle — 一块会随季节变色的玻璃博客。零依赖静态站。",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --serve",
+    "serve": "node build.mjs --serve=4173"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
