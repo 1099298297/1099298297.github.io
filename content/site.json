@@ -1,8 +1,9 @@
 {
   "title": "雾屿 · Misty Isle",
   "tagline": "一块会随季节变色的玻璃",
-  "url": "https://railgun.ltd/misty-isle",
+  "url": "https://railgun.ltd",
   "base": "",
+  "cname": "railgun.ltd",
   "city": "武汉",
   "since": 2021,
   "author": "railgun",
@@ -16,6 +17,7 @@
     { "label": "邮件", "href": "mailto:1099298297@qq.com", "copy": true },
     { "label": "RSS", "href": "feed.xml" },
     { "label": "Github", "href": "https://github.com/1099298297" },
-    { "label": "小红书", "href": "#", "todo": "填上你的小红书主页地址" }
+    { "label": "B站", "href": "https://space.bilibili.com/15710963" },
+    { "label": "小红书", "href": "https://www.xiaohongshu.com/user/profile/650c702c000000001702233e" }
   ]
 }
