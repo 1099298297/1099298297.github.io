@@ -435,8 +435,8 @@ ${p.tags.map((t) => `<category>${esc(t)}</category>`).join('\n')}
   writeFileSync(join(DIST, '404.html'),
     `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <title>404 — ${esc(site.title)}</title>
-<meta http-equiv="refresh" content="0;url=${site.base}/">
-</head><body style="font-family:sans-serif"><p>这里没有东西，<a href="${site.base}/">回雾屿</a>。</p></body></html>
+<meta http-equiv="refresh" content="0;url=${site.url}/">
+</head><body style="font-family:sans-serif"><p>这里没有东西，<a href="${site.url}/">回雾屿</a>。</p></body></html>
 `, 'utf8');
 
   // GitHub Pages 相关

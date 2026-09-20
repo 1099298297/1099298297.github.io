@@ -54,7 +54,7 @@ P(接受新解)=e^{-\Delta E/T}
 
 ### 改站名、邮箱、社交链接
 
-改 `content/site.json`。里面有 `url`（影响 RSS 和 sitemap）、`city`（首页那行字）、`social`（邮件 / RSS / Github / 小红书）。
+改 `content/site.json`。里面有 `url`（影响 RSS / sitemap / canonical，**换域名时记得改**）、`city`（首页那行字）、`social`（邮件 / RSS / Github / 小红书）。
 
 ## 本地预览
 
