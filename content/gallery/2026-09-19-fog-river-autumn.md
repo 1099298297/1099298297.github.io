@@ -1,8 +1,8 @@
 ---
 title: 雾还没散的河湾
 date: 2026-09-19 07:30
-img: fog-river-autumn.jpg
-cover: fog-river-autumn.jpg
+img: photos/fog-river-autumn.jpg
+cover: photos/fog-river-autumn.jpg
 tags: [秋, 图]
 credit: Ximonic (Simo Räsänen)
 license: CC BY 3.0

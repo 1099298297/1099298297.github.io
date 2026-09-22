@@ -1,8 +1,8 @@
 ---
 title: 春天最早的那枝
 date: 2026-04-28 07:30
-img: spring-blossom.jpg
-cover: spring-blossom.jpg
+img: photos/spring-blossom.jpg
+cover: photos/spring-blossom.jpg
 tags: [春, 图]
 credit: Vanessa von Wieding nutellavan
 license: CC0

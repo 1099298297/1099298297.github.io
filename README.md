@@ -73,9 +73,19 @@ P(接受新解)=e^{-\Delta E/T}
 照片**不放在这个仓库**，而是在单独的图片仓库里：<https://github.com/1099298297/img>
 
 ```
-https://railgun.ltd/img/<文件名>.jpg          ← 直接走 GitHub Pages
-https://cdn.jsdelivr.net/gh/1099298297/img@main/<文件名>.jpg   ← jsDelivr CDN
+https://railgun.ltd/img/photos/<文件名>.jpg          ← 直接走 GitHub Pages
+https://cdn.jsdelivr.net/gh/1099298297/img@main/photos/<文件名>.jpg   ← jsDelivr CDN
 ```
+
+图片仓库按用途分了两个目录，**图集不会展示全部图片**：
+
+| 目录 | 放什么 | 会进图集吗 |
+|---|---|---|
+| `photos/` | 想在图集里展示的照片 | **会**，但前提是你在 `content/gallery/` 里写了对应条目 |
+| `posts/` | 文章配图：代码截图、示意图、报错图… | **不会**，只在正文里引用 |
+
+图集只认 `content/gallery/*.md`——一个 `.md` 一格。图片仓库里放几千张代码截图，
+只要不写图集条目，就永远不会出现在首页图集里。
 
 博客这边由一个配置决定用哪边，在 `content/site.json`：
 
@@ -85,11 +95,12 @@ https://cdn.jsdelivr.net/gh/1099298297/img@main/<文件名>.jpg   ← jsDelivr C
 | `https://cdn.jsdelivr.net/gh/1099298297/img@main/` | 换成 jsDelivr CDN |
 | `""`（空） | 用仓库内的 `assets/img/`，离线也能看图 |
 
-前端只写文件名，构建时拼完整地址：
+前端只写相对路径，构建时拼完整地址：
 
 ```markdown
-img: fog-river-autumn.jpg        # 图集
-cover: fog-river-autumn.jpg      # 文章封面
+img: photos/fog-river-autumn.jpg        # 图集条目
+cover: photos/fog-river-autumn.jpg      # 文章封面
+![第 3 步的报错](posts/error-01.png)     # 正文插图（不进图集）
 ```
 
 `cover: img-1` ~ `img-7` 是内置渐变图，不依赖网络，断网也好看。

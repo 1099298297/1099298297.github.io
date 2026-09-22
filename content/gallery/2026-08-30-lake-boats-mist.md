@@ -1,8 +1,8 @@
 ---
 title: 雾里的空船
 date: 2026-08-30 07:30
-img: lake-boats-mist.jpg
-cover: lake-boats-mist.jpg
+img: photos/lake-boats-mist.jpg
+cover: photos/lake-boats-mist.jpg
 tags: [夏, 图]
 credit: Hefin Owen from Wales
 license: CC BY-SA 2.0

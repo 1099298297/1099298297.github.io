@@ -1,8 +1,8 @@
 ---
 title: 夜里的石阶
 date: 2026-05-06 07:30
-img: night-stairs.jpg
-cover: night-stairs.jpg
+img: photos/night-stairs.jpg
+cover: photos/night-stairs.jpg
 tags: [春, 图]
 credit: Furkan Akkurt
 license: CC BY-SA 4.0

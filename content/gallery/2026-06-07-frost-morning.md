@@ -1,8 +1,8 @@
 ---
 title: 很冷的那个早上
 date: 2026-06-07 07:30
-img: frost-morning.jpg
-cover: frost-morning.jpg
+img: photos/frost-morning.jpg
+cover: photos/frost-morning.jpg
 tags: [夏, 图]
 credit: Bell2020
 license: CC BY 4.0

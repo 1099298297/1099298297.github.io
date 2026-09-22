@@ -139,8 +139,12 @@ function inline(text) {
   let t = String(text);
   t = t.replace(/`([^`]+)`/g, (m, c) => keep('<code>' + esc(c) + '</code>'));
   t = t.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g,
-    (m, alt, src, title) => keep('<img src="' + escAttr(src) + '" alt="' + escAttr(alt) + '"' +
-      (title ? ' title="' + escAttr(title) + '"' : '') + ' loading="lazy">'));
+    (m, alt, src, title) => {
+      // 内置渐变图（img-1~img-7）是 CSS 类，不是文件，别当 <img> 用
+      if (/^img-\d+$/.test(src)) return keep('<span class="post-figure ' + src + '" aria-label="' + escAttr(alt) + '"></span>');
+      return keep('<img src="' + escAttr(imgURL(src)) + '" alt="' + escAttr(alt) + '"' +
+        (title ? ' title="' + escAttr(title) + '"' : '') + ' loading="lazy">');
+    });
   t = t.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g,
     (m, label, href, title) => keep('<a href="' + escAttr(href) + '"' +
       (/^https?:/.test(href) ? ' target="_blank" rel="noopener"' : '') +
@@ -259,14 +263,19 @@ function readDir(dir) {
   });
 }
 
-/* 图片地址解析：
-   前端只写文件名（如 fog-river-autumn.jpg），这里按 site.json 的 imgBase 拼成完整地址。
-   imgBase 留空则用仓库内的 assets/img/（离线可用）；img-1~img-7 是内置渐变图，原样返回。 */
+/* 图片地址解析。
+   内容里只写文件名或相对路径（如 fog-river-autumn.jpg、posts/code-1.png），
+   这里按 site.json 的 imgBase 拼成完整地址：
+     - imgBase 有值  → https://railgun.ltd/img/ + 路径
+     - imgBase 为空  → 仓库内的 assets/img/ + 路径（离线可用）
+   http(s) 绝对地址、data:、以及内置渐变图 img-1~img-7 原样返回。 */
 function imgURL(v) {
   if (!v) return '';
   if (/^(https?:)?\/\//.test(v) || /^data:/.test(v) || /^img-\d+$/.test(v)) return v;
-  const name = String(v).replace(/^.*\//, '');
-  return site.imgBase ? site.imgBase.replace(/\/?$/, '/') + name : 'assets/img/' + name;
+  const path = String(v).trim()
+    .replace(/^\.\//, '')
+    .replace(/^assets\/img\//, '');   // 兼容早期写法 assets/img/xxx.jpg
+  return site.imgBase ? site.imgBase.replace(/\/?$/, '/') + path : 'assets/img/' + path;
 }
 
 function toDate(v, fallbackFile) {

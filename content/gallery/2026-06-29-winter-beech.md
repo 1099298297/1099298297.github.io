@@ -1,8 +1,8 @@
 ---
 title: 冬天的山毛榉
 date: 2026-06-29 07:30
-img: winter-beech.jpg
-cover: winter-beech.jpg
+img: photos/winter-beech.jpg
+cover: photos/winter-beech.jpg
 tags: [夏, 图]
 credit: Susulyka
 license: CC BY-SA 4.0
