@@ -3,7 +3,7 @@ title: 把磨砂玻璃做对的六个细节
 date: 2026-05-30 14:05
 category: 技术
 tags: [CSS, 设计, 玻璃态]
-cover: img-2
+cover: assets/img/rain-window.jpg
 summary: 大部分"玻璃态"看起来廉价，问题从来不在 blur，而在它背后没有光。
 ---
 

@@ -329,6 +329,9 @@ function loadGallery() {
       exif: data.exif || '',
       img: data.img || data.cover || 'img-1',
       tags: Array.isArray(data.tags) ? data.tags : [],
+      credit: data.credit || '',
+      license: data.license || '',
+      source: data.source || '',
       html: mdToHtml(body),
     };
   }).sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -436,6 +439,41 @@ ${p.tags.map((t) => `<category>${esc(t)}</category>`).join('\n')}
 <meta http-equiv="refresh" content="0;url=${site.url}/">
 </head><body style="font-family:sans-serif"><p>这里没有东西，<a href="${site.url}/">回雾屿</a>。</p></body></html>
 `, 'utf8');
+
+  // 图片版权页：自由版权的照片要求署名，这里把作者 / 许可 / 原始页面列全
+  const creditItems = gallery.filter((g) => g.credit || g.license);
+  if (creditItems.length) {
+    writeFileSync(join(DIST, 'credits.html'),
+      `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图片版权 — ${esc(site.title)}</title>
+<style>
+body{margin:0;padding:48px 22px 80px;background:linear-gradient(160deg,#F7E8D6,#FDF6EC 45%,#EFDAC4);
+  color:#5A3E28;font:15px/1.9 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+h1{font-size:24px;font-weight:600;margin:0 0 8px}
+p.lead{color:#8A6E58;font-size:13px;margin:0 0 32px;max-width:60ch}
+ul{list-style:none;margin:0 auto;padding:0;max-width:820px;display:grid;gap:14px}
+li{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center;padding:14px;
+  background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.7);border-radius:18px;
+  box-shadow:0 12px 30px -18px rgba(80,55,35,.4)}
+li img{width:150px;height:96px;object-fit:cover;border-radius:12px;display:block}
+li b{font-weight:600}
+li span{display:block;font-size:12.5px;color:#8A6E58}
+a{color:#D2691E}
+@media (max-width:560px){li{grid-template-columns:1fr}li img{width:100%;height:150px}}
+</style></head><body>
+<h1>图片版权</h1>
+<p class="lead">本站配图来自 Wikimedia Commons 等自由版权来源，作者与许可如下。站内图片未经修改（仅按显示尺寸缩放），
+版权归原作者所有。如果你要转载本站文字，请一并保留这里的署名。</p>
+<ul>
+${creditItems.map((g) => `<li><img src="${esc(g.img)}" loading="lazy" alt=""><div><b>${esc(g.title)}</b>
+<span>${esc(g.credit)} · ${esc(g.license)}</span>
+<span><a href="${esc(g.source)}" target="_blank" rel="noopener">查看原始页面</a></span></div></li>`).join('\n')}
+</ul>
+<p style="max-width:820px;margin:28px auto 0"><a href="${site.url}/">← 回到雾屿</a></p>
+</body></html>
+`, 'utf8');
+  }
 
   // GitHub Pages 相关
   writeFileSync(join(DIST, '.nojekyll'), '', 'utf8');

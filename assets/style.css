@@ -372,8 +372,8 @@ main{position:relative;z-index:3}
 .read svg{transition:transform .4s var(--ease)}
 .post:hover .read svg{transform:translateX(5px)}
 .thumb{border-radius:var(--r-md);height:0;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.5)}
+.post .thumb{padding-bottom:52%}
 .post:first-child .thumb{padding-bottom:34%}
-.post.half .thumb{padding-bottom:52%}
 .thumb i{position:absolute;inset:0;display:block}
 .thumb img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
 .thumb::after{content:"";position:absolute;inset:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.6);border-radius:inherit}
@@ -489,6 +489,9 @@ footer{padding:60px 0 96px;position:relative;z-index:3}
   font-family:var(--font-mono);font-size:12.6px;line-height:1.85;overflow-x:auto;margin:26px 0;
   border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.16)}
 .rp .rtags{display:flex;gap:8px;flex-wrap:wrap;margin-top:36px;padding-top:26px;border-top:1px solid var(--hair)}
+.rp .credit{margin-top:14px;font-size:11.5px;line-height:1.8;color:var(--ink-faint)}
+.rp .credit a{color:var(--ink-faint);border-bottom:1px solid var(--hair)}
+.rp .credit a:hover{color:var(--accent)}
 .rp-close{position:fixed;top:26px;right:26px;z-index:90}
 .rp-close .icon-btn{width:46px;height:46px;font-size:19px;
   background:linear-gradient(145deg,rgba(255,255,255,.6),rgba(255,255,255,.24));

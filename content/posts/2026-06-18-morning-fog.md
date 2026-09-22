@@ -3,7 +3,7 @@ title: 晨雾里的一切都失去了边界，反而更像它自己
 date: 2026-06-18 07:00
 category: 观察
 tags: [晨雾, 观察, 武汉]
-cover: img-1
+cover: assets/img/fog-river-autumn.jpg
 summary: 雾是一种很诚实的介质。它不做修饰，只做减法。
 ---
 

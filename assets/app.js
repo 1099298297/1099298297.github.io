@@ -810,7 +810,8 @@
 
   /* 每页先铺多少：文章多了以后首页不该变成目录，
      深度浏览交给「看全部」和归档面板，面板里再分批。 */
-  var PAGE = { posts: 8, frags: 9, gal: 7, stepFrag: 12, stepGal: 7, panel: 30 };
+  /* posts: 第一篇通栏 + 其余两列，取 9 刚好铺满 4 行不落单 */
+  var PAGE = { posts: 9, frags: 9, gal: 7, stepFrag: 12, stepGal: 7, panel: 30 };
   var shownFrag = PAGE.frags, shownGal = PAGE.gal;
 
   /* 搜索索引：用渲染后的正文建一次小写副本，比每次按键都剥标签划算 */
@@ -840,7 +841,7 @@
     }
     var list = POSTS.slice(0, PAGE.posts);
     g.innerHTML = list.map(function(p, i){
-      return '<article class="glass post spot rv" data-post="' + i + '" tabindex="0" role="button"' +
+      return '<article class="glass post' + (i ? ' half' : '') + ' spot rv" data-post="' + i + '" tabindex="0" role="button"' +
         ' aria-label="阅读：' + esc(p.title) + '"' +
         (i ? ' style="transition-delay:' + Math.min(i, 5) * 0.07 + 's"' : '') + '>' +
         '<div class="meta"><span>' + esc(p.dateText) + '</span><i></i><span>' + esc(p.category) + '</span><i></i><span>' + p.minutes + ' min</span></div>' +
@@ -912,6 +913,8 @@
     var c = $('#kCity'), y = $('#kYear');
     if(c) c.textContent = SITE.city || '武汉';
     if(y) y.textContent = new Date().getFullYear();
+    var cl = $('#creditsLink');
+    if(cl) cl.setAttribute('href', hrefOf('credits.html'));
   }
 
   /* ============================================================
@@ -996,11 +999,14 @@
       var el = e.target.closest('[data-gal]'); if(!el) return;
       var it = GALLERY[parseInt(el.dataset.gal, 10)]; if(!it) return;
       var s = SEASON[state.season].cn, w = WEATHER[state.weather].cn;
-      showReader('<div class="rmeta">GALLERY · ' + esc(s) + ' · ' + esc(w) + ' · ' + esc(it.exif) + '</div>' +
+      showReader('<div class="rmeta">GALLERY · ' + esc(s) + ' · ' + esc(w) +
+        (it.exif ? ' · ' + esc(it.exif) : '') + '</div>' +
         '<h2>' + esc(it.title) + '</h2>' +
         '<div class="thumb rthumb wide">' + imgTag(it.img) + '</div>' +
         '<div class="body">' + it.html + '</div>' +
-        '<div class="rtags">' + tagChips(it.tags) + '</div>', it.title);
+        '<div class="rtags">' + tagChips(it.tags) + '</div>' +
+        (it.credit ? '<p class="credit">摄影 ' + esc(it.credit) + ' · ' + esc(it.license) +
+          ' · <a href="' + esc(it.source) + '" target="_blank" rel="noopener">原始页面</a></p>' : ''), it.title);
     });
   }
 

@@ -68,6 +68,29 @@ P(接受新解)=e^{-\Delta E/T}
 
 同样是一篇一个 `.md`，字段见 `content/fragments/` 和 `content/gallery/` 里现成的例子。
 
+## 图片
+
+`assets/img/` 里现在有 21 张照片，**都是 Wikimedia Commons 上自由版权（CC / 公有领域）的图**，
+作者、许可、原始链接都写在每张图的 front matter 里，站内 `/credits.html` 也列了全表。
+它们只是先垫着好看，**换成你自己的照片只需要两步**：
+
+1. 把照片放进 `assets/img/`（建议先压到 300KB 以内、长边 1400px 左右）
+2. 改 `content/gallery/*.md` 里的 `img:` 字段，例如 `img: assets/img/my-photo.jpg`；
+   文章封面同理，改 `content/posts/*.md` 的 `cover:`
+
+不想用图也行：`cover:` 留成 `img-1` ~ `img-7` 就用内置的渐变图，断网也好看。
+
+## 示例内容
+
+`content/posts/` 里有 30 篇、`content/fragments/` 里有 16 条**示例内容**（都带 `示例` 标签），
+是为了测试列表、分页、归档面板和阅读层滚动用的。写完自己的东西之后可以直接删掉：
+
+```powershell
+# 删掉所有示例文章和碎片（保留你自己写的）
+Get-ChildItem content\posts -Filter *-sample-*.md | Remove-Item
+Get-ChildItem content\fragments | Where-Object { (Get-Content $_ -Raw) -match '示例' } | Remove-Item
+```
+
 ### 改站名、邮箱、社交链接
 
 改 `content/site.json`。里面有 `url`（影响 RSS / sitemap / canonical，**换域名时记得改**）、`city`（首页那行字）、`social`（邮件 / RSS / Github / 小红书）。
