@@ -921,8 +921,11 @@
   var panel = $('#panel');
   var curIdx = -1;
 
+  /* 锁滚动用显式状态，不能靠读取 .on 这个类 ——
+     关闭时 .on 要等淡出动画（480ms）才摘掉，靠它判断会永远锁着页面，滚轮就死了。 */
+  var lockState = { reader: false, panel: false };
   function lockBody(){
-    var held = reader.classList.contains('on') || panel.classList.contains('on');
+    var held = lockState.reader || lockState.panel;
     document.body.style.overflow = held ? 'hidden' : '';
     document.body.classList.toggle('reading', held);
   }
@@ -952,6 +955,7 @@
     rp.innerHTML = html;
     reader.classList.add('on');
     requestAnimationFrame(function(){ reader.classList.add('show'); });
+    lockState.reader = true;
     lockBody();
     rpWrap.scrollTop = 0;
     if(label) reader.setAttribute('aria-label', label);
@@ -968,6 +972,7 @@
     reader.classList.remove('show');
     setTimeout(function(){ reader.classList.remove('on'); }, 480);
     curIdx = -1;
+    lockState.reader = false;
     lockBody();
     if(/^#post\//.test(location.hash)) setHash('');
   }
@@ -1016,6 +1021,7 @@
     if(tab) panelTab = tab;
     if(tag !== undefined) panelTag = tag;
     panel.classList.add('on');
+    lockState.panel = true;
     lockBody();
     renderPanel();
     if(fine) setTimeout(function(){ qEl.focus(); }, 160);
@@ -1023,6 +1029,7 @@
   function closePanel(){
     if(!panel.classList.contains('on')) return;
     panel.classList.remove('on');
+    lockState.panel = false;
     qEl.value = '';
     panelTag = null; panelTab = 'all';
     lockBody();
