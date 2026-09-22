@@ -1,8 +1,8 @@
 ---
 title: 雨滴后面的光斑
 date: 2026-07-28 07:30
-img: assets/img/rain-window-bokeh.jpg
-cover: assets/img/rain-window-bokeh.jpg
+img: rain-window-bokeh.jpg
+cover: rain-window-bokeh.jpg
 tags: [夏, 图]
 credit: Frank Vincentz
 license: CC BY-SA 3.0

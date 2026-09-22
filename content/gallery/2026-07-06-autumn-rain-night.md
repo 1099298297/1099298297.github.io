@@ -1,8 +1,8 @@
 ---
 title: 秋雨里的红灯
 date: 2026-07-06 07:30
-img: assets/img/autumn-rain-night.jpg
-cover: assets/img/autumn-rain-night.jpg
+img: autumn-rain-night.jpg
+cover: autumn-rain-night.jpg
 tags: [夏, 图]
 credit: kishjar? from Moscow, Russia
 license: CC BY 4.0

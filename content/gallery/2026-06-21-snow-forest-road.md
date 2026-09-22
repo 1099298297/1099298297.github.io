@@ -1,8 +1,8 @@
 ---
 title: 雪后的林道
 date: 2026-06-21 07:30
-img: assets/img/snow-forest-road.jpg
-cover: assets/img/snow-forest-road.jpg
+img: snow-forest-road.jpg
+cover: snow-forest-road.jpg
 tags: [夏, 图]
 credit: George Chernilevsky
 license: Public domain

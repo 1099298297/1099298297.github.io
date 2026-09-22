@@ -70,15 +70,33 @@ P(接受新解)=e^{-\Delta E/T}
 
 ## 图片
 
-`assets/img/` 里现在有 21 张照片，**都是 Wikimedia Commons 上自由版权（CC / 公有领域）的图**，
-作者、许可、原始链接都写在每张图的 front matter 里，站内 `/credits.html` 也列了全表。
-它们只是先垫着好看，**换成你自己的照片只需要两步**：
+照片**不放在这个仓库**，而是在单独的图片仓库里：<https://github.com/1099298297/img>
 
-1. 把照片放进 `assets/img/`（建议先压到 300KB 以内、长边 1400px 左右）
-2. 改 `content/gallery/*.md` 里的 `img:` 字段，例如 `img: assets/img/my-photo.jpg`；
-   文章封面同理，改 `content/posts/*.md` 的 `cover:`
+```
+https://railgun.ltd/img/<文件名>.jpg          ← 直接走 GitHub Pages
+https://cdn.jsdelivr.net/gh/1099298297/img@main/<文件名>.jpg   ← jsDelivr CDN
+```
 
-不想用图也行：`cover:` 留成 `img-1` ~ `img-7` 就用内置的渐变图，断网也好看。
+博客这边由一个配置决定用哪边，在 `content/site.json`：
+
+| `imgBase` 的值 | 效果 |
+|---|---|
+| `https://railgun.ltd/img/` | 走 GitHub Pages（当前用的） |
+| `https://cdn.jsdelivr.net/gh/1099298297/img@main/` | 换成 jsDelivr CDN |
+| `""`（空） | 用仓库内的 `assets/img/`，离线也能看图 |
+
+前端只写文件名，构建时拼完整地址：
+
+```markdown
+img: fog-river-autumn.jpg        # 图集
+cover: fog-river-autumn.jpg      # 文章封面
+```
+
+`cover: img-1` ~ `img-7` 是内置渐变图，不依赖网络，断网也好看。
+
+**换成你自己的照片**：传到图片仓库 → 在 `content/gallery/` 里加一条 `.md`，`img:` 写文件名即可
+（别人的图记得在 `credit` / `license` / `source` 里署名）。
+图片仓库里有 `CREDITS.md` 记录了现有 21 张的作者与许可，署名要求会跟着图片走，别丢。
 
 ## 现在站点里有什么
 

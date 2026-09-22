@@ -1,8 +1,8 @@
 ---
 title: 窗上的雨
 date: 2026-08-02 07:30
-img: assets/img/rain-window.jpg
-cover: assets/img/rain-window.jpg
+img: rain-window.jpg
+cover: rain-window.jpg
 tags: [夏, 图]
 credit: Frank Vincentz
 license: CC BY-SA 3.0

@@ -1,8 +1,8 @@
 ---
 title: 梧桐与冬天的太阳
 date: 2026-05-30 07:30
-img: assets/img/plane-trees-winter.jpg
-cover: assets/img/plane-trees-winter.jpg
+img: plane-trees-winter.jpg
+cover: plane-trees-winter.jpg
 tags: [春, 图]
 credit: John Sutton
 license: CC BY-SA 2.0

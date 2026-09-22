@@ -259,6 +259,16 @@ function readDir(dir) {
   });
 }
 
+/* 图片地址解析：
+   前端只写文件名（如 fog-river-autumn.jpg），这里按 site.json 的 imgBase 拼成完整地址。
+   imgBase 留空则用仓库内的 assets/img/（离线可用）；img-1~img-7 是内置渐变图，原样返回。 */
+function imgURL(v) {
+  if (!v) return '';
+  if (/^(https?:)?\/\//.test(v) || /^data:/.test(v) || /^img-\d+$/.test(v)) return v;
+  const name = String(v).replace(/^.*\//, '');
+  return site.imgBase ? site.imgBase.replace(/\/?$/, '/') + name : 'assets/img/' + name;
+}
+
 function toDate(v, fallbackFile) {
   const src = String(v || '').trim() || (fallbackFile || '').slice(0, 10);
   const m = src.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2}))?/);
@@ -292,7 +302,7 @@ function loadPosts() {
       dateText: `${pad(date.getMonth() + 1)} / ${pad(date.getDate())} / ${date.getFullYear()}`,
       category: data.category || '随笔',
       tags: Array.isArray(data.tags) ? data.tags : data.tags ? [data.tags] : [],
-      cover: data.cover || 'img-1',
+      cover: imgURL(data.cover || 'img-1'),
       summary: data.summary || firstPara.slice(0, 88),
       minutes,
       draft: data.draft === true,
@@ -327,7 +337,7 @@ function loadGallery() {
       title: data.title || file,
       time: time ? time[0] : '',
       exif: data.exif || '',
-      img: data.img || data.cover || 'img-1',
+      img: imgURL(data.img || data.cover || 'img-1'),
       tags: Array.isArray(data.tags) ? data.tags : [],
       credit: data.credit || '',
       license: data.license || '',

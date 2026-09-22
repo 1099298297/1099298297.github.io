@@ -1,8 +1,8 @@
 ---
 title: 湖上的第一道光
 date: 2026-09-08 07:30
-img: assets/img/lake-mist-sunrise.jpg
-cover: assets/img/lake-mist-sunrise.jpg
+img: lake-mist-sunrise.jpg
+cover: lake-mist-sunrise.jpg
 tags: [秋, 图]
 credit: Dreamy Pixel
 license: CC BY 4.0

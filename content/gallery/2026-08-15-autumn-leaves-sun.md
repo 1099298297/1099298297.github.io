@@ -1,8 +1,8 @@
 ---
 title: 逆光的黄叶
 date: 2026-08-15 07:30
-img: assets/img/autumn-leaves-sun.jpg
-cover: assets/img/autumn-leaves-sun.jpg
+img: autumn-leaves-sun.jpg
+cover: autumn-leaves-sun.jpg
 tags: [夏, 图]
 credit: MICHAEL BROWN
 license: CC BY 2.0

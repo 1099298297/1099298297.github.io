@@ -3,7 +3,7 @@ title: 最大子段和 · 模拟退火算法题解
 date: 2025-01-25 18:16
 category: 技术
 tags: [算法, 模拟退火]
-cover: assets/img/frost-morning.jpg
+cover: frost-morning.jpg
 summary: 用模拟退火解决洛谷 P1115。重点不在代码，在怎么设计目标函数、怎么生成新解、以及为什么"接受劣解"反而是对的。
 ---
 

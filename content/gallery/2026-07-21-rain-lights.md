@@ -1,8 +1,8 @@
 ---
 title: 雨天的两盏灯
 date: 2026-07-21 07:30
-img: assets/img/rain-lights.jpg
-cover: assets/img/rain-lights.jpg
+img: rain-lights.jpg
+cover: rain-lights.jpg
 tags: [夏, 图]
 credit: Emmanuel Huybrechts from Laval, Canada
 license: CC BY 2.0
