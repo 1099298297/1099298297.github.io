@@ -650,6 +650,11 @@ img.img-real{display:block;width:100%;height:100%;object-fit:cover;background:no
 .empty{padding:24px 4px;color:var(--ink-faint);font-size:13.5px;line-height:1.9}
 .empty code{font-family:var(--font-mono);font-size:12.5px;padding:2px 6px;border-radius:6px;background:rgba(255,255,255,.5)}
 .gal .empty{grid-column:1 / -1}
+.grid-12 > .empty{grid-column:1 / -1}
+.frag.is-empty{columns:1}
+.empty-card{padding:34px 26px;border-radius:var(--r-md);text-align:center}
+.empty-card p{font-size:13.5px;line-height:2;color:var(--ink-soft);font-weight:300}
+.empty-card code{font-family:var(--font-mono);font-size:12.5px;padding:2px 6px;border-radius:6px;background:rgba(255,255,255,.55)}
 
 :focus-visible{outline:2px solid color-mix(in srgb,var(--accent) 80%,transparent);outline-offset:3px}
 .post:focus-visible,.cell:focus-visible,.res:focus-visible{outline-offset:5px;border-radius:var(--r-md)}

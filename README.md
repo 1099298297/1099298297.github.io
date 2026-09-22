@@ -80,15 +80,19 @@ P(接受新解)=e^{-\Delta E/T}
 
 不想用图也行：`cover:` 留成 `img-1` ~ `img-7` 就用内置的渐变图，断网也好看。
 
-## 示例内容
+## 现在站点里有什么
 
-`content/posts/` 里有 30 篇、`content/fragments/` 里有 16 条**示例内容**（都带 `示例` 标签），
-是为了测试列表、分页、归档面板和阅读层滚动用的。写完自己的东西之后可以直接删掉：
+为了测试列表、分页和滚动加的那些示例内容已经全部清掉了，现在只剩：
+
+- **1 篇文章**：`content/posts/2025-01-25-simulated-annealing.md`（从旧博客迁过来的题解）
+- **21 张图集照片**（自由版权，见上一节）
+- **0 条碎片** —— 碎片区会显示一句「还没写碎片」，写一条就出现了
+
+想恢复之前那批示例看格式的话，它们在 git 历史里：
 
 ```powershell
-# 删掉所有示例文章和碎片（保留你自己写的）
-Get-ChildItem content\posts -Filter *-sample-*.md | Remove-Item
-Get-ChildItem content\fragments | Where-Object { (Get-Content $_ -Raw) -match '示例' } | Remove-Item
+git log --oneline -- content/posts      # 找到包含示例的那次提交
+git show <commit>:content/posts/2026-09-16-sample-01.md   # 看某一篇
 ```
 
 ### 改站名、邮箱、社交链接

@@ -877,6 +877,10 @@
     var g = $('#fragList'); if(!g) return;
     var list = FRAGMENTS.filter(function(f){ return !fragFilter || f.tags.indexOf(fragFilter) >= 0; });
     var shown = list.slice(0, shownFrag);
+    g.classList.toggle('is-empty', !FRAGMENTS.length);
+    var empty = FRAGMENTS.length
+      ? '<p class="empty">这个标签下还没有碎片。</p>'
+      : '<div class="glass empty-card"><p>还没写碎片。<br>在 <code>content/fragments/</code> 里放一个 .md，它就会出现在这里。</p></div>';
     g.innerHTML = shown.map(function(f, i){
       return '<div class="f' + (f.style ? ' ' + f.style : '') + ' rv" style="transition-delay:' +
         ((i % 6) * 0.06).toFixed(2) + 's">' +
@@ -885,7 +889,7 @@
         (f.tags.length ? '<div class="ftags">' + tagChips(f.tags) + '</div>' : '') +
         '<div class="sig">' + esc(f.sig) + '</div>' +
         '</div>';
-    }).join('') || '<p class="empty">这个标签下还没有碎片。</p>';
+    }).join('') || empty;
     $('#fragFilter').hidden = !fragFilter;
     if(fragFilter) $('#fragChipText').textContent = '#' + fragFilter;
     moreRow('#fragMore', list.length, shown.length, '条', '继续看碎片',
