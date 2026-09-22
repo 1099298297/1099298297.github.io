@@ -605,31 +605,46 @@
     es.forEach(function(en){ en.target.classList.toggle('inview', en.isIntersecting); });
   }, {rootMargin:'140px'});
 
-  function initFilm(){
-    $$('.glass, .cell, .f, .nav').forEach(function(el){
-      if(el.querySelector('.film')) return;
-      var fm = document.createElement('i');
-      fm.className = 'film';
+  /* 水膜层按需注入：全站元素一多，逐个插 .film + 绑监听会线性变重，
+     所以只给「快要进入视口」的元素做，滚走了也不再补。 */
+  function addFilm(el){
+    if(el.__film || el.querySelector('.film')) return;
+    el.__film = 1;
+    var fm = document.createElement('i');
+    fm.className = 'film';
+    fm.style.setProperty('--mx','-999px');
+    fm.style.setProperty('--my','-999px');
+    fm.style.setProperty('--sx', rnd(6,94).toFixed(1)+'%');
+    fm.style.setProperty('--sw', rnd(1.4,3.4).toFixed(1)+'px');
+    fm.style.setProperty('--sdu', rnd(5,11).toFixed(1)+'s');
+    fm.style.setProperty('--sd', rnd(0,6).toFixed(1)+'s');
+    fm.style.setProperty('--rx', rnd(12,88).toFixed(1)+'%');
+    fm.style.setProperty('--ry', rnd(15,85).toFixed(1)+'%');
+    fm.style.setProperty('--rdu', rnd(7,14).toFixed(1)+'s');
+    fm.style.setProperty('--rd', rnd(0,8).toFixed(1)+'s');
+    el.appendChild(fm);
+    el.addEventListener('mousemove', function(e){
+      var r = el.getBoundingClientRect();
+      fm.style.setProperty('--mx', (e.clientX-r.left)+'px');
+      fm.style.setProperty('--my', (e.clientY-r.top)+'px');
+    }, {passive:true});
+    el.addEventListener('mouseleave', function(){
       fm.style.setProperty('--mx','-999px');
       fm.style.setProperty('--my','-999px');
-      fm.style.setProperty('--sx', rnd(6,94).toFixed(1)+'%');
-      fm.style.setProperty('--sw', rnd(1.4,3.4).toFixed(1)+'px');
-      fm.style.setProperty('--sdu', rnd(5,11).toFixed(1)+'s');
-      fm.style.setProperty('--sd', rnd(0,6).toFixed(1)+'s');
-      fm.style.setProperty('--rx', rnd(12,88).toFixed(1)+'%');
-      fm.style.setProperty('--ry', rnd(15,85).toFixed(1)+'%');
-      fm.style.setProperty('--rdu', rnd(7,14).toFixed(1)+'s');
-      fm.style.setProperty('--rd', rnd(0,8).toFixed(1)+'s');
-      el.appendChild(fm);
-      el.addEventListener('mousemove', function(e){
-        var r = el.getBoundingClientRect();
-        fm.style.setProperty('--mx', (e.clientX-r.left)+'px');
-        fm.style.setProperty('--my', (e.clientY-r.top)+'px');
-      }, {passive:true});
-      el.addEventListener('mouseleave', function(){
-        fm.style.setProperty('--mx','-999px');
-        fm.style.setProperty('--my','-999px');
-      });
+    });
+  }
+  var ioFilm = new IntersectionObserver(function(es){
+    es.forEach(function(en){
+      if(!en.isIntersecting) return;
+      ioFilm.unobserve(en.target);
+      addFilm(en.target);
+    });
+  }, {rootMargin:'240px 0px'});
+  function initFilm(scope){
+    $$('.glass, .cell, .f, .nav', scope).forEach(function(el){
+      if(el.__film || el.__filmWatch) return;
+      el.__filmWatch = 1;
+      ioFilm.observe(el);
     });
   }
 
@@ -778,9 +793,10 @@
   }
   function isBuiltin(v){ return /^img-\d+$/.test(String(v)); }
   function imgTag(v, cls){
-    var c = (cls ? cls + ' ' : '') + (isBuiltin(v) ? v : 'img-real');
-    var st = isBuiltin(v) ? '' : ' style="background-image:url(' + esc(v) + ')"';
-    return '<i class="' + c + '"' + st + '></i>';
+    var pre = cls ? cls + ' ' : '';
+    if(isBuiltin(v)) return '<i class="' + pre + v + '"></i>';
+    /* 真实照片用 <img loading="lazy">：背景图没法懒加载，图一多就会一次性全下 */
+    return '<img class="' + pre + 'img-real" src="' + esc(hrefOf(v)) + '" alt="" loading="lazy" decoding="async">';
   }
   function tagChips(tags, cls){
     return (tags || []).map(function(t){
@@ -792,6 +808,29 @@
     return -1;
   }
 
+  /* 每页先铺多少：文章多了以后首页不该变成目录，
+     深度浏览交给「看全部」和归档面板，面板里再分批。 */
+  var PAGE = { posts: 8, frags: 9, gal: 7, stepFrag: 12, stepGal: 7, panel: 30 };
+  var shownFrag = PAGE.frags, shownGal = PAGE.gal;
+
+  /* 搜索索引：用渲染后的正文建一次小写副本，比每次按键都剥标签划算 */
+  POSTS.forEach(function(p){
+    p._s = (p.title + ' ' + p.summary + ' ' + p.category + ' ' + p.tags.join(' ') + ' ' +
+      String(p.html).replace(/<[^>]+>/g, ' ')).toLowerCase();
+  });
+
+  /* 渲染完统一补一次交互绑定 */
+  function afterRender(scope){
+    bindHover(scope); bindSpot(scope); bindTilt(scope); observeReveal(scope); initFilm(scope);
+  }
+  function moreRow(sel, total, shown, unit, label, onClick){
+    var el = $(sel); if(!el) return;
+    if(total - shown <= 0){ el.hidden = true; el.innerHTML = ''; return; }
+    el.hidden = false;
+    el.innerHTML = '<button class="pill" type="button">' + label + ' · 还有 ' + (total - shown) + ' ' + unit + ' →</button>';
+    el.querySelector('button').addEventListener('click', onClick);
+  }
+
   /* ---------- 渲染：文章 / 图集 / 碎片 / 关于 ---------- */
   function renderPosts(){
     var g = $('#postGrid'); if(!g) return;
@@ -799,7 +838,8 @@
       g.innerHTML = '<p class="empty">还没有文章。在 <code>content/posts/</code> 放一个 .md，再跑 <code>node build.mjs</code>。</p>';
       return;
     }
-    g.innerHTML = POSTS.map(function(p, i){
+    var list = POSTS.slice(0, PAGE.posts);
+    g.innerHTML = list.map(function(p, i){
       return '<article class="glass post spot rv" data-post="' + i + '" tabindex="0" role="button"' +
         ' aria-label="阅读：' + esc(p.title) + '"' +
         (i ? ' style="transition-delay:' + Math.min(i, 5) * 0.07 + 's"' : '') + '>' +
@@ -810,13 +850,16 @@
         '<div class="foot"><span class="read">阅读全文 ' + ARROW + '</span><span class="lab">NO.' + p.no + '</span></div>' +
         '</article>';
     }).join('');
+    moreRow('#postMore', POSTS.length, list.length, '篇', '看全部 ' + POSTS.length + ' 篇',
+      function(){ openPanel('all', null); });
   }
 
   var GAL_SLOT = ['c-a', 'c-b', 'c-c', 'c-d', 'c-e', 'c-f', 'c-g'];
   function renderGallery(){
     var g = $('#galGrid'); if(!g) return;
     if(!GALLERY.length){ g.innerHTML = '<p class="empty">图集还空着。</p>'; return; }
-    g.innerHTML = GALLERY.map(function(it, i){
+    var list = GALLERY.slice(0, shownGal);
+    g.innerHTML = list.map(function(it, i){
       return '<button class="cell ' + GAL_SLOT[i % GAL_SLOT.length] + ' rv" data-gal="' + i + '"' +
         ' aria-label="看图：' + esc(it.title) + '"' +
         (i ? ' style="transition-delay:' + ((i % 6) * 0.06).toFixed(2) + 's"' : '') + '>' +
@@ -824,13 +867,16 @@
         '<span class="cap"><span>' + esc(it.title) + '</span><em>' + esc(it.time) + '</em></span>' +
         '</button>';
     }).join('');
+    moreRow('#galMore', GALLERY.length, list.length, '张', '继续看图',
+      function(){ shownGal += PAGE.stepGal; renderGallery(); afterRender($('#galGrid')); });
   }
 
   var fragFilter = null;
   function renderFragments(){
     var g = $('#fragList'); if(!g) return;
     var list = FRAGMENTS.filter(function(f){ return !fragFilter || f.tags.indexOf(fragFilter) >= 0; });
-    g.innerHTML = list.map(function(f, i){
+    var shown = list.slice(0, shownFrag);
+    g.innerHTML = shown.map(function(f, i){
       return '<div class="f' + (f.style ? ' ' + f.style : '') + ' rv" style="transition-delay:' +
         ((i % 6) * 0.06).toFixed(2) + 's">' +
         '<div class="d"><span>' + esc(f.dateText) + '</span><span>' + esc(f.kind) + '</span></div>' +
@@ -841,6 +887,8 @@
     }).join('') || '<p class="empty">这个标签下还没有碎片。</p>';
     $('#fragFilter').hidden = !fragFilter;
     if(fragFilter) $('#fragChipText').textContent = '#' + fragFilter;
+    moreRow('#fragMore', list.length, shown.length, '条', '继续看碎片',
+      function(){ shownFrag += PAGE.stepFrag; renderFragments(); afterRender($('#fragList')); });
   }
 
   function renderAbout(){
@@ -992,8 +1040,7 @@
     return POSTS.filter(function(p){
       if(panelTag && p.tags.indexOf(panelTag) < 0) return false;
       if(!q) return true;
-      return (p.title + ' ' + p.summary + ' ' + p.category + ' ' + p.tags.join(' ') + ' ' + p.body)
-        .toLowerCase().indexOf(q) >= 0;
+      return p._s.indexOf(q) >= 0;
     });
   }
   function resRow(p){
@@ -1005,45 +1052,69 @@
       '</button>';
   }
   var EMPTY_ROW = '<p class="empty">没有匹配的文章。</p>';
+  var panelShown = PAGE.panel, panelTotal = 0;
 
-  function renderPanel(){
+  function renderPanel(reset){
+    if(reset !== false) panelShown = PAGE.panel;
     var list = matchedPosts();
+    panelTotal = list.length;
     $$('#panelTabs .tab').forEach(function(t){ t.classList.toggle('on', t.dataset.tab === panelTab); });
     $('#tabCountAll').textContent = list.length;
 
     if(panelTab === 'tag' || panelTab === 'all'){
       tagPoolEl.hidden = false;
-      tagPoolEl.innerHTML = allTags().map(function(t){
+      /* 标签只铺前 40 个（按文章数排序），几百个标签也不至于把面板塞满 */
+      var tags = allTags(), TAG_CAP = 40;
+      tagPoolEl.innerHTML = tags.slice(0, TAG_CAP).map(function(t){
         return '<button class="chip' + (panelTag === t.tag ? ' on' : '') + '" data-tag="' + esc(t.tag) + '">' +
           esc(t.tag) + '<b>' + t.n + '</b></button>';
-      }).join('');
+      }).join('') + (tags.length > TAG_CAP
+        ? '<span class="chip chip-dim">还有 ' + (tags.length - TAG_CAP) + ' 个标签，搜关键词更快</span>' : '');
     } else {
       tagPoolEl.hidden = true;
     }
 
     if(!list.length){ resEl.innerHTML = EMPTY_ROW; return; }
 
+    /* 面板也分批：一次只铺 30 条，滚到底再续 */
+    var slice = list.slice(0, panelShown);
+    var tail = (panelShown < list.length)
+      ? '<div class="res-more">还有 ' + (list.length - panelShown) + ' 篇 · 继续往下滚</div>' : '';
+
     if(panelTab === 'archive'){
       var byYear = {};
-      list.forEach(function(p){ (byYear[p.year] = byYear[p.year] || []).push(p); });
+      slice.forEach(function(p){ (byYear[p.year] = byYear[p.year] || []).push(p); });
       resEl.innerHTML = Object.keys(byYear).sort().reverse().map(function(y){
         return '<div class="res-year"><span class="lab">' + y + '</span><span class="lab">' +
           byYear[y].length + ' 篇</span></div>' + byYear[y].map(resRow).join('');
-      }).join('');
+      }).join('') + tail;
     } else if(panelTab === 'tag' && !panelTag){
       var byTag = {};
-      list.forEach(function(p){ p.tags.forEach(function(t){ (byTag[t] = byTag[t] || []).push(p); }); });
+      slice.forEach(function(p){ p.tags.forEach(function(t){ (byTag[t] = byTag[t] || []).push(p); }); });
       resEl.innerHTML = Object.keys(byTag).map(function(t){
         return '<div class="res-year"><span class="lab">#' + esc(t) + '</span><span class="lab">' +
           byTag[t].length + ' 篇</span></div>' + byTag[t].map(resRow).join('');
-      }).join('');
+      }).join('') + tail;
     } else {
-      resEl.innerHTML = list.map(resRow).join('');
+      resEl.innerHTML = slice.map(resRow).join('') + tail;
     }
   }
 
-  qEl.addEventListener('input', renderPanel);
-  qEl.addEventListener('search', renderPanel);   // 原生 ✕ 清除按钮
+  /* 输入时防抖，别每敲一个字就重排一遍 */
+  var qTimer = 0;
+  function onQuery(){
+    clearTimeout(qTimer);
+    qTimer = setTimeout(function(){ renderPanel(); }, 120);
+  }
+  qEl.addEventListener('input', onQuery);
+  qEl.addEventListener('search', onQuery);   // 原生 ✕ 清除按钮
+  resEl.addEventListener('scroll', function(){
+    if(panelShown >= panelTotal) return;
+    if(resEl.scrollTop + resEl.clientHeight >= resEl.scrollHeight - 120){
+      panelShown += PAGE.panel;
+      renderPanel(false);
+    }
+  }, {passive:true});
   $$('#panelTabs .tab').forEach(function(t){
     t.addEventListener('click', function(){ panelTab = t.dataset.tab; renderPanel(); });
   });
@@ -1089,8 +1160,9 @@
      ============================================================ */
   function setFragFilter(tag, scroll){
     fragFilter = tag;
+    shownFrag = PAGE.frags;
     renderFragments();
-    bindHover($('#fragList')); bindSpot($('#fragList')); observeReveal($('#fragList'));
+    afterRender($('#fragList'));
     if(scroll){
       var sec = $('#fragments');
       if(sec) sec.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
@@ -1217,7 +1289,7 @@
   renderFragments();
   renderAbout();
   renderStats();
-  bindHover(document); bindSpot(document); bindTilt(document); observeReveal(document);
+  afterRender(document);
 
   sizeCanvas();
   sizeFilters();

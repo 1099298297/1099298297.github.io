@@ -297,7 +297,6 @@ function loadPosts() {
       minutes,
       draft: data.draft === true,
       html,
-      body,
     };
   }).filter((p) => !p.draft).sort((a, b) => new Date(b.date) - new Date(a.date))
     .map((p, idx, arr) => Object.assign(p, { no: arr.length - idx }));
@@ -391,18 +390,17 @@ function build() {
 <meta property="og:title" content="${escAttr(p.title)}">
 <meta property="og:description" content="${escAttr(p.summary)}">
 <meta property="og:url" content="${site.url}/p/${p.slug}/">
+<script>window.__MISTY_BASE__=${JSON.stringify(prefix)};window.__MISTY_POST__=${JSON.stringify(p.slug)};</script>
 </head>`)
       .replace(/<article class="rp" id="rp"><\/article>/,
         `<article class="rp" id="rp"><div class="rmeta">${esc(p.dateText)} · ${esc(p.category)} · ${p.minutes} MIN</div><h2>${esc(p.title)}</h2><div class="body">${p.html}</div></article>`)
       .replace(/<title>[\s\S]*?<\/title>/, `<title>${escAttr(p.title)} — ${escAttr(site.title)}</title>`)
-      // 深链接信息必须在 app.js 之前注入
-      .replace(`<script src="${prefix}assets/app.js"></script>`,
-        `<script>window.__MISTY_BASE__=${JSON.stringify(prefix)};window.__MISTY_POST__=${JSON.stringify(p.slug)};</script>\n` +
-        `<script src="${prefix}assets/app.js"></script>`);
+      ;
     writeFileSync(join(dir, 'index.html'), page, 'utf8');
   }
 
-  // RSS
+  // RSS —— 只放最近的几篇。全文 feed 在文章多了以后会变成几 MB，阅读器会吃不消。
+  const feedPosts = posts.slice(0, site.feedLimit || 20);
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
 <channel>
@@ -411,7 +409,7 @@ function build() {
 <description>${esc(site.description)}</description>
 <language>zh-CN</language>
 <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-${posts.map((p) => `<item>
+${feedPosts.map((p) => `<item>
 <title>${esc(p.title)}</title>
 <link>${site.url}/p/${p.slug}/</link>
 <guid isPermaLink="true">${site.url}/p/${p.slug}/</guid>

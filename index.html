@@ -6,7 +6,7 @@
 <title>雾屿 · Misty Isle — 一块会随季节变色的玻璃</title>
 <meta name="description" content="一个关于光、雾与日常碎片的个人博客。季节决定光的颜色，天气决定玻璃上发生的事。" />
 <link rel="stylesheet" href="assets/style.css" />
-<script src="assets/content.js"></script>
+<script defer src="assets/content.js"></script>
 
 </head>
 <body>
@@ -115,6 +115,7 @@
       <p class="sec-note">写完整的想法。通常是观察、失败记录，和一些慢下来的技术笔记。</p>
     </div>
     <div class="grid-12" id="postGrid"></div>
+    <div class="more-row" id="postMore" hidden></div>
   </section>
 
   <section class="wrap sec" id="gallery">
@@ -126,6 +127,7 @@
       <p class="sec-note">手机、旧相机、以及一次失败的胶片。悬停看拍摄信息。</p>
     </div>
     <div class="gal" id="galGrid"></div>
+    <div class="more-row" id="galMore" hidden></div>
   </section>
 
   <section class="wrap sec" id="fragments">
@@ -141,6 +143,7 @@
       <button class="chip on" id="fragChip"><span id="fragChipText"></span> ✕</button>
     </div>
     <div class="frag" id="fragList"></div>
+    <div class="more-row" id="fragMore" hidden></div>
   </section>
 
   <section class="wrap sec" id="about">
@@ -211,6 +214,6 @@
   </div>
 </div>
 
-<script src="assets/app.js"></script>
+<script defer src="assets/app.js"></script>
 </body>
 </html>

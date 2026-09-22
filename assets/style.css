@@ -375,6 +375,7 @@ main{position:relative;z-index:3}
 .post:first-child .thumb{padding-bottom:34%}
 .post.half .thumb{padding-bottom:52%}
 .thumb i{position:absolute;inset:0;display:block}
+.thumb img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
 .thumb::after{content:"";position:absolute;inset:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.6);border-radius:inherit}
 
 .img-1{background:
@@ -552,6 +553,14 @@ footer{padding:60px 0 96px;position:relative;z-index:3}
 /* 真实图片（assets/img 里的照片），没有就用内置渐变 */
 .img-real{background-size:cover;background-position:center;background-repeat:no-repeat;
   background-color:color-mix(in srgb,var(--orb-2) 45%,#fff)}
+img.img-real{display:block;width:100%;height:100%;object-fit:cover;background:none;border:0}
+
+/* 「看全部 / 继续看」——列表多了以后首页只铺前几屏 */
+.more-row{display:flex;justify-content:center;margin-top:26px}
+.more-row[hidden]{display:none}
+.more-row .pill{font-size:13.5px;letter-spacing:.02em}
+.res-more{display:flex;justify-content:center;padding:18px 0 6px;
+  font-size:12px;letter-spacing:.1em;color:var(--ink-faint)}
 
 /* ============================================================
    11. 搜索 / 标签 / 归档面板（弹层，模糊档位对齐 40px 阅读层）
@@ -562,6 +571,7 @@ footer{padding:60px 0 96px;position:relative;z-index:3}
 .panel.on{display:block}
 .panel-box{max-width:780px;margin:0 auto;display:flex;flex-direction:column;max-height:calc(100vh - 140px);
   padding:20px 20px 10px;border-radius:var(--r-lg);
+  overflow:hidden;
   -webkit-backdrop-filter:blur(var(--blur-3)) saturate(1.85);backdrop-filter:blur(var(--blur-3)) saturate(1.85);
   animation:panelIn .5s var(--ease)}
 @keyframes panelIn{from{opacity:0;transform:translateY(18px) scale(.99)}to{opacity:1;transform:none}}
@@ -577,8 +587,8 @@ footer{padding:60px 0 96px;position:relative;z-index:3}
   background:rgba(255,255,255,.32);border:1px solid rgba(255,255,255,.45);transition:all .35s var(--ease)}
 .panel-tabs .tab b{margin-left:5px;font-weight:400;opacity:.6;font-size:11px}
 .panel-tabs .tab.on{color:var(--ink);background:rgba(255,255,255,.7);box-shadow:inset 0 1px 0 #fff}
-.tag-pool{display:flex;flex-wrap:wrap;gap:7px;padding-bottom:14px;border-bottom:1px solid var(--hair);
-  max-height:112px;overflow-y:auto}
+.tag-pool{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:7px;padding-bottom:14px;border-bottom:1px solid var(--hair);
+  max-height:112px;overflow-y:auto;align-content:flex-start}
 .tag-pool[hidden]{display:none}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:5px 11px;border-radius:var(--r-pill);
   background:rgba(255,255,255,.42);border:1px solid rgba(255,255,255,.5);color:var(--ink-soft);
@@ -588,7 +598,8 @@ footer{padding:60px 0 96px;position:relative;z-index:3}
 .chip.on{color:#fff;border-color:rgba(255,255,255,.6);
   background:linear-gradient(140deg,var(--accent),color-mix(in srgb,var(--accent) 60%,var(--orb-2)))}
 .chip.on b{opacity:.85}
-.res-list{flex:1;overflow-y:auto;margin:0 -6px;padding:6px}
+.chip-dim{opacity:.65;pointer-events:none;border-style:dashed}
+.res-list{flex:1 1 auto;min-height:0;overflow-y:auto;margin:0 -6px;padding:6px}
 .res-year{display:flex;justify-content:space-between;padding:16px 10px 8px}
 .res{display:grid;grid-template-columns:98px 1fr;gap:3px 12px;width:100%;padding:12px 12px 13px;text-align:left;
   border-radius:var(--r-sm);transition:background .3s var(--ease),transform .3s var(--ease)}
