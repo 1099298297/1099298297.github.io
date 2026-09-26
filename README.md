@@ -108,7 +108,7 @@ cover: photos/fog-river-autumn.jpg      # 文章封面
 **换成你自己的照片**：传到图片仓库 → 在 `content/gallery/` 里加一条 `.md`，`img:` 写文件名即可
 （别人的图记得在 `credit` / `license` / `source` 里署名）。
 现在图集里 13 张都是本人拍的，署 `credit: railgun` / `license: 本人拍摄`；
-图片仓库里还留着 21 张早先的自由版权照片（已不进图集，`frost-morning.jpg` 仍是文章封面），
+图片仓库里还留着 21 张早先的自由版权照片（已不进图集，也没有页面在用了），
 作者与许可记在 [CREDITS.md](https://github.com/1099298297/img/blob/main/CREDITS.md)，署名要求会跟着图片走，别丢。
 
 ## 现在站点里有什么
