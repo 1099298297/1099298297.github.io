@@ -482,12 +482,13 @@ a{color:#D2691E}
 @media (max-width:560px){li{grid-template-columns:1fr}li img{width:100%;height:150px}}
 </style></head><body>
 <h1>图片版权</h1>
-<p class="lead">本站配图来自 Wikimedia Commons 等自由版权来源，作者与许可如下。站内图片未经修改（仅按显示尺寸缩放），
-版权归原作者所有。如果你要转载本站文字，请一并保留这里的署名。</p>
+<p class="lead">本站配图以作者自己拍的为主（署名 railgun，保留所有权利）；其余来自 Wikimedia Commons 等
+自由版权来源，作者与许可见下。站内图片未经修改，仅按显示尺寸缩放与裁切，版权归各自作者所有。
+如果你要转载本站文字，请一并保留这里的署名。</p>
 <ul>
 ${creditItems.map((g) => `<li><img src="${esc(g.img)}" loading="lazy" alt=""><div><b>${esc(g.title)}</b>
 <span>${esc(g.credit)} · ${esc(g.license)}</span>
-<span><a href="${esc(g.source)}" target="_blank" rel="noopener">查看原始页面</a></span></div></li>`).join('\n')}
+${g.source ? `<span><a href="${esc(g.source)}" target="_blank" rel="noopener">查看原始页面</a></span>` : ''}</div></li>`).join('\n')}
 </ul>
 <p style="max-width:820px;margin:28px auto 0"><a href="${site.url}/">← 回到雾屿</a></p>
 </body></html>

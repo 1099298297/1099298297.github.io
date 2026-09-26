@@ -107,14 +107,16 @@ cover: photos/fog-river-autumn.jpg      # 文章封面
 
 **换成你自己的照片**：传到图片仓库 → 在 `content/gallery/` 里加一条 `.md`，`img:` 写文件名即可
 （别人的图记得在 `credit` / `license` / `source` 里署名）。
-图片仓库里有 `CREDITS.md` 记录了现有 21 张的作者与许可，署名要求会跟着图片走，别丢。
+现在图集里 13 张都是本人拍的，署 `credit: railgun` / `license: 本人拍摄`；
+图片仓库里还留着 21 张早先的自由版权照片（已不进图集，`frost-morning.jpg` 仍是文章封面），
+作者与许可记在 [CREDITS.md](https://github.com/1099298297/img/blob/main/CREDITS.md)，署名要求会跟着图片走，别丢。
 
 ## 现在站点里有什么
 
 为了测试列表、分页和滚动加的那些示例内容已经全部清掉了，现在只剩：
 
 - **1 篇文章**：`content/posts/2025-01-25-simulated-annealing.md`（从旧博客迁过来的题解）
-- **21 张图集照片**（自由版权，见上一节）
+- **13 张图集照片**（自己拍的，见上一节）
 - **0 条碎片** —— 碎片区会显示一句「还没写碎片」，写一条就出现了
 
 想恢复之前那批示例看格式的话，它们在 git 历史里：
