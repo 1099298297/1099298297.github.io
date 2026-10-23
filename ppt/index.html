@@ -1,0 +1,2206 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="智能优化算法研讨课：演化算法的三个核心不足、研究现状与改进思路。">
+  <title>演化算法的三个根本不足 | 研讨课</title>
+  <style>
+    :root {
+      --paper: #f5f1e7;
+      --paper-2: #ede8da;
+      --surface: #fdfbf5;
+      --ink: #18231f;
+      --muted: #68736e;
+      --line: #d8d5c9;
+      --line-strong: #b7bbae;
+      --teal: #0f6a60;
+      --teal-2: #3ba99c;
+      --teal-soft: #dcefeb;
+      --amber: #bf6729;
+      --amber-soft: #f4e3cf;
+      --blue: #315f9d;
+      --blue-soft: #e3eaf5;
+      --rose: #9a4755;
+      --rose-soft: #f2dfe3;
+      --stage: #0d1513;
+      --sans: "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+      --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 35%, #1a2925 0, #0d1513 52%, #080d0c 100%);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    a {
+      color: var(--teal);
+      text-underline-offset: 0.18em;
+    }
+
+    .deck {
+      position: relative;
+      width: min(100vw, calc(100dvh * 16 / 9));
+      height: min(100dvh, calc(100vw * 9 / 16));
+      margin: auto;
+    }
+
+    .deck-shell {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: var(--paper);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      width: 100%;
+      height: 100%;
+      padding: clamp(24px, 4.3cqw, 76px) clamp(28px, 5.4cqw, 94px) clamp(40px, 5.1cqw, 82px);
+      background:
+        linear-gradient(115deg, transparent 0 72%, rgba(15, 106, 96, 0.025) 72%),
+        var(--paper);
+      container-type: inline-size;
+      overflow: hidden;
+    }
+
+    .slide.active {
+      display: block;
+      animation: slide-in 420ms cubic-bezier(0.22, 0.82, 0.3, 1) both;
+    }
+
+    .slide::after {
+      content: "";
+      position: absolute;
+      right: -8cqw;
+      bottom: -13cqw;
+      width: 30cqw;
+      height: 30cqw;
+      border: 1px solid color-mix(in srgb, var(--teal) 12%, transparent);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    @keyframes slide-in {
+      from {
+        opacity: 0;
+        transform: translateX(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: var(--serif);
+      line-height: 1.14;
+      text-wrap: balance;
+    }
+
+    h2 {
+      margin-bottom: 2.3cqw;
+      font-size: clamp(1.75rem, 3.65cqw, 3.8rem);
+      font-weight: 640;
+      letter-spacing: -0.04em;
+    }
+
+    h3 {
+      font-size: clamp(1.08rem, 1.8cqw, 2rem);
+      font-weight: 620;
+    }
+
+    .body-text {
+      color: var(--muted);
+      font-size: clamp(0.92rem, 1.28cqw, 1.18rem);
+    }
+
+    .body-text strong,
+    strong {
+      color: var(--ink);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75cqw;
+      margin-bottom: 1.35cqw;
+      color: var(--teal);
+      font-size: clamp(0.65rem, 0.82cqw, 0.85rem);
+      font-weight: 750;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 2.6cqw;
+      height: 2px;
+      background: currentColor;
+    }
+
+    .slide-label {
+      position: absolute;
+      top: clamp(20px, 3.1cqw, 56px);
+      left: clamp(28px, 5.4cqw, 94px);
+      color: var(--muted);
+      font-size: clamp(0.58rem, 0.7cqw, 0.72rem);
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .slide-label span {
+      color: var(--teal);
+    }
+
+    .slide-number {
+      position: absolute;
+      right: clamp(26px, 4.2cqw, 72px);
+      top: clamp(20px, 3.1cqw, 56px);
+      color: var(--muted);
+      font-family: Georgia, serif;
+      font-size: clamp(0.65rem, 0.8cqw, 0.9rem);
+      letter-spacing: 0.08em;
+    }
+
+    .slide-number b {
+      color: var(--ink);
+      font-size: 1.3em;
+    }
+
+    .rule {
+      width: 5.5cqw;
+      height: 4px;
+      margin-bottom: 1.6cqw;
+      background: var(--amber);
+      border-radius: 999px;
+    }
+
+    .accent {
+      color: var(--teal);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .small {
+      font-size: clamp(0.72rem, 0.92cqw, 0.9rem);
+    }
+
+    .citation {
+      color: var(--muted);
+      font-size: clamp(0.6rem, 0.74cqw, 0.72rem);
+      line-height: 1.45;
+    }
+
+    .citation a {
+      color: inherit;
+    }
+
+    .nav {
+      position: absolute;
+      right: clamp(20px, 3.2cqw, 52px);
+      bottom: clamp(16px, 2.5cqw, 42px);
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: clamp(5px, 0.45cqw, 8px);
+      padding: clamp(5px, 0.5cqw, 8px);
+      color: var(--ink);
+      background: color-mix(in srgb, var(--surface) 88%, transparent);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: 0 8px 24px rgba(39, 50, 45, 0.09);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav button {
+      display: inline-grid;
+      place-items: center;
+      min-width: clamp(28px, 2.4cqw, 38px);
+      height: clamp(28px, 2.4cqw, 38px);
+      padding: 0 0.6cqw;
+      color: var(--ink);
+      background: transparent;
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .nav button:hover {
+      color: var(--teal);
+      background: var(--teal-soft);
+    }
+
+    .nav button:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--teal) 30%, transparent);
+      outline-offset: 2px;
+    }
+
+    .counter {
+      min-width: 5.8cqw;
+      color: var(--muted);
+      font-family: Georgia, serif;
+      font-size: clamp(0.62rem, 0.78cqw, 0.82rem);
+      text-align: center;
+      letter-spacing: 0.06em;
+    }
+
+    .counter b {
+      color: var(--ink);
+      font-size: 1.15em;
+    }
+
+    .progress {
+      position: absolute;
+      inset: auto 0 0 0;
+      z-index: 20;
+      height: 3px;
+      background: color-mix(in srgb, var(--line) 65%, transparent);
+    }
+
+    .progress span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: var(--teal);
+      transition: width 260ms ease;
+    }
+
+    .overview {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      padding: clamp(24px, 4.2cqw, 72px);
+      color: var(--ink);
+      background: color-mix(in srgb, var(--paper) 96%, transparent);
+      backdrop-filter: blur(18px);
+    }
+
+    .overview.open {
+      display: block;
+    }
+
+    .overview h2 {
+      margin-bottom: 2cqw;
+      font-size: clamp(1.65rem, 3cqw, 3rem);
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.1cqw;
+      height: calc(100% - 8.4cqw);
+    }
+
+    .overview button {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.1cqw;
+      color: var(--ink);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 0.9cqw;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .overview button:hover,
+    .overview button.current {
+      border-color: var(--teal);
+      background: var(--teal-soft);
+    }
+
+    .overview .ov-num {
+      color: var(--teal);
+      font-family: Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .overview .ov-title {
+      font-family: var(--serif);
+      font-size: clamp(0.76rem, 1.08cqw, 1.05rem);
+      font-weight: 650;
+      line-height: 1.35;
+    }
+
+    .overview-close {
+      position: absolute;
+      top: 1.5cqw;
+      right: 2cqw;
+      color: var(--muted);
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .help {
+      position: absolute;
+      left: clamp(22px, 3.2cqw, 54px);
+      bottom: clamp(19px, 2.65cqw, 44px);
+      z-index: 20;
+      color: var(--muted);
+      font-size: clamp(0.58rem, 0.68cqw, 0.7rem);
+      letter-spacing: 0.03em;
+    }
+
+    .cover {
+      padding: 0;
+    }
+
+    .cover::after {
+      display: none;
+    }
+
+    .cover-grid {
+      display: grid;
+      grid-template-columns: 1.04fr 0.96fr;
+      width: 100%;
+      height: 100%;
+    }
+
+    .cover-copy {
+      position: relative;
+      z-index: 2;
+      align-self: center;
+      padding: clamp(44px, 6.8cqw, 120px);
+    }
+
+    .cover h1 {
+      max-width: 9.8ch;
+      margin: 0;
+      font-size: clamp(3.1rem, 6.1cqw, 6.6rem);
+      font-weight: 650;
+      letter-spacing: -0.055em;
+    }
+
+    .cover h1 em {
+      color: var(--teal);
+      font-style: normal;
+    }
+
+    .cover-subtitle {
+      max-width: 36ch;
+      margin: 2.2cqw 0 0;
+      color: var(--muted);
+      font-size: clamp(0.92rem, 1.35cqw, 1.3rem);
+    }
+
+    .cover-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.2cqw;
+      margin-top: 4.2cqw;
+      color: var(--muted);
+      font-size: clamp(0.66rem, 0.78cqw, 0.78rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .cover-meta span + span::before {
+      content: "/";
+      margin-right: 1.2cqw;
+      color: var(--line-strong);
+    }
+
+    .cover-visual {
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background:
+        linear-gradient(155deg, rgba(15, 106, 96, 0.09), rgba(191, 103, 41, 0.045)),
+        var(--paper-2);
+      clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .cover-visual::before {
+      content: "EA";
+      position: absolute;
+      top: -0.18em;
+      right: -0.1em;
+      color: color-mix(in srgb, var(--ink) 5%, transparent);
+      font-family: Georgia, serif;
+      font-size: 22cqw;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.1em;
+    }
+
+    .cover-visual svg {
+      position: relative;
+      z-index: 1;
+      width: 82%;
+      height: auto;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(30px, 5.2cqw, 84px);
+      align-items: center;
+      height: calc(100% - 3.4cqw);
+    }
+
+    .two-col.tight {
+      gap: 3.2cqw;
+    }
+
+    .content-middle {
+      align-self: center;
+    }
+
+    .lead {
+      max-width: 55ch;
+      margin-bottom: 2.2cqw;
+      color: var(--muted);
+      font-size: clamp(0.95rem, 1.23cqw, 1.16rem);
+    }
+
+    .loop-diagram {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.1cqw;
+      margin-top: 2.2cqw;
+    }
+
+    .loop-node {
+      position: relative;
+      min-height: 8.8cqw;
+      padding: 1.2cqw 1cqw;
+      background: var(--surface);
+      border-top: 3px solid var(--teal);
+    }
+
+    .loop-node:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      top: 50%;
+      right: -0.9cqw;
+      z-index: 2;
+      color: var(--line-strong);
+      font-size: 1.2rem;
+      transform: translate(50%, -50%);
+    }
+
+    .loop-node b {
+      display: block;
+      font-family: var(--serif);
+      font-size: clamp(0.8rem, 1.05cqw, 1.02rem);
+    }
+
+    .loop-node span {
+      display: block;
+      margin-top: 0.25cqw;
+      color: var(--muted);
+      font-size: clamp(0.62rem, 0.72cqw, 0.72rem);
+    }
+
+    .tension-list {
+      display: grid;
+      gap: 1.2cqw;
+    }
+
+    .tension {
+      display: grid;
+      grid-template-columns: 3.3cqw 1fr;
+      gap: 1.2cqw;
+      align-items: start;
+      padding: 1.15cqw 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .tension:last-child {
+      border-bottom: 0;
+    }
+
+    .tension-index {
+      color: var(--teal);
+      font-family: Georgia, serif;
+      font-size: clamp(1rem, 1.5cqw, 1.45rem);
+      font-weight: 700;
+    }
+
+    .tension h3 {
+      margin-bottom: 0.35cqw;
+    }
+
+    .tension p {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(0.7rem, 0.88cqw, 0.88rem);
+    }
+
+    .failure-line {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2.2cqw;
+      align-items: stretch;
+      height: calc(100% - 8.5cqw);
+    }
+
+    .failure-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-top: 1.4cqw;
+      border-top: 1px solid var(--line-strong);
+    }
+
+    .failure-column:nth-child(1) {
+      border-top-color: var(--blue);
+    }
+
+    .failure-column:nth-child(2) {
+      border-top-color: var(--amber);
+    }
+
+    .failure-column:nth-child(3) {
+      border-top-color: var(--rose);
+    }
+
+    .failure-number {
+      color: var(--muted);
+      font-family: Georgia, serif;
+      font-size: clamp(2.4rem, 4.6cqw, 4.6rem);
+      font-weight: 700;
+      line-height: 0.9;
+    }
+
+    .failure-column h3 {
+      margin: 1.2cqw 0 0.7cqw;
+      font-size: clamp(1.1rem, 1.7cqw, 1.72rem);
+    }
+
+    .failure-column p {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(0.72rem, 0.9cqw, 0.9rem);
+    }
+
+    .failure-illustration {
+      width: 100%;
+      margin: 1.2cqw 0;
+    }
+
+    .stamp {
+      display: inline-block;
+      margin-top: 1.1cqw;
+      color: var(--teal);
+      font-size: clamp(0.62rem, 0.74cqw, 0.72rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .issue-title {
+      margin-bottom: 0.8cqw;
+      font-size: clamp(2rem, 3.9cqw, 4rem);
+    }
+
+    .issue-subtitle {
+      max-width: 52ch;
+      margin-bottom: 2cqw;
+      color: var(--muted);
+      font-size: clamp(0.88rem, 1.1cqw, 1.05rem);
+    }
+
+    .symptom-list {
+      display: grid;
+      gap: 1.2cqw;
+    }
+
+    .symptom {
+      display: grid;
+      grid-template-columns: 0.35cqw 1fr;
+      gap: 1.2cqw;
+      padding: 0.2cqw 0;
+    }
+
+    .symptom::before {
+      content: "";
+      width: 0.35cqw;
+      height: 100%;
+      background: var(--teal);
+      border-radius: 999px;
+    }
+
+    .symptom strong {
+      display: block;
+      margin-bottom: 0.25cqw;
+      font-size: clamp(0.82rem, 1.02cqw, 1rem);
+    }
+
+    .symptom span {
+      color: var(--muted);
+      font-size: clamp(0.68rem, 0.84cqw, 0.84rem);
+    }
+
+    .quote-line {
+      margin-top: 2.2cqw;
+      padding-left: 1.3cqw;
+      color: var(--ink);
+      border-left: 3px solid var(--amber);
+      font-family: var(--serif);
+      font-size: clamp(1rem, 1.35cqw, 1.3rem);
+      line-height: 1.45;
+    }
+
+    .landscape-wrap {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 1cqw;
+      overflow: hidden;
+    }
+
+    .landscape-wrap svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.4cqw;
+      margin-top: 0.6cqw;
+    }
+
+    .status-block {
+      padding: 1.35cqw 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .status-block:nth-child(1),
+    .status-block:nth-child(2) {
+      margin-top: 0;
+    }
+
+    .status-block h3 {
+      margin-bottom: 0.55cqw;
+      font-size: clamp(0.96rem, 1.24cqw, 1.22rem);
+    }
+
+    .status-block p {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(0.68rem, 0.83cqw, 0.83rem);
+    }
+
+    .method-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45cqw;
+      margin-top: 0.8cqw;
+    }
+
+    .method-tags span {
+      color: var(--teal);
+      background: var(--teal-soft);
+      border-radius: 999px;
+      padding: 0.15cqw 0.6cqw;
+      font-size: clamp(0.56rem, 0.67cqw, 0.67rem);
+      font-weight: 650;
+    }
+
+    .status-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7cqw;
+      margin-top: 1.6cqw;
+    }
+
+    .status-strip span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45cqw;
+      color: var(--muted);
+      font-size: clamp(0.6rem, 0.72cqw, 0.72rem);
+    }
+
+    .status-strip span::before {
+      content: "";
+      width: 0.5cqw;
+      height: 0.5cqw;
+      background: var(--teal);
+      border-radius: 50%;
+    }
+
+    .archive-grid {
+      display: grid;
+      grid-template-columns: 5.3cqw 5.3cqw 5.3cqw 5.3cqw;
+      gap: 0.45cqw;
+      width: fit-content;
+    }
+
+    .archive-cell {
+      aspect-ratio: 1;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 0.45cqw;
+    }
+
+    .archive-cell.on {
+      background: var(--teal-soft);
+      border-color: var(--teal);
+    }
+
+    .archive-cell.hot {
+      background: var(--amber-soft);
+      border-color: var(--amber);
+    }
+
+    .archive-cell i {
+      display: block;
+      width: 0.45cqw;
+      height: 0.45cqw;
+      margin: 1.8cqw auto;
+      background: var(--teal);
+      border-radius: 50%;
+    }
+
+    .archive-cell.hot i {
+      background: var(--amber);
+    }
+
+    .archive-label {
+      margin: 1cqw 0 0;
+      color: var(--muted);
+      font-size: clamp(0.64rem, 0.74cqw, 0.74rem);
+    }
+
+    .decision-list {
+      display: grid;
+      gap: 0.85cqw;
+    }
+
+    .decision-row {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 1cqw;
+      padding: 0.8cqw 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .decision-row strong {
+      font-size: clamp(0.72rem, 0.87cqw, 0.87rem);
+    }
+
+    .decision-row span {
+      color: var(--muted);
+      font-size: clamp(0.66rem, 0.78cqw, 0.78rem);
+    }
+
+    .funnel-wrap {
+      width: 100%;
+      padding: 1.4cqw 0;
+    }
+
+    .funnel-wrap svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .big-callout {
+      margin-top: 1.6cqw;
+      padding: 1.2cqw 1.25cqw;
+      color: var(--ink);
+      background: var(--teal-soft);
+      border-left: 4px solid var(--teal);
+      font-family: var(--serif);
+      font-size: clamp(0.95rem, 1.25cqw, 1.22rem);
+    }
+
+    .stage-list {
+      display: grid;
+      gap: 0.9cqw;
+      margin-top: 1.2cqw;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: 2.6cqw 1fr;
+      gap: 1.1cqw;
+      align-items: start;
+      padding: 0.85cqw 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .stage-n {
+      color: var(--teal);
+      font-family: Georgia, serif;
+      font-size: clamp(1.15rem, 1.55cqw, 1.55rem);
+      font-weight: 700;
+    }
+
+    .stage h3 {
+      margin-bottom: 0.25cqw;
+      font-size: clamp(0.9rem, 1.16cqw, 1.14rem);
+    }
+
+    .stage p {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(0.66rem, 0.79cqw, 0.79rem);
+    }
+
+    .score-formula {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.55cqw;
+      margin-top: 1.8cqw;
+    }
+
+    .score-term {
+      padding: 1.1cqw 0.65cqw;
+      background: var(--surface);
+      border-top: 3px solid var(--teal);
+      text-align: center;
+    }
+
+    .score-term b {
+      display: block;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: clamp(0.72rem, 0.9cqw, 0.9rem);
+    }
+
+    .score-term span {
+      display: block;
+      margin-top: 0.3cqw;
+      color: var(--muted);
+      font-size: clamp(0.56rem, 0.66cqw, 0.66rem);
+    }
+
+    .score-term.cost {
+      border-top-color: var(--amber);
+    }
+
+    .formula-line {
+      margin: 1.4cqw 0 0;
+      padding: 0.95cqw 1.1cqw;
+      color: var(--ink);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 0.7cqw;
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-size: clamp(0.88rem, 1.12cqw, 1.1rem);
+      text-align: center;
+    }
+
+    .map-wrap {
+      position: relative;
+      width: min(100%, 34cqw);
+      margin: 0 auto;
+      padding: 1.3cqw;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 1cqw;
+      box-shadow: 0 15px 40px rgba(44, 59, 52, 0.07);
+    }
+
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.25cqw;
+    }
+
+    .tile {
+      aspect-ratio: 1;
+      background: var(--paper-2);
+      border-radius: 0.18cqw;
+    }
+
+    .tile.wall {
+      background: #6e7974;
+    }
+
+    .tile.start {
+      background: var(--blue);
+    }
+
+    .tile.goal {
+      background: var(--teal);
+    }
+
+    .tile.key {
+      background: var(--amber);
+    }
+
+    .tile.bad {
+      background: var(--rose);
+    }
+
+    .map-caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 1cqw;
+      margin-top: 0.9cqw;
+      color: var(--muted);
+      font-size: clamp(0.6rem, 0.72cqw, 0.72rem);
+    }
+
+    .research-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.2cqw;
+    }
+
+    .research-table th {
+      padding: 0.65cqw 0.8cqw;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line-strong);
+      font-size: clamp(0.6rem, 0.72cqw, 0.72rem);
+      letter-spacing: 0.08em;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    .research-table td {
+      padding: 0.9cqw 0.8cqw;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: clamp(0.68rem, 0.82cqw, 0.82rem);
+      vertical-align: top;
+    }
+
+    .research-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .research-table td:first-child {
+      color: var(--ink);
+      font-family: var(--serif);
+      font-weight: 650;
+    }
+
+    .research-table .badge {
+      display: inline-block;
+      padding: 0.08cqw 0.45cqw;
+      color: var(--teal);
+      background: var(--teal-soft);
+      border-radius: 999px;
+      font-size: clamp(0.55rem, 0.64cqw, 0.64rem);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .repair-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0.9cqw;
+      align-items: center;
+      margin: 1.8cqw 0;
+    }
+
+    .repair-node {
+      min-height: 8.4cqw;
+      padding: 1.1cqw;
+      background: var(--surface);
+      border-top: 3px solid var(--rose);
+    }
+
+    .repair-node.fixed {
+      border-top-color: var(--teal);
+    }
+
+    .repair-node b {
+      display: block;
+      margin-bottom: 0.6cqw;
+      font-family: var(--serif);
+      font-size: clamp(0.85rem, 1.06cqw, 1.04rem);
+    }
+
+    .repair-node span {
+      color: var(--muted);
+      font-size: clamp(0.62rem, 0.74cqw, 0.74rem);
+    }
+
+    .repair-arrow {
+      color: var(--line-strong);
+      font-size: 1.5rem;
+    }
+
+    .knowledge-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55cqw;
+      margin-top: 1.3cqw;
+    }
+
+    .knowledge-line span {
+      padding: 0.27cqw 0.68cqw;
+      color: var(--teal);
+      background: var(--teal-soft);
+      border-radius: 999px;
+      font-size: clamp(0.58rem, 0.69cqw, 0.69rem);
+      font-weight: 650;
+    }
+
+    .controller {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: auto auto auto;
+      gap: 1.1cqw 1.6cqw;
+      align-items: center;
+      margin-top: 1.2cqw;
+    }
+
+    .controller .center {
+      grid-column: 2;
+      grid-row: 1 / span 3;
+      display: grid;
+      place-items: center;
+      min-height: 25cqw;
+      border: 1px solid var(--teal);
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--teal-soft), transparent 72%);
+      text-align: center;
+    }
+
+    .controller .center strong {
+      display: block;
+      max-width: 8ch;
+      color: var(--teal);
+      font-family: var(--serif);
+      font-size: clamp(1rem, 1.45cqw, 1.4rem);
+      line-height: 1.35;
+    }
+
+    .controller .side-item {
+      padding: 1cqw 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .controller .side-item.left {
+      grid-column: 1;
+      text-align: right;
+    }
+
+    .controller .side-item.right {
+      grid-column: 3;
+    }
+
+    .controller .side-item b {
+      display: block;
+      font-size: clamp(0.78rem, 0.95cqw, 0.95rem);
+    }
+
+    .controller .side-item span {
+      color: var(--muted);
+      font-size: clamp(0.61rem, 0.72cqw, 0.72rem);
+    }
+
+    .controller .arrow {
+      color: var(--line-strong);
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    .controller .left.arrow {
+      grid-column: 1;
+    }
+
+    .controller .right.arrow {
+      grid-column: 3;
+    }
+
+    .takeaway {
+      margin-top: 1.8cqw;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: clamp(1.1rem, 1.65cqw, 1.56rem);
+      line-height: 1.45;
+    }
+
+    .experiment-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 3.2cqw;
+      margin-top: 1.2cqw;
+    }
+
+    .column-title {
+      margin-bottom: 0.8cqw;
+      color: var(--teal);
+      font-size: clamp(0.63rem, 0.76cqw, 0.76rem);
+      font-weight: 750;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .flat-list {
+      display: grid;
+      gap: 0.7cqw;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .flat-list li {
+      position: relative;
+      padding-left: 1.2cqw;
+      color: var(--muted);
+      font-size: clamp(0.7rem, 0.86cqw, 0.86rem);
+    }
+
+    .flat-list li::before {
+      content: "";
+      position: absolute;
+      top: 0.58em;
+      left: 0;
+      width: 0.38cqw;
+      height: 0.38cqw;
+      background: var(--teal);
+      border-radius: 50%;
+    }
+
+    .protocol {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.8cqw;
+      margin-top: 1.5cqw;
+    }
+
+    .protocol div {
+      padding-top: 0.8cqw;
+      border-top: 2px solid var(--line-strong);
+    }
+
+    .protocol b {
+      display: block;
+      margin-bottom: 0.25cqw;
+      font-size: clamp(0.72rem, 0.86cqw, 0.86rem);
+    }
+
+    .protocol span {
+      color: var(--muted);
+      font-size: clamp(0.6rem, 0.7cqw, 0.7rem);
+    }
+
+    .conclusion-list {
+      display: grid;
+      gap: 1.6cqw;
+      margin-top: 1.2cqw;
+      max-width: 66cqw;
+    }
+
+    .conclusion {
+      display: grid;
+      grid-template-columns: 5.2cqw 1fr;
+      gap: 1.4cqw;
+      align-items: start;
+      padding-top: 0.7cqw;
+      border-top: 1px solid var(--line);
+    }
+
+    .conclusion-num {
+      color: var(--teal);
+      font-family: Georgia, serif;
+      font-size: clamp(1.8rem, 2.9cqw, 2.8rem);
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .conclusion h3 {
+      margin-bottom: 0.35cqw;
+    }
+
+    .conclusion p {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(0.72rem, 0.88cqw, 0.88rem);
+    }
+
+    .closing-quote {
+      margin-top: 2.2cqw;
+      padding: 1.4cqw 1.6cqw;
+      color: #f6fbf8;
+      background: var(--teal);
+      font-family: var(--serif);
+      font-size: clamp(1.08rem, 1.55cqw, 1.48rem);
+      line-height: 1.45;
+    }
+
+    .references {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.35cqw 2.8cqw;
+      margin-top: 1.2cqw;
+      padding: 0;
+      list-style: none;
+      counter-reset: refs;
+    }
+
+    .references li {
+      position: relative;
+      padding-left: 2cqw;
+      color: var(--muted);
+      font-size: clamp(0.76rem, 0.94cqw, 0.96rem);
+      line-height: 1.5;
+      counter-increment: refs;
+    }
+
+    .references li::before {
+      content: "[" counter(refs) "]";
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+      font-family: Georgia, serif;
+      font-weight: 700;
+    }
+
+    .references a {
+      color: inherit;
+    }
+
+    .ref-note {
+      margin-top: 1.4cqw;
+      color: var(--muted);
+      font-size: clamp(0.61rem, 0.7cqw, 0.7rem);
+    }
+
+    .quiet-label {
+      color: var(--muted);
+      font-size: clamp(0.63rem, 0.76cqw, 0.76rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .hr {
+      width: 100%;
+      height: 1px;
+      margin: 1.3cqw 0;
+      background: var(--line);
+    }
+
+    .no-wrap {
+      white-space: nowrap;
+    }
+
+    @media (max-aspect-ratio: 4 / 3) {
+      .deck {
+        width: 100vw;
+        height: calc(100vw * 9 / 16);
+      }
+
+      .help {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .slide.active {
+        animation: none;
+      }
+
+      .progress span {
+        transition: none;
+      }
+    }
+
+    @media print {
+      @page {
+        size: 297mm 167mm;
+        margin: 0;
+      }
+
+      body {
+        overflow: visible;
+        background: #fff;
+      }
+
+      .deck,
+      .deck-shell {
+        width: 297mm;
+        height: auto;
+        box-shadow: none;
+        overflow: visible;
+      }
+
+      .slide {
+        position: relative;
+        display: block !important;
+        width: 297mm;
+        height: 167mm;
+        break-after: page;
+        page-break-after: always;
+        animation: none;
+        overflow: hidden;
+      }
+
+      .slide:last-of-type {
+        break-after: auto;
+        page-break-after: auto;
+      }
+
+      .nav,
+      .help,
+      .progress,
+      .overview {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck" id="deck">
+    <div class="deck-shell">
+      <main aria-label="演化算法研讨课幻灯片">
+        <section class="slide cover active" id="s1" aria-hidden="false" data-title="封面">
+          <div class="cover-grid">
+            <div class="cover-copy">
+              <p class="eyebrow">智能优化算法 · 研讨课</p>
+              <h1>演化算法的<em>三个根本不足</em></h1>
+              <p class="cover-subtitle">从过早收敛到昂贵评价与结构失配：研究现状与可行的改进路径</p>
+              <div class="cover-meta">
+                <span>Evolutionary Algorithms</span>
+                <span>Limitations · State of the Art · Research Ideas</span>
+              </div>
+            </div>
+            <div class="cover-visual" aria-hidden="true">
+              <svg viewBox="0 0 640 620" fill="none">
+                <path d="M44 514C113 451 139 362 206 333C275 303 302 417 367 350C421 294 435 173 584 107" stroke="#0f6a60" stroke-width="3" stroke-linecap="round"/>
+                <path d="M47 516C107 468 135 418 190 404C257 387 294 466 354 425C433 372 457 231 583 178" stroke="#b7bbae" stroke-width="1.2" stroke-dasharray="7 8" stroke-linecap="round"/>
+                <g fill="#0f6a60">
+                  <circle cx="90" cy="486" r="8"/><circle cx="127" cy="443" r="7"/><circle cx="167" cy="394" r="6"/>
+                  <circle cx="208" cy="331" r="10"/><circle cx="246" cy="359" r="6"/><circle cx="292" cy="381" r="8"/>
+                  <circle cx="367" cy="350" r="9"/><circle cx="432" cy="288" r="7"/><circle cx="501" cy="205" r="8"/>
+                </g>
+                <circle cx="584" cy="107" r="14" fill="#bf6729"/>
+                <circle cx="584" cy="107" r="25" stroke="#bf6729" stroke-width="1.5" opacity=".45"/>
+                <g transform="translate(372 372)">
+                  <rect x="0" y="0" width="218" height="198" rx="14" fill="#fdfbf5" stroke="#d8d5c9"/>
+                  <line x1="72.5" y1="0" x2="72.5" y2="198" stroke="#d8d5c9"/>
+                  <line x1="145.5" y1="0" x2="145.5" y2="198" stroke="#d8d5c9"/>
+                  <line x1="0" y1="66" x2="218" y2="66" stroke="#d8d5c9"/>
+                  <line x1="0" y1="132" x2="218" y2="132" stroke="#d8d5c9"/>
+                  <rect x="8" y="8" width="58" height="52" rx="8" fill="#dcefeb"/>
+                  <rect x="80" y="8" width="58" height="52" rx="8" fill="#f4e3cf"/>
+                  <rect x="152" y="74" width="58" height="52" rx="8" fill="#dcefeb"/>
+                  <rect x="8" y="140" width="58" height="52" rx="8" fill="#e3eaf5"/>
+                  <rect x="80" y="74" width="58" height="52" rx="8" fill="#fdfbf5" stroke="#d8d5c9"/>
+                  <rect x="80" y="140" width="58" height="52" rx="8" fill="#fdfbf5" stroke="#d8d5c9"/>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" id="s2" aria-hidden="true" data-title="演化算法的共同骨架">
+          <div class="slide-label"><span>01</span> / 共识</div>
+          <div class="two-col">
+            <div class="content-middle">
+              <p class="eyebrow">共同骨架</p>
+              <h2>所有演化算法，都在做同一件事</h2>
+              <p class="lead">
+                GA、ES、DE 和遗传编程的实现细节不同，但共同流程都是：
+                <strong>生成差异，用评价筛选差异，再让差异进入下一代。</strong>
+              </p>
+              <div class="loop-diagram" aria-label="演化算法基本循环">
+                <div class="loop-node"><b>初始化</b><span>候选种群</span></div>
+                <div class="loop-node"><b>评价</b><span>适应度或目标值</span></div>
+                <div class="loop-node"><b>选择</b><span>偏好更高分</span></div>
+                <div class="loop-node"><b>变异</b><span>交叉、扰动</span></div>
+                <div class="loop-node"><b>更新</b><span>产生下一代</span></div>
+              </div>
+              <p class="citation" style="margin-top:1.2cqw">
+                差异并非只会带来收益。种群规模、选择压力和每个候选所需的评价次数，会共同放大下面三个问题。
+              </p>
+            </div>
+            <div class="tension-list" aria-label="三个核心张力">
+              <div class="tension">
+                <span class="tension-index">01</span>
+                <div>
+                  <h3>选择压力与多样性</h3>
+                  <p>收敛越快，越可能过早丢失其他尚未验证的搜索区域。</p>
+                </div>
+              </div>
+              <div class="tension">
+                <span class="tension-index">02</span>
+                <div>
+                  <h3>搜索规模与评价预算</h3>
+                  <p>种群和迭代需要评价次数，但真实评价往往比迭代本身更昂贵。</p>
+                </div>
+              </div>
+              <div class="tension">
+                <span class="tension-index">03</span>
+                <div>
+                  <h3>通用算子与问题结构</h3>
+                  <p>随机扰动并不自动理解约束、变量依赖、离散结构和动态环境。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slide-number"><b>02</b> / 16</div>
+        </section>
+
+        <section class="slide" id="s3" aria-hidden="true" data-title="三个核心不足">
+          <div class="slide-label"><span>02</span> / 总览</div>
+          <p class="eyebrow">三个核心不足</p>
+          <h2>问题虽然多，但可以收束为三条主线</h2>
+          <div class="failure-line">
+            <article class="failure-column">
+              <div>
+                <div class="failure-number">01</div>
+                <h3>早熟收敛</h3>
+                <p>大家过早相信当前的高分区域，其他可能有希望的模态没有被充分探索。</p>
+              </div>
+              <svg class="failure-illustration" viewBox="0 0 340 150" fill="none" aria-hidden="true">
+                <path d="M8 130C49 120 67 58 102 58C137 58 151 119 184 126C233 136 251 48 290 40C314 35 329 67 334 84" stroke="#315f9d" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="88" cy="72" r="5" fill="#315f9d"/><circle cx="99" cy="65" r="4" fill="#315f9d"/>
+                <circle cx="109" cy="78" r="5" fill="#315f9d"/><circle cx="119" cy="69" r="4" fill="#315f9d"/>
+                <circle cx="280" cy="44" r="9" stroke="#bf6729" stroke-width="2"/>
+                <path d="M280 29V15M280 73V59M265 44H251M309 44H295" stroke="#bf6729" stroke-width="1.5"/>
+              </svg>
+              <span class="stamp">搜索信息停止增长</span>
+            </article>
+            <article class="failure-column">
+              <div>
+                <div class="failure-number">02</div>
+                <h3>昂贵评价与扩展</h3>
+                <p>仿真、实验或真人试玩代价高。维度上升又让有限预算更难覆盖搜索空间。</p>
+              </div>
+              <svg class="failure-illustration" viewBox="0 0 340 150" fill="none" aria-hidden="true">
+                <path d="M27 21H313L226 83V126L180 145V83L93 21H27Z" stroke="#bf6729" stroke-width="2.5" stroke-linejoin="round"/>
+                <circle cx="122" cy="51" r="6" fill="#bf6729"/><circle cx="164" cy="51" r="6" fill="#bf6729" opacity=".7"/>
+                <circle cx="206" cy="51" r="6" fill="#bf6729" opacity=".45"/><circle cx="146" cy="83" r="5" fill="#bf6729" opacity=".5"/>
+                <circle cx="194" cy="108" r="4" fill="#bf6729" opacity=".45"/>
+              </svg>
+              <span class="stamp">稀缺资源是第一约束</span>
+            </article>
+            <article class="failure-column">
+              <div>
+                <div class="failure-number">03</div>
+                <h3>结构失配与泛化</h3>
+                <p>通用编码和算子可能生成不可行解。领域方法有效，却不一定能迁移到新问题。</p>
+              </div>
+              <svg class="failure-illustration" viewBox="0 0 340 150" fill="none" aria-hidden="true">
+                <rect x="18" y="20" width="46" height="46" rx="5" fill="#9a4755" opacity=".8"/>
+                <rect x="74" y="20" width="46" height="46" rx="5" fill="#d8d5c9"/>
+                <rect x="130" y="20" width="46" height="46" rx="5" fill="#9a4755" opacity=".8"/>
+                <rect x="17" y="76" width="46" height="46" rx="5" fill="#d8d5c9"/>
+                <rect x="73" y="76" width="46" height="46" rx="5" fill="#9a4755" opacity=".8"/>
+                <rect x="129" y="76" width="46" height="46" rx="5" fill="#d8d5c9"/>
+                <rect x="185" y="76" width="46" height="46" rx="5" fill="#0f6a60" opacity=".88"/>
+                <path d="M49 52V76M102 52V76M156 52V76M50 100H184" stroke="#9a4755" stroke-width="2" stroke-dasharray="5 5"/>
+                <path d="M231 76C251 48 276 47 302 27M231 100C258 91 273 108 305 131" stroke="#bf6729" stroke-width="2" stroke-dasharray="5 5"/>
+              </svg>
+              <span class="stamp">通用规则不理解结构</span>
+            </article>
+          </div>
+          <div class="slide-number"><b>03</b> / 16</div>
+        </section>
+
+        <section class="slide" id="s4" aria-hidden="true" data-title="不足一：早熟收敛">
+          <div class="slide-label"><span>03</span> / 不足一</div>
+          <div class="two-col">
+            <div class="content-middle">
+              <p class="eyebrow">Premature convergence</p>
+              <h2 class="issue-title">过早收敛<br>并不等于搜索成功</h2>
+              <p class="issue-subtitle">
+                在一个多峰问题里，种群可能很快集中到一个局部最优。
+                看起来“稳定了”，实际上是关于其他区域的信息停止增长。
+              </p>
+              <div class="symptom-list">
+                <div class="symptom">
+                  <div><strong>现象</strong><span>最优值长期不变，个体差异持续缩小，新的高分解不再出现。</span></div>
+                </div>
+                <div class="symptom">
+                  <div><strong>机制</strong><span>强选择压力提高短期收益，却加速了其他搜索盆地的消失。</span></div>
+                </div>
+                <div class="symptom">
+                  <div><strong>判别</strong><span>同时观察最优值、种群距离、不同模态数量和连续停滞代数。</span></div>
+                </div>
+              </div>
+              <p class="quote-line">问题不在“收敛”，而在收敛发生在错误的时间。</p>
+            </div>
+            <div class="landscape-wrap">
+              <svg viewBox="0 0 760 540" fill="none" role="img" aria-labelledby="landscape-title landscape-desc">
+                <title id="landscape-title">两个峰值的搜索地形</title>
+                <desc id="landscape-desc">大量候选解集中在左侧较低的峰，右侧更高的峰尚未被探索。</desc>
+                <defs>
+                  <linearGradient id="skyGrad" x1="380" y1="0" x2="380" y2="420" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#fdfbf5"/><stop offset="1" stop-color="#f5f1e7"/>
+                  </linearGradient>
+                </defs>
+                <rect width="760" height="540" fill="url(#skyGrad)"/>
+                <g opacity=".55" stroke="#e1ded3">
+                  <path d="M70 0V460M170 0V460M270 0V460M370 0V460M470 0V460M570 0V460M670 0V460"/>
+                  <path d="M0 90H760M0 190H760M0 290H760M0 390H760"/>
+                </g>
+                <path d="M0 430C70 403 94 336 160 310C213 289 244 391 300 405C352 418 380 206 438 177C493 149 523 372 584 394C632 410 670 299 760 237V540H0V430Z" fill="#dcefeb" stroke="#9fc5bf" stroke-width="2"/>
+                <path d="M0 430C70 403 94 336 160 310C213 289 244 391 300 405C352 418 380 206 438 177C493 149 523 372 584 394C632 410 670 299 760 237" stroke="#0f6a60" stroke-width="3"/>
+                <g fill="#315f9d">
+                  <circle cx="140" cy="338" r="8"/><circle cx="153" cy="330" r="7"/><circle cx="166" cy="317" r="8"/>
+                  <circle cx="181" cy="314" r="6"/><circle cx="193" cy="325" r="8"/><circle cx="223" cy="344" r="6"/>
+                  <circle cx="248" cy="356" r="7"/><circle cx="267" cy="370" r="5"/>
+                </g>
+                <circle cx="166" cy="310" r="17" stroke="#315f9d" stroke-width="2" stroke-dasharray="4 4"/>
+                <circle cx="438" cy="177" r="13" fill="#bf6729"/>
+                <circle cx="438" cy="177" r="26" stroke="#bf6729" stroke-width="2" opacity=".55"/>
+                <text x="125" y="260" fill="#315f9d" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="18">局部最优</text>
+                <text x="470" y="138" fill="#bf6729" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="18">尚未充分探索</text>
+                <path d="M285 222C334 213 368 203 401 190" stroke="#bf6729" stroke-width="2.4" stroke-dasharray="7 7"/>
+                <path d="M400 184L413 183L404 195" stroke="#bf6729" stroke-width="2.4"/>
+                <text x="70" y="495" fill="#68736e" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="16">搜索空间</text>
+                <text x="22" y="300" fill="#68736e" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="16" transform="rotate(-90 22 300)">适应度</text>
+              </svg>
+            </div>
+          </div>
+          <div class="slide-number"><b>04</b> / 16</div>
+        </section>
+
+        <section class="slide" id="s5" aria-hidden="true" data-title="研究现状一">
+          <div class="slide-label"><span>04</span> / 现状一</div>
+          <div class="two-col tight">
+            <div>
+              <p class="eyebrow">State of the art · Search diversity</p>
+              <h2>机制很多，<br>但“保留什么”仍无通用答案</h2>
+              <p class="lead">
+                研究已从单纯增加变异，发展到主动维护不同搜索区域和不同行为模式。
+                真正的难点是如何判断哪些差异值得继续投入。
+              </p>
+              <div class="status-strip">
+                <span>机制相对成熟</span>
+                <span>场景依赖明显</span>
+                <span>昂贵与动态环境仍开放</span>
+              </div>
+            </div>
+            <div class="status-grid">
+              <div class="status-block">
+                <h3>小生境与岛屿模型</h3>
+                <p>限制单一区域过度繁殖，允许多个子群在不同区域并行搜索。</p>
+                <div class="method-tags"><span>niching</span><span>crowding</span><span>island model</span><span>restart</span></div>
+              </div>
+              <div class="status-block">
+                <h3>质量与多样性搜索</h3>
+                <p>不只要全局最高分，也为不同行为区域保存高质量精英。</p>
+                <div class="method-tags"><span>MAP-Elites</span><span>CVT-MAP-Elites</span><span>QD</span></div>
+              </div>
+              <div class="status-block">
+                <h3>自适应搜索控制</h3>
+                <p>根据搜索阶段调整参数、算子或种群规模，降低人工设定负担。</p>
+                <div class="method-tags"><span>SHADE</span><span>L-SHADE</span><span>operator portfolio</span></div>
+              </div>
+              <div class="status-block">
+                <h3>局部强化与混合</h3>
+                <p>在保持种群探索的同时，用局部搜索改善已发现的高质量区域。</p>
+                <div class="method-tags"><span>memetic</span><span>CMA-ES</span><span>trust region</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="citation" style="position:absolute;left:5.4cqw;right:5.4cqw;bottom:3.9cqw">
+            代表工作：Mouret &amp; Clune, 2015、Pugh et al., 2016、Tanabe &amp; Fukunaga, 2013, 2014。完整文献见末页。
+          </p>
+          <div class="slide-number"><b>05</b> / 16</div>
+        </section>
+
+        <section class="slide" id="s6" aria-hidden="true" data-title="思路一：有用多样性">
+          <div class="slide-label"><span>05</span> / 思路一</div>
+          <div class="two-col">
+            <div>
+              <p class="eyebrow">Idea 01 · Useful diversity</p>
+              <h2>把多样性从“数量”<br>改成“有价值的分区”</h2>
+              <p class="lead">
+                保留多个相互不同的优秀解，同时确保最优质量不下降。
+                质量档案负责收敛，行为档案负责覆盖。
+              </p>
+              <div class="decision-list">
+                <div class="decision-row"><strong>改进快 · 多样性高</strong><span>维持多模态利用，不急于合并区域。</span></div>
+                <div class="decision-row"><strong>改进快 · 多样性低</strong><span>在当前盆地内加强局部利用。</span></div>
+                <div class="decision-row"><strong>改进慢 · 多样性高</strong><span>筛选有潜力的模态，避免平均分配预算。</span></div>
+                <div class="decision-row"><strong>改进慢 · 多样性低</strong><span>迁移、重启或大尺度扰动。</span></div>
+              </div>
+            </div>
+            <div>
+              <div class="archive-grid" aria-label="质量与行为双档案示意">
+                <div class="archive-cell hot"><i></i></div><div class="archive-cell on"><i></i></div><div class="archive-cell"></div><div class="archive-cell"></div>
+                <div class="archive-cell"></div><div class="archive-cell on"><i></i></div><div class="archive-cell"></div><div class="archive-cell"></div>
+                <div class="archive-cell"></div><div class="archive-cell"></div><div class="archive-cell on"><i></i></div><div class="archive-cell"></div>
+                <div class="archive-cell on"><i></i></div><div class="archive-cell"></div><div class="archive-cell"></div><div class="archive-cell on"><i></i></div>
+              </div>
+              <p class="archive-label">行为档案按“难度 × 风格”分区，每格保留最优代表。</p>
+              <div class="big-callout">
+                有效多样性不是保留差解，而是保留多个都还有潜力的搜索盆地。
+              </div>
+              <p class="citation" style="margin-top:1.2cqw">
+                评价指标：peak ratio、模态覆盖率、相同预算下的 best-so-far 曲线。
+              </p>
+            </div>
+          </div>
+          <div class="slide-number"><b>06</b> / 16</div>
+        </section>
+
+        <section class="slide" id="s7" aria-hidden="true" data-title="不足二：昂贵评价">
+          <div class="slide-label"><span>06</span> / 不足二</div>
+          <div class="two-col">
+            <div class="content-middle">
+              <p class="eyebrow">Evaluation bottleneck</p>
+              <h2 class="issue-title">真实评价<br>比迭代次数更稀缺</h2>
+              <p class="issue-subtitle">
+                一次适应度计算可能意味着一次高保真仿真、硬件实验、
+                游戏完整试玩或大模型推理。种群迭代会把这些成本成倍放大。
+              </p>
+              <div class="symptom-list">
+                <div class="symptom"><div><strong>评价放大</strong><span>种群规模 × 更新代数，任何一步都可能消耗大量真实试验。</span></div></div>
+                <div class="symptom"><div><strong>高维覆盖</strong><span>变量越多，有限候选越难覆盖真正重要的区域。</span></div></div>
+                <div class="symptom"><div><strong>约束昂贵</strong><span>验证是否可行本身也可能需要一次高成本模拟。</span></div></div>
+              </div>
+              <p class="quote-line">在真实应用里，计算时间常常是第二成本，评价次数才是第一成本。</p>
+            </div>
+            <div class="funnel-wrap">
+              <svg viewBox="0 0 680 500" fill="none" role="img" aria-labelledby="funnel-title funnel-desc">
+                <title id="funnel-title">评价预算漏斗</title>
+                <desc id="funnel-desc">大量候选先经过低成本和代理模型筛选，最后只有少量进入高保真评价。</desc>
+                <rect x="18" y="22" width="644" height="82" rx="13" fill="#fdfbf5" stroke="#d8d5c9"/>
+                <text x="52" y="58" fill="#18231f" font-family="Noto Serif SC, Songti SC, serif" font-size="25">10,000 个候选</text>
+                <text x="52" y="83" fill="#68736e" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="16">低成本生成，不直接进入真实评价</text>
+                <path d="M340 112L340 152" stroke="#b7bbae" stroke-width="2"/>
+                <rect x="94" y="158" width="492" height="82" rx="13" fill="#e3eaf5" stroke="#aebbd1"/>
+                <text x="128" y="194" fill="#18231f" font-family="Noto Serif SC, Songti SC, serif" font-size="25">400 个代理筛选</text>
+                <text x="128" y="219" fill="#68736e" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="16">预测质量、不确定性、约束风险</text>
+                <path d="M340 248L340 288" stroke="#b7bbae" stroke-width="2"/>
+                <rect x="172" y="294" width="336" height="82" rx="13" fill="#f4e3cf" stroke="#d6b48f"/>
+                <text x="206" y="330" fill="#18231f" font-family="Noto Serif SC, Songti SC, serif" font-size="25">24 次低保真评价</text>
+                <text x="206" y="355" fill="#68736e" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="16">快速仿真 / 简化模型</text>
+                <path d="M340 384L340 424" stroke="#b7bbae" stroke-width="2"/>
+                <rect x="244" y="430" width="192" height="54" rx="27" fill="#0f6a60"/>
+                <text x="340" y="464" fill="#f5fffc" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="20" text-anchor="middle">5 次高保真确认</text>
+              </svg>
+              <div class="big-callout">代理评价的价值不只是“快”，而是帮助把高保真预算留给信息量最大的候选。</div>
+            </div>
+          </div>
+          <div class="slide-number"><b>07</b> / 16</div>
+        </section>
+
+        <section class="slide" id="s8" aria-hidden="true" data-title="研究现状二">
+          <div class="slide-label"><span>07</span> / 现状二</div>
+          <div class="two-col tight">
+            <div>
+              <p class="eyebrow">State of the art · Expensive evaluation</p>
+              <h2>代理评价已是主线，<br>可信度仍是瓶颈</h2>
+              <p class="lead">
+                研究重点从“让算法多试”转向“让算法更聪明地少试”。
+                主流路线可以分成评价近似、评价级别和搜索分解三个层次。
+              </p>
+              <div class="status-strip">
+                <span>工程应用活跃</span>
+                <span>低中维有效</span>
+                <span>高维、强约束与分布外仍开放</span>
+              </div>
+            </div>
+            <div class="stage-list">
+              <div class="stage">
+                <div class="stage-n">01</div>
+                <div><h3>代理模型与集成</h3><p>GP、RBF、随机森林或神经网络预测目标值，用不确定性决定是否真实评价。</p></div>
+              </div>
+              <div class="stage">
+                <div class="stage-n">02</div>
+                <div><h3>多保真与主动学习</h3><p>低保真筛选、高保真确认，优先测试预期收益高或模型最不确定的候选。</p></div>
+              </div>
+              <div class="stage">
+                <div class="stage-n">03</div>
+                <div><h3>变量分解与局部子空间</h3><p>学习变量交互并分组，避免在无关维度上浪费种群和高保真评价。</p></div>
+              </div>
+              <div class="stage">
+                <div class="stage-n">04</div>
+                <div><h3>尚存风险</h3><p>代理偏差、模型外推、可行性预测错误，以及跨任务迁移后的可信度下降。</p></div>
+              </div>
+            </div>
+          </div>
+          <p class="citation" style="position:absolute;left:5.4cqw;right:5.4cqw;bottom:3.9cqw">
+            代表工作：Jin, 2011、Jin et al., 2019、BOP-Elites, 2020/2023、DSAGE, 2022、Deep Surrogate Assisted MAP-Elites, 2021。
+          </p>
+          <div class="slide-number"><b>08</b> / 16</div>
+        </section>
+
+        <section class="slide" id="s9" aria-hidden="true" data-title="思路二：评价即信息投资">
+          <div class="slide-label"><span>08</span> / 思路二</div>
+          <div class="two-col">
+            <div>
+              <p class="eyebrow">Idea 02 · Value of evaluation</p>
+              <h2>下一次评价，<br>应当购买更多信息</h2>
+              <p class="lead">
+                不只挑“预测分数最高”的候选。优先评价那些能提高最终质量、
+                区分不同模态、确认可行性，或在模型中高度不确定的候选。
+              </p>
+              <div class="score-formula" aria-label="评价候选的四个收益维度">
+                <div class="score-term"><b>Δf</b><span>质量收益</span></div>
+                <div class="score-term"><b>U</b><span>不确定性</span></div>
+                <div class="score-term"><b>N</b><span>模态覆盖</span></div>
+                <div class="score-term"><b>F</b><span>可行性确认</span></div>
+                <div class="score-term cost"><b>C</b><span>评价成本</span></div>
+              </div>
+              <p class="formula-line">Acquisition = E[Δf] + λU + μN + νF − C</p>
+              <div class="big-callout">
+                先筛选，再确认。真实评价只留给“争议最大”或“价值最高”的候选。
+              </div>
+            </div>
+            <div class="landscape-wrap" style="padding:1.4cqw">
+              <svg viewBox="0 0 620 520" fill="none" role="img" aria-labelledby="voi-title voi-desc">
+                <title id="voi-title">评价信息投资示意</title>
+                <desc id="voi-desc">候选池经过代理筛选，少数高价值候选进入真实评价，结果回写档案与模型。</desc>
+                <rect x="32" y="26" width="556" height="82" rx="13" fill="#fdfbf5" stroke="#d8d5c9"/>
+                <text x="310" y="60" fill="#18231f" font-family="Noto Serif SC, Songti SC, serif" font-size="24" text-anchor="middle">候选池</text>
+                <text x="310" y="84" fill="#68736e" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="15" text-anchor="middle">质量、模态、可行性、成本</text>
+                <path d="M310 108V155" stroke="#b7bbae" stroke-width="2"/>
+                <rect x="76" y="160" width="468" height="92" rx="46" fill="#dcefeb"/>
+                <text x="310" y="197" fill="#0f6a60" font-family="Noto Serif SC, Songti SC, serif" font-size="24" text-anchor="middle">评价价值排序</text>
+                <text x="310" y="223" fill="#68736e" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="15" text-anchor="middle">quality + uncertainty + coverage + feasibility − cost</text>
+                <path d="M310 252V300" stroke="#b7bbae" stroke-width="2"/>
+                <g transform="translate(124 306)">
+                  <rect width="372" height="74" rx="12" fill="#f4e3cf" stroke="#d6b48f"/>
+                  <circle cx="45" cy="37" r="17" fill="#bf6729"/>
+                  <text x="80" y="33" fill="#18231f" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="17">高信息价值候选</text>
+                  <text x="80" y="55" fill="#68736e" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="14">进入真实评价</text>
+                </g>
+                <path d="M310 380V422" stroke="#b7bbae" stroke-width="2"/>
+                <g transform="translate(184 428)">
+                  <rect width="252" height="50" rx="25" fill="#0f6a60"/>
+                  <text x="126" y="32" fill="#f5fffc" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="18" text-anchor="middle">更新代理、档案与调度器</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+          <div class="slide-number"><b>09</b> / 16</div>
+        </section>
+
+        <section class="slide" id="s10" aria-hidden="true" data-title="不足三：结构失配">
+          <div class="slide-label"><span>09</span> / 不足三</div>
+          <div class="two-col">
+            <div class="content-middle">
+              <p class="eyebrow">Structural mismatch</p>
+              <h2 class="issue-title">通用算子<br>不理解问题结构</h2>
+              <p class="issue-subtitle">
+                编码和变异隐含了“变量独立、规则稳定、环境无噪声”等假设。
+                在约束、离散、动态或多目标问题上，这些假设往往不成立。
+              </p>
+              <div class="symptom-list">
+                <div class="symptom"><div><strong>不可行解大量出现</strong><span>随机交换或扰动可能破坏连通性、锁门顺序、排班规则。</span></div></div>
+                <div class="symptom"><div><strong>“可行但差”与“不可行但近”</strong><span>直接丢弃不可行解，会损失接近成功的局部结构。</span></div></div>
+                <div class="symptom"><div><strong>目标本身不再单一</strong><span>多目标、动态和含噪环境让固定适应度难以长期有效。</span></div></div>
+              </div>
+              <p class="quote-line">没有免费午餐：想获得通用性，就要为问题结构付出建模或适配成本。</p>
+            </div>
+            <div class="map-wrap" aria-label="关卡结构失配示意">
+              <div class="map-grid">
+                <div class="tile start"></div><div class="tile"></div><div class="tile"></div><div class="tile wall"></div><div class="tile"></div><div class="tile"></div><div class="tile goal"></div>
+                <div class="tile"></div><div class="tile wall"></div><div class="tile"></div><div class="tile wall"></div><div class="tile"></div><div class="tile wall"></div><div class="tile"></div>
+                <div class="tile"></div><div class="tile wall"></div><div class="tile key"></div><div class="tile wall"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div>
+                <div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile wall"></div><div class="tile wall"></div><div class="tile"></div>
+                <div class="tile wall"></div><div class="tile wall"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div>
+                <div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile wall"></div><div class="tile"></div><div class="tile bad"></div><div class="tile"></div>
+                <div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile wall"></div><div class="tile"></div><div class="tile wall"></div><div class="tile"></div>
+              </div>
+              <p class="map-caption"><span>起点 / 钥匙 / 终点</span><span>随机变异后出现断路</span></p>
+              <div class="big-callout" style="margin-top:1.2cqw">
+                一个不可行解可能离正确答案只差两格墙。算法需要知道“为什么失败”，而不仅是“失败”。
+              </div>
+            </div>
+          </div>
+          <div class="slide-number"><b>10</b> / 16</div>
+        </section>
+
+        <section class="slide" id="s11" aria-hidden="true" data-title="研究现状三">
+          <div class="slide-label"><span>10</span> / 现状三</div>
+          <p class="eyebrow">State of the art · Structure &amp; robustness</p>
+          <h2>领域方法已成熟，通用化仍然困难</h2>
+          <table class="research-table">
+            <thead>
+              <tr><th>问题结构</th><th>代表方法</th><th>当前判断</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>硬约束与可行性</td>
+                <td>罚函数、ε-约束、可行性优先、修复算子、feasible–infeasible populations</td>
+                <td><span class="badge">领域内成熟</span><br>强依赖约束表达和修复质量。</td>
+              </tr>
+              <tr>
+                <td>多目标与多模态</td>
+                <td>NSGA-II、NSGA-III、MOEA/D、RVEA、quality-diversity</td>
+                <td><span class="badge">基础较成熟</span><br>许多目标、昂贵评价和偏好变化仍难。</td>
+              </tr>
+              <tr>
+                <td>动态、噪声与不确定</td>
+                <td>变化检测、记忆、预测、重复采样、鲁棒排序、Uncertain QD</td>
+                <td><span class="badge">活跃前沿</span><br>评价噪声会破坏模态和精英判断。</td>
+              </tr>
+              <tr>
+                <td>算法选择与迁移</td>
+                <td>算法组合、元学习、超级启发式、自动配置</td>
+                <td><span class="badge">开放难题</span><br>跨分布迁移和可解释的在线适配仍不充分。</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="citation" style="margin-top:1.1cqw">
+            代表工作：NSGA-II, 2002、MOEA/D, 2007、Talakat, 2018、FI-2Pop for PCG, 2022、Uncertain QD, 2023。
+          </p>
+          <div class="slide-number"><b>11</b> / 16</div>
+        </section>
+
+        <section class="slide" id="s12" aria-hidden="true" data-title="思路三：修复记忆">
+          <div class="slide-label"><span>11</span> / 思路三</div>
+          <div class="two-col">
+            <div>
+              <p class="eyebrow">Idea 03 · Failure becomes knowledge</p>
+              <h2>让失败解留下<br>可复用的修复知识</h2>
+              <p class="lead">
+                不可行解不只记录“失败”，还要记录失败类型、最小修复动作、修复成本和修复后的收益。
+                这比直接删除更接近真实设计过程。
+              </p>
+              <div class="repair-flow" aria-label="失败修复记忆流程">
+                <div class="repair-node"><b>不可行候选</b><span>断路、锁门冲突、资源超限</span></div>
+                <span class="repair-arrow">→</span>
+                <div class="repair-node"><b>诊断 + 最小修复</b><span>识别原因，只改变最少结构</span></div>
+                <span class="repair-arrow">→</span>
+                <div class="repair-node fixed"><b>再评价并归档</b><span>保留修复收益和新增模态</span></div>
+              </div>
+              <div class="knowledge-line">
+                <span>失败类型</span><span>修复模板</span><span>修复成本</span><span>质量增量</span><span>行为变化</span>
+              </div>
+            </div>
+            <div>
+              <div class="landscape-wrap" style="padding:1.2cqw">
+                <svg viewBox="0 0 620 410" fill="none" role="img" aria-labelledby="repair-title repair-desc">
+                  <title id="repair-title">从失败到修复的知识闭环</title>
+                  <desc id="repair-desc">失败候选经过最小修复进入行为档案，同时把修复效果回写到模型。</desc>
+                  <rect x="34" y="36" width="160" height="126" rx="12" fill="#f2dfe3" stroke="#c79ba4"/>
+                  <text x="114" y="70" fill="#9a4755" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="17" text-anchor="middle">失败候选</text>
+                  <path d="M68 91H160M143 77L160 91L143 105" stroke="#9a4755" stroke-width="2"/>
+                  <text x="114" y="133" fill="#68736e" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="14" text-anchor="middle">终点不可达</text>
+                  <rect x="230" y="36" width="160" height="126" rx="12" fill="#fdfbf5" stroke="#d8d5c9"/>
+                  <text x="310" y="70" fill="#18231f" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="17" text-anchor="middle">最小修复</text>
+                  <path d="M270 98H350M330 82L350 98L330 114" stroke="#bf6729" stroke-width="2"/>
+                  <text x="310" y="133" fill="#68736e" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="14" text-anchor="middle">删除 2 格墙</text>
+                  <rect x="426" y="36" width="160" height="126" rx="12" fill="#dcefeb" stroke="#86bdb5"/>
+                  <text x="506" y="70" fill="#0f6a60" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="17" text-anchor="middle">可评价候选</text>
+                  <path d="M458 98H554M537 82L554 98L537 114" stroke="#0f6a60" stroke-width="2"/>
+                  <text x="506" y="133" fill="#68736e" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="14" text-anchor="middle">重新进入档案</text>
+                  <path d="M506 162V218H114V162" stroke="#0f6a60" stroke-width="2" stroke-dasharray="6 6"/>
+                  <rect x="116" y="244" width="388" height="104" rx="16" fill="#fdfbf5" stroke="#d8d5c9"/>
+                  <text x="310" y="278" fill="#18231f" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="18" text-anchor="middle">修复知识</text>
+                  <text x="310" y="306" fill="#68736e" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="14" text-anchor="middle">成本 2 · 质量增量 +0.08 · 难度 +3</text>
+                  <text x="310" y="329" fill="#68736e" font-family="Noto Sans SC, Microsoft YaHei, sans-serif" font-size="14" text-anchor="middle">下次相似失败可直接调用修复模板</text>
+                </svg>
+              </div>
+              <p class="citation" style="margin-top:1cqw">
+                注意：父子差异是受控干预的证据，不等于严格因果证明。需要通过重复试验与共同随机种子降低噪声。
+              </p>
+            </div>
+          </div>
+          <div class="slide-number"><b>12</b> / 16</div>
+        </section>
+
+        <section class="slide" id="s13" aria-hidden="true" data-title="统一方案">
+          <div class="slide-label"><span>12</span> / 方案</div>
+          <p class="eyebrow">Integrated research proposal</p>
+          <h2>把三个策略接入同一个搜索控制器</h2>
+          <div class="controller" aria-label="状态感知与修复记忆的演化搜索框架">
+            <div class="side-item left"><b>开发</b><span>高分盆地内局部强化</span></div>
+            <div class="center"><strong>状态感知的评价控制器</strong></div>
+            <div class="side-item right"><b>探索</b><span>空白或低覆盖行为区域</span></div>
+            <div class="arrow left">→</div>
+            <div class="arrow right">←</div>
+            <div class="side-item left"><b>实验</b><span>双生编辑：一次只改一个结构因素</span></div>
+            <div class="side-item right"><b>修复</b><span>用最小修改挽救近可行解</span></div>
+          </div>
+          <p class="takeaway">控制器读取五类状态：改进率、有效多样性、剩余预算、代理不确定性、可行性风险。</p>
+          <div class="status-strip">
+            <span>输出一：高质量解集</span>
+            <span>输出二：多模态档案</span>
+            <span>输出三：编辑与修复知识</span>
+          </div>
+          <div class="big-callout" style="max-width:65cqw">
+            研究假设：在固定真实评价预算下，联合选择“开发、探索、实验、修复”比固定算子或固定预算分配更有效。
+          </div>
+          <div class="slide-number"><b>13</b> / 16</div>
+        </section>
+
+        <section class="slide" id="s14" aria-hidden="true" data-title="验证路径">
+          <div class="slide-label"><span>13</span> / 验证</div>
+          <p class="eyebrow">Evaluation protocol</p>
+          <h2>用相同真实预算，检验三类收益</h2>
+          <div class="experiment-grid">
+            <div>
+              <p class="column-title">三个测试场景</p>
+              <ul class="flat-list">
+                <li><strong>多峰连续问题：</strong>检查模态覆盖与最优质量是否能同时保持。</li>
+                <li><strong>昂贵约束问题：</strong>检查代理评价、可行性和真实评价次数的权衡。</li>
+                <li><strong>二维游戏内容生成：</strong>检查连通性、玩法覆盖与修复收益。</li>
+              </ul>
+            </div>
+            <div>
+              <p class="column-title">基线与消融</p>
+              <ul class="flat-list">
+                <li><strong>强基线：</strong>DE / SHADE / CMA-ES。</li>
+                <li><strong>多模态基线：</strong>MAP-Elites / BOP-Elites / constrained MAP-Elites。</li>
+                <li><strong>消融：</strong>去掉双档案、评价价值排序、修复记忆中的任一部分。</li>
+              </ul>
+            </div>
+          </div>
+          <div class="hr"></div>
+          <p class="column-title">报告指标</p>
+          <div class="protocol">
+            <div><b>覆盖</b><span>peak ratio、模态覆盖数、行为档案填充率</span></div>
+            <div><b>质量</b><span>固定真实评价下的 best-so-far、成功率</span></div>
+            <div><b>结构</b><span>可行性率、修复成本、跨实例稳定性</span></div>
+            <div><b>统计</b><span>30+ seeds、中位数/IQR、Wilcoxon + Holm</span></div>
+          </div>
+          <p class="citation" style="margin-top:1.2cqw">另报告墙钟时间与真实评价次数，避免把实现效率误当成算法效果。</p>
+          <div class="slide-number"><b>14</b> / 16</div>
+        </section>
+
+        <section class="slide" id="s15" aria-hidden="true" data-title="结论">
+          <div class="slide-label"><span>14</span> / 结论</div>
+          <p class="eyebrow">Conclusion</p>
+          <h2>三点结论</h2>
+          <div class="conclusion-list">
+            <div class="conclusion">
+              <div class="conclusion-num">01</div>
+              <div><h3>多样性要“有潜力”</h3><p>保留不同且有前景的模态，而不是保留所有差异。</p></div>
+            </div>
+            <div class="conclusion">
+              <div class="conclusion-num">02</div>
+              <div><h3>评价要按价值分配</h3><p>真实评价优先给信息量高、争议大或结构风险高的候选。</p></div>
+            </div>
+            <div class="conclusion">
+              <div class="conclusion-num">03</div>
+              <div><h3>结构要显式进入算法</h3><p>编码、修复、分解和可行性检查仍然不可替代。</p></div>
+            </div>
+          </div>
+          <div class="closing-quote">
+            下一次昂贵评价，最好同时带回一个更好的候选，以及一条关于问题结构的知识。
+          </div>
+          <p class="body-text" style="margin-top:1.7cqw;max-width:55ch">
+            讨论问题：如果每消耗一次真实评价都必须留下可复用知识，我们会记录什么？
+          </p>
+          <div class="slide-number"><b>15</b> / 16</div>
+        </section>
+
+        <section class="slide" id="s16" aria-hidden="true" data-title="代表性文献">
+          <div class="slide-label"><span>15</span> / 文献</div>
+          <p class="eyebrow">Selected references</p>
+          <h2>代表性文献</h2>
+          <ol class="references">
+            <li>Mouret, J.-B., &amp; Clune, J. (2015). Illuminating search spaces by mapping elites. <a href="https://arxiv.org/abs/1504.04909">arXiv:1504.04909</a></li>
+            <li>Pugh, J. K., Soros, L. B., &amp; Stanley, K. O. (2016). Quality diversity: A new frontier for evolutionary computation. <a href="https://doi.org/10.3389/frobt.2016.00040">DOI</a></li>
+            <li>Tanabe, R., &amp; Fukunaga, A. (2013). Success-history based parameter adaptation for differential evolution. <a href="https://doi.org/10.1109/CEC.2013.6557555">DOI</a></li>
+            <li>Jin, Y. (2011). Surrogate-assisted evolutionary computation. <a href="https://doi.org/10.1016/j.swevo.2011.05.001">DOI</a></li>
+            <li>Jin, Y., Wang, H., Chugh, T., Guo, D., &amp; Miettinen, K. (2019). Data-driven evolutionary optimization. <a href="https://doi.org/10.1109/TEVC.2018.2869001">DOI</a></li>
+            <li>Kent, P., Branke, J., Gaier, A., &amp; Mouret, J.-B. (2023). BOP-Elites: Bayesian optimisation for quality-diversity search. <a href="https://arxiv.org/abs/2307.09326">arXiv</a></li>
+            <li>Zhang, Y., Fontaine, M. C., Hoover, A. K., &amp; Nikolaidis, S. (2021). Deep surrogate assisted MAP-Elites for Hearthstone. <a href="https://arxiv.org/abs/2112.03534">arXiv</a></li>
+            <li>Khalifa, A., Lee, S., Nealen, A., &amp; Togelius, J. (2018). Talakat: Bullet hell generation through constrained MAP-Elites. <a href="https://arxiv.org/abs/1806.04718">arXiv</a></li>
+            <li>Gallotta, R., Arulkumaran, K., &amp; Soros, L. B. (2022). Surrogate infeasible fitness for procedural content generation. <a href="https://arxiv.org/abs/2205.05834">arXiv</a></li>
+            <li>Deb, K., Pratap, A., Agarwal, S., &amp; Meyarivan, T. (2002). NSGA-II. <a href="https://doi.org/10.1109/4235.996017">DOI</a></li>
+            <li>Zhang, Q., &amp; Li, H. (2007). MOEA/D. <a href="https://doi.org/10.1109/TEVC.2007.892759">DOI</a></li>
+            <li>Flageat, M., &amp; Cully, A. (2023). Uncertain Quality-Diversity. <a href="https://arxiv.org/abs/2302.00463">arXiv</a></li>
+          </ol>
+          <p class="ref-note">
+            说明：本页选择与三个问题直接相关的代表工作，不构成穷尽式综述。
+            研究现状的判断应结合具体问题规模、评价预算和应用领域。
+          </p>
+          <div class="slide-number"><b>16</b> / 16</div>
+        </section>
+      </main>
+
+      <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+
+      <div class="nav" aria-label="幻灯片导航">
+        <button type="button" id="overview-toggle" aria-label="打开目录" title="目录（O）">☷</button>
+        <button type="button" id="prev" aria-label="上一页" title="上一页（←）">‹</button>
+        <span class="counter" aria-live="polite"><b id="current">1</b> / 16</span>
+        <button type="button" id="next" aria-label="下一页" title="下一页（→）">›</button>
+        <button type="button" id="fullscreen" aria-label="全屏" title="全屏（F）">⛶</button>
+      </div>
+
+      <div class="help" aria-hidden="true">← → 翻页 · O 目录 · F 全屏 · P 打印</div>
+
+      <div class="overview" id="overview" aria-label="幻灯片目录">
+        <button class="overview-close" id="overview-close" type="button">关闭 ×</button>
+        <h2>幻灯片目录</h2>
+        <div class="overview-grid" id="overview-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const slides = Array.from(document.querySelectorAll(".slide"));
+      const currentLabel = document.getElementById("current");
+      const progressBar = document.getElementById("progress-bar");
+      const overview = document.getElementById("overview");
+      const overviewGrid = document.getElementById("overview-grid");
+      const deck = document.getElementById("deck");
+      let index = 0;
+      let touchStartX = null;
+
+      slides.forEach((slide, slideIndex) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.target = String(slideIndex);
+        button.innerHTML = `
+          <span class="ov-num">${String(slideIndex + 1).padStart(2, "0")}</span>
+          <span class="ov-title">${slide.dataset.title || "未命名幻灯片"}</span>
+        `;
+        button.addEventListener("click", () => {
+          showSlide(slideIndex);
+          closeOverview();
+        });
+        overviewGrid.appendChild(button);
+      });
+
+      function showSlide(nextIndex, updateHash = true) {
+        const clamped = Math.max(0, Math.min(slides.length - 1, nextIndex));
+        index = clamped;
+        slides.forEach((slide, slideIndex) => {
+          const active = slideIndex === index;
+          slide.classList.toggle("active", active);
+          slide.setAttribute("aria-hidden", String(!active));
+        });
+        currentLabel.textContent = String(index + 1);
+        progressBar.style.width = `${((index + 1) / slides.length) * 100}%`;
+        overviewGrid.querySelectorAll("button").forEach((button, buttonIndex) => {
+          button.classList.toggle("current", buttonIndex === index);
+        });
+        if (updateHash) {
+          try {
+            history.replaceState(null, "", `#slide-${index + 1}`);
+          } catch {
+            // Some browsers restrict history updates for local file URLs.
+          }
+        }
+      }
+
+      function openOverview() {
+        overview.classList.add("open");
+        const currentButton = overviewGrid.querySelector(`[data-target="${index}"]`);
+        if (currentButton) currentButton.focus();
+      }
+
+      function closeOverview() {
+        overview.classList.remove("open");
+      }
+
+      function toggleOverview() {
+        if (overview.classList.contains("open")) {
+          closeOverview();
+        } else {
+          openOverview();
+        }
+      }
+
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen?.().catch(() => {});
+        } else {
+          document.exitFullscreen?.().catch(() => {});
+        }
+      }
+
+      document.getElementById("prev").addEventListener("click", () => showSlide(index - 1));
+      document.getElementById("next").addEventListener("click", () => showSlide(index + 1));
+      document.getElementById("overview-toggle").addEventListener("click", toggleOverview);
+      document.getElementById("overview-close").addEventListener("click", closeOverview);
+      document.getElementById("fullscreen").addEventListener("click", toggleFullscreen);
+
+      window.addEventListener("keydown", (event) => {
+        const tag = document.activeElement?.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+        if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(event.key)) {
+          event.preventDefault();
+          showSlide(index + 1);
+        } else if (["ArrowLeft", "ArrowUp", "PageUp"].includes(event.key)) {
+          event.preventDefault();
+          showSlide(index - 1);
+        } else if (event.key === "Home") {
+          event.preventDefault();
+          showSlide(0);
+        } else if (event.key === "End") {
+          event.preventDefault();
+          showSlide(slides.length - 1);
+        } else if (event.key.toLowerCase() === "o") {
+          event.preventDefault();
+          toggleOverview();
+        } else if (event.key.toLowerCase() === "f") {
+          event.preventDefault();
+          toggleFullscreen();
+        } else if (event.key.toLowerCase() === "p") {
+          event.preventDefault();
+          window.print();
+        } else if (event.key === "Escape") {
+          closeOverview();
+        }
+      });
+
+      deck.addEventListener("touchstart", (event) => {
+        touchStartX = event.changedTouches[0]?.clientX ?? null;
+      }, { passive: true });
+
+      deck.addEventListener("touchend", (event) => {
+        if (touchStartX === null) return;
+        const endX = event.changedTouches[0]?.clientX ?? touchStartX;
+        const delta = endX - touchStartX;
+        if (Math.abs(delta) > 45) {
+          showSlide(index + (delta < 0 ? 1 : -1));
+        }
+        touchStartX = null;
+      }, { passive: true });
+
+      window.addEventListener("hashchange", () => {
+        const match = location.hash.match(/slide-(\d+)/);
+        if (match) showSlide(Number(match[1]) - 1, false);
+      });
+
+      const initialHash = location.hash.match(/slide-(\d+)/);
+      showSlide(initialHash ? Number(initialHash[1]) - 1 : 0, false);
+    })();
+  </script>
+</body>
+</html>
