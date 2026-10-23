@@ -393,6 +393,7 @@ function build() {
   copyFileSync(join(ROOT, 'assets', 'app.js'), join(DIST, 'assets', 'app.js'));
   copyFileSync(join(ROOT, 'assets', 'style.css'), join(DIST, 'assets', 'style.css'));
   if (existsSync(join(ROOT, 'assets', 'img'))) copyTree(join(ROOT, 'assets', 'img'), join(DIST, 'assets', 'img'));
+  if (existsSync(join(ROOT, 'ppt'))) copyTree(join(ROOT, 'ppt'), join(DIST, 'ppt'));
 
   // 站点数据（同时写回源码目录，保证本地双击 index.html 也能看）
   const js = 'window.MISTY_CONTENT = ' + JSON.stringify(content) + ';\n';
