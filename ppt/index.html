@@ -4355,7 +4355,7 @@
         const frontier = benchmark.paretoArchive;
         const playabilitySolution = chooseRepresentative(frontier, "playability");
         const explorationSolution = chooseRepresentative(frontier, "exploration");
-        drawMap(ids.coverCanvas, playabilitySolution);
+        drawMap(ids.coverCanvas, explorationSolution);
         drawMap(ids.resultPlayabilityCanvas, playabilitySolution);
         drawMap(ids.resultExplorationCanvas, explorationSolution);
         const playabilityTargets = playabilitySolution.detail.targetDetails.filter((target) => target.discovered);
